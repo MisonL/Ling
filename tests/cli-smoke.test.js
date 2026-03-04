@@ -67,7 +67,7 @@ describe("CLI Smoke", () => {
         assert.strictEqual((doctorResult.stdout || "").trim(), "");
     });
 
-    test("doctor --fix should remove stale .codex directory", () => {
+    test("doctor --fix should keep non-managed .codex directory", () => {
         const initResult = runCli(
             ["init", "--target", "codex", "--path", workspaceDir, "--quiet"],
             { env: { AG_KIT_INDEX_PATH: indexPath } },
@@ -83,7 +83,7 @@ describe("CLI Smoke", () => {
             { env: { AG_KIT_INDEX_PATH: indexPath } },
         );
         assert.strictEqual(doctorFixResult.status, 0, doctorFixResult.stderr || doctorFixResult.stdout);
-        assert.ok(!fs.existsSync(path.join(workspaceDir, ".codex")));
+        assert.ok(fs.existsSync(path.join(workspaceDir, ".codex")));
     });
 
     test("init should not index temporary workspace by default", () => {
@@ -112,7 +112,7 @@ describe("CLI Smoke", () => {
         assert.ok(!fs.existsSync(path.join(workspaceDir, ".codex")));
     });
 
-    test("codex update should remove pre-existing legacy .codex directory", () => {
+    test("codex update should keep pre-existing non-managed .codex directory", () => {
         const initResult = runCli(
             ["init", "--target", "codex", "--path", workspaceDir, "--quiet"],
             { env: { AG_KIT_INDEX_PATH: indexPath } },
@@ -128,7 +128,7 @@ describe("CLI Smoke", () => {
             { env: { AG_KIT_INDEX_PATH: indexPath } },
         );
         assert.strictEqual(updateResult.status, 0, updateResult.stderr || updateResult.stdout);
-        assert.ok(!fs.existsSync(path.join(workspaceDir, ".codex")));
+        assert.ok(fs.existsSync(path.join(workspaceDir, ".codex")));
         assert.ok(fs.existsSync(path.join(workspaceDir, ".agents")));
     });
 
@@ -209,13 +209,13 @@ describe("CLI Smoke", () => {
         assert.ok(!hasAliasTempWorkspace, "macOS alias temp path should be removed during update-all");
     });
 
-    test("init in non-interactive mode should require explicit target", () => {
+    test("init in non-interactive mode should default to full mode", () => {
         const result = runCli(
             ["init", "--non-interactive", "--path", workspaceDir, "--quiet"],
             { env: { AG_KIT_INDEX_PATH: indexPath } },
         );
-        assert.notStrictEqual(result.status, 0);
-        assert.match(result.stderr || result.stdout, /非交互模式下必须通过 --target 或 --targets 指定目标/);
+        assert.strictEqual(result.status, 0, result.stderr || result.stdout);
+        assert.ok(fs.existsSync(path.join(workspaceDir, ".agents")));
     });
 
     test("update should run in gemini dry-run mode", () => {
@@ -314,7 +314,7 @@ describe("CLI Smoke", () => {
             const indexData = JSON.parse(fs.readFileSync(indexPath, "utf8"));
             const record = (indexData.workspaces || []).find((item) => item.path === localWorkspace);
             assert.ok(record, "workspace should remain in index");
-            assert.ok(record.targets && record.targets.codex, "codex target should be refreshed into index");
+            assert.ok(record.targets && record.targets.full, "full target should be refreshed into index");
         } finally {
             fs.rmSync(localWorkspace, { recursive: true, force: true });
         }

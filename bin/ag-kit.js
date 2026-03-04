@@ -6,15 +6,26 @@ const path = require("path");
 
 const pkg = require("../package.json");
 const { readGlobalNpmDependencies } = require("./utils");
-const GeminiAdapter = require("./adapters/gemini");
 const CodexAdapter = require("./adapters/codex");
-const { selectTargets } = require("./interactive");
+const {
+    selectTargets,
+    selectAgentConflictPolicy,
+    selectGeminiAgentsPolicy,
+} = require("./interactive");
 
-const BUNDLED_AGENT_DIR = path.resolve(__dirname, "../.agent");
+const BUNDLED_AGENT_DIR = fs.existsSync(path.resolve(__dirname, "../.agents"))
+    ? path.resolve(__dirname, "../.agents")
+    : path.resolve(__dirname, "../.agent");
 const WORKSPACE_INDEX_VERSION = 2;
 const UPSTREAM_GLOBAL_PACKAGE = "@vudovn/ag-kit";
 const TOOLKIT_PACKAGE_NAMES = new Set(["@mison/ag-kit-cn", "antigravity-kit-cn", "antigravity-kit"]);
-const SUPPORTED_TARGETS = ["gemini", "codex"];
+const SUPPORTED_TARGETS = ["full", "agents", "gemini", "codex"];
+const TARGET_ALIAS_MAP = {
+    full: "full",
+    agents: "full",
+    gemini: "full",
+    codex: "full",
+};
 const INDEX_LOCK_RETRY_MS = 50;
 const INDEX_LOCK_TIMEOUT_MS = 3000;
 const INDEX_LOCK_STALE_MS = 30000;
@@ -51,6 +62,9 @@ function printUsage() {
     console.log("  ag-kit exclude remove --path <dir> [--dry-run] [--quiet]");
     console.log("  ag-kit status [--path <dir>] [--quiet]");
     console.log("  ag-kit --version");
+    console.log("");
+    console.log("说明:");
+    console.log("  --target gemini/codex/full 现均归一为统一 full 安装（.agents 为主目录）");
 }
 
 function printVersion() {
@@ -75,6 +89,8 @@ function parseArgs(argv) {
         path: "",
         branch: "",
         targets: [],
+        agentConflictPolicy: "",
+        geminiAgentsPolicy: "",
     };
     const providedFlags = [];
 
@@ -341,13 +357,25 @@ function normalizeTargetState(value) {
     };
 }
 
+function normalizeTargetName(rawTarget) {
+    const key = String(rawTarget || "").trim().toLowerCase();
+    if (!key) {
+        return "";
+    }
+    return TARGET_ALIAS_MAP[key] || "";
+}
+
 function normalizeWorkspaceRecordV2(item, normalizedPath) {
     const targets = {};
     if (item && item.targets && typeof item.targets === "object") {
         for (const [targetName, state] of Object.entries(item.targets)) {
+            const normalizedTarget = normalizeTargetName(targetName);
+            if (!normalizedTarget) {
+                continue;
+            }
             const normalizedState = normalizeTargetState(state);
             if (normalizedState) {
-                targets[targetName] = normalizedState;
+                targets[normalizedTarget] = normalizedState;
             }
         }
     }
@@ -361,7 +389,7 @@ function migrateRecordV1ToV2(item, normalizedPath) {
     const targets = {};
     const installedAt = typeof item.installedAt === "string" ? item.installedAt : "";
     if (installedAt) {
-        targets.gemini = {
+        targets.full = {
             version: typeof item.cliVersion === "string" ? item.cliVersion : "",
             installedAt,
             updatedAt: typeof item.lastUpdatedAt === "string" ? item.lastUpdatedAt : installedAt,
@@ -566,13 +594,14 @@ function upsertWorkspaceTarget(index, workspaceRoot, targetName, timestamp) {
         record.targets = {};
     }
 
-    const prev = normalizeTargetState(record.targets[targetName]) || {
+    const normalizedTarget = normalizeTargetName(targetName) || "full";
+    const prev = normalizeTargetState(record.targets[normalizedTarget]) || {
         version: "",
         installedAt: "",
         updatedAt: "",
     };
 
-    record.targets[targetName] = {
+    record.targets[normalizedTarget] = {
         version: pkg.version,
         installedAt: prev.installedAt || timestamp,
         updatedAt: timestamp,
@@ -687,6 +716,25 @@ function maybeWarnUpstreamGlobalConflict(command, options) {
     log(options, `👉 建议执行: npm uninstall -g ${UPSTREAM_GLOBAL_PACKAGE}`);
 }
 
+function maybeWarnLegacyTargetAlias(options, rawTargets) {
+    if (options.quiet) {
+        return;
+    }
+    const aliases = [];
+    for (const raw of rawTargets || []) {
+        const key = String(raw || "").trim().toLowerCase();
+        if (!key || key === "full" || key === "agents") {
+            continue;
+        }
+        if (key === "gemini" || key === "codex") {
+            aliases.push(key);
+        }
+    }
+    if (aliases.length > 0) {
+        log(options, `ℹ️ 检测到兼容目标参数: ${Array.from(new Set(aliases)).join(", ")}，将自动归一为 full 安装流程。`);
+    }
+}
+
 function normalizeTargets(rawTargets) {
     const result = [];
     const seen = new Set();
@@ -704,9 +752,13 @@ function normalizeTargets(rawTargets) {
             if (!SUPPORTED_TARGETS.includes(target)) {
                 throw new Error(`不支持的目标: ${target}（可选: ${SUPPORTED_TARGETS.join(", ")}）`);
             }
-            if (!seen.has(target)) {
-                seen.add(target);
-                result.push(target);
+            const normalized = normalizeTargetName(target);
+            if (!normalized) {
+                continue;
+            }
+            if (!seen.has(normalized)) {
+                seen.add(normalized);
+                result.push(normalized);
             }
         }
     }
@@ -714,61 +766,66 @@ function normalizeTargets(rawTargets) {
     return result;
 }
 
+function isManagedLegacyCodexDir(workspaceRoot) {
+    const legacyManifest = path.join(workspaceRoot, ".codex", "manifest.json");
+    if (!fs.existsSync(legacyManifest)) {
+        return false;
+    }
+    try {
+        const parsed = JSON.parse(fs.readFileSync(legacyManifest, "utf8"));
+        const target = typeof parsed.target === "string" ? parsed.target.toLowerCase() : "";
+        return (target === "codex" || target === "full") && parsed.files && typeof parsed.files === "object";
+    } catch (_err) {
+        return false;
+    }
+}
+
+function hasLegacyLayoutSignal(workspaceRoot) {
+    return fs.existsSync(path.join(workspaceRoot, ".agent"))
+        || fs.existsSync(path.join(workspaceRoot, ".gemini"))
+        || isManagedLegacyCodexDir(workspaceRoot);
+}
+
 function detectInstalledTargets(workspaceRoot) {
-    const targets = [];
-    if (fs.existsSync(path.join(workspaceRoot, ".agent"))) {
-        targets.push("gemini");
+    if (fs.existsSync(path.join(workspaceRoot, ".agents")) || hasLegacyLayoutSignal(workspaceRoot)) {
+        return ["full"];
     }
-    if (fs.existsSync(path.join(workspaceRoot, ".agents")) || fs.existsSync(path.join(workspaceRoot, ".codex"))) {
-        targets.push("codex");
-    }
-    return targets;
+    return [];
 }
 
 function isTargetInstalled(workspaceRoot, targetName) {
-    if (targetName === "gemini") {
-        return fs.existsSync(path.join(workspaceRoot, ".agent"));
-    }
-    if (targetName === "codex") {
-        return fs.existsSync(path.join(workspaceRoot, ".agents")) || fs.existsSync(path.join(workspaceRoot, ".codex"));
+    const normalized = normalizeTargetName(targetName);
+    if (normalized === "full") {
+        return fs.existsSync(path.join(workspaceRoot, ".agents")) || hasLegacyLayoutSignal(workspaceRoot);
     }
     return false;
 }
 
 function createAdapter(targetName, workspaceRoot, options) {
-    if (targetName === "gemini") {
-        return new GeminiAdapter(workspaceRoot, options);
-    }
-    if (targetName === "codex") {
+    const normalized = normalizeTargetName(targetName);
+    if (normalized === "full") {
         return new CodexAdapter(workspaceRoot, options);
     }
     throw new Error(`未知目标: ${targetName}`);
 }
 
 async function resolveTargetsForInit(options) {
+    maybeWarnLegacyTargetAlias(options, options.targets);
     let targets = normalizeTargets(options.targets);
 
     if (targets.length > 0) {
         return targets;
     }
-
-    if (options.nonInteractive) {
-        throw new Error("非交互模式下必须通过 --target 或 --targets 指定目标");
-    }
-
-    if (!process.stdin.isTTY || !process.stdout.isTTY) {
-        throw new Error("当前环境不是交互终端，请通过 --target 或 --targets 指定目标");
-    }
-
     targets = normalizeTargets(await selectTargets(options));
     if (targets.length === 0) {
-        throw new Error("必须选择至少一个目标");
+        return ["full"];
     }
 
     return targets;
 }
 
 function resolveTargetsForUpdate(workspaceRoot, options) {
+    maybeWarnLegacyTargetAlias(options, options.targets);
     const requested = normalizeTargets(options.targets);
     if (requested.length > 0) {
         return requested;
@@ -776,25 +833,50 @@ function resolveTargetsForUpdate(workspaceRoot, options) {
     return detectInstalledTargets(workspaceRoot);
 }
 
+async function resolveConflictPolicies(workspaceRoot, options) {
+    const next = { ...options };
+    const isInteractive = !next.nonInteractive && process.stdin.isTTY && process.stdout.isTTY;
+
+    if (!next.agentConflictPolicy) {
+        if (fs.existsSync(path.join(workspaceRoot, ".agent")) && isInteractive) {
+            next.agentConflictPolicy = await selectAgentConflictPolicy();
+        } else {
+            next.agentConflictPolicy = "backup_replace";
+        }
+    }
+
+    if (!next.geminiAgentsPolicy) {
+        if (fs.existsSync(path.join(workspaceRoot, ".gemini", "agents")) && isInteractive) {
+            next.geminiAgentsPolicy = await selectGeminiAgentsPolicy();
+        } else {
+            next.geminiAgentsPolicy = "append";
+        }
+    }
+
+    return next;
+}
+
 async function commandInit(options) {
     const workspaceRoot = resolveWorkspaceRoot(options.path);
     const targets = await resolveTargetsForInit(options);
+    const runOptions = await resolveConflictPolicies(workspaceRoot, options);
 
     for (const target of targets) {
-        const adapter = createAdapter(target, workspaceRoot, options);
+        const adapter = createAdapter(target, workspaceRoot, runOptions);
         log(options, `📦 正在初始化目标 [${target}] ...`);
         adapter.install(BUNDLED_AGENT_DIR);
-        registerWorkspaceTarget(workspaceRoot, target, options);
+        registerWorkspaceTarget(workspaceRoot, target, runOptions);
     }
 
     if (targets.length > 0) {
-        log(options, `✅ 初始化完成 (Targets: ${targets.join(", ")})`);
+        log(options, `✅ 初始化完成 (Mode: ${targets.join(", ")})`);
     }
 }
 
 async function commandUpdate(options) {
     const workspaceRoot = resolveWorkspaceRoot(options.path);
     const targets = resolveTargetsForUpdate(workspaceRoot, options);
+    const runOptions = await resolveConflictPolicies(workspaceRoot, options);
 
     if (targets.length === 0) {
         throw new Error("此目录未检测到 Antigravity Kit 安装，无法更新。请先执行 init。");
@@ -812,11 +894,11 @@ async function commandUpdate(options) {
             continue;
         }
 
-        const runOptions = { ...options, force: true };
-        const adapter = createAdapter(target, workspaceRoot, runOptions);
+        const targetOptions = { ...runOptions, force: true };
+        const adapter = createAdapter(target, workspaceRoot, targetOptions);
         log(options, `📦 更新 [${target}] ...`);
         adapter.update(BUNDLED_AGENT_DIR);
-        registerWorkspaceTarget(workspaceRoot, target, runOptions);
+        registerWorkspaceTarget(workspaceRoot, target, targetOptions);
         updatedAny = true;
     }
 
@@ -830,12 +912,13 @@ function mergeUpdatedTargets(record, workspacePath, targetNames, timestamp) {
     const next = normalizeWorkspaceRecordV2(record || {}, normalizedPath);
 
     for (const target of targetNames) {
-        const prev = normalizeTargetState(next.targets[target]) || {
+        const normalizedTarget = normalizeTargetName(target) || "full";
+        const prev = normalizeTargetState(next.targets[normalizedTarget]) || {
             version: "",
             installedAt: "",
             updatedAt: "",
         };
-        next.targets[target] = {
+        next.targets[normalizedTarget] = {
             version: pkg.version,
             installedAt: prev.installedAt || timestamp,
             updatedAt: timestamp,
@@ -850,6 +933,7 @@ async function commandUpdateAll(options) {
         throw new Error("update-all 不支持 --path，请直接执行 ag-kit update-all");
     }
 
+    maybeWarnLegacyTargetAlias(options, options.targets);
     const requestedTargets = normalizeTargets(options.targets);
     const { indexPath, index } = readWorkspaceIndex();
     const records = index.workspaces || [];
@@ -932,6 +1016,8 @@ async function commandUpdateAll(options) {
                     force: true,
                     path: workspacePath,
                     silentIndexLog: true,
+                    agentConflictPolicy: "backup_replace",
+                    geminiAgentsPolicy: "append",
                 };
                 const adapter = createAdapter(target, workspacePath, runOptions);
                 adapter.update(BUNDLED_AGENT_DIR);
@@ -1244,33 +1330,40 @@ function commandStatus(options) {
     console.log("✅ Antigravity Kit 已安装");
     console.log(`   CLI 版本: ${pkg.version}`);
     console.log(`   工作区: ${workspaceRoot}`);
-    console.log(`   Targets: ${installedTargets.join(", ")}`);
+    console.log(`   Mode: ${installedTargets.join(", ")}`);
 
-    if (installedTargets.includes("gemini")) {
-        const agentDir = path.join(workspaceRoot, ".agent");
-        const agentsCount = countFilesIfExists(path.join(agentDir, "agents"), (name) => name.endsWith(".md"));
-        const workflowsCount = countFilesIfExists(path.join(agentDir, "workflows"), (name) => name.endsWith(".md"));
-        const skillsCount = countSkillsRecursive(path.join(agentDir, "skills"));
-        console.log("\n[gemini]");
-        console.log(`   路径: ${agentDir}`);
-        console.log(`   Agents: ${agentsCount}`);
+    const managedDir = path.join(workspaceRoot, ".agents");
+    const agentProjectionDir = path.join(workspaceRoot, ".agent");
+    const geminiProjectionDir = path.join(workspaceRoot, ".gemini");
+    const legacyDir = path.join(workspaceRoot, ".codex");
+    const hasManaged = fs.existsSync(managedDir);
+    const hasLegacy = fs.existsSync(legacyDir);
+    const isManagedLegacy = isManagedLegacyCodexDir(workspaceRoot);
+
+    const skillsCount = countSkillsRecursive(path.join(managedDir, "skills"));
+    const agentsCount = countFilesIfExists(path.join(managedDir, "agents"), (name) => name.endsWith(".md"));
+    const workflowsCount = countFilesIfExists(path.join(managedDir, "workflows"), (name) => name.endsWith(".md"));
+    const hasManifest = fs.existsSync(path.join(managedDir, "manifest.json"));
+
+    console.log("\n[full]");
+    console.log(`   Canonical(.agents): ${hasManaged ? "yes" : "no"}`);
+    if (hasManaged) {
         console.log(`   Skills: ${skillsCount}`);
+        console.log(`   Agents: ${agentsCount}`);
         console.log(`   Workflows: ${workflowsCount}`);
+        console.log(`   Manifest: ${hasManifest ? "yes" : "no"}`);
     }
 
-    if (installedTargets.includes("codex")) {
-        const managedDir = path.join(workspaceRoot, ".agents");
-        const legacyDir = path.join(workspaceRoot, ".codex");
-        const activeDir = fs.existsSync(managedDir) ? managedDir : legacyDir;
-        const skillsCount = countSkillsRecursive(path.join(activeDir, "skills"));
-        const hasManifest = fs.existsSync(path.join(activeDir, "manifest.json"));
-        const legacyDetected = fs.existsSync(legacyDir);
-        console.log("\n[codex]");
-        console.log(`   路径: ${activeDir}`);
-        console.log(`   Skills: ${skillsCount}`);
-        console.log(`   Manifest: ${hasManifest ? "yes" : "no"}`);
-        if (legacyDetected) {
-            console.log("   Legacy: 检测到 .codex（建议执行 ag-kit update 迁移清理）");
+    console.log("\n[projections]");
+    console.log(`   .agent: ${fs.existsSync(agentProjectionDir) ? "yes" : "no"}`);
+    console.log(`   .gemini: ${fs.existsSync(geminiProjectionDir) ? "yes" : "no"}`);
+
+    if (hasLegacy) {
+        console.log("\n[legacy]");
+        if (isManagedLegacy) {
+            console.log("   .codex: 托管 legacy（建议执行 ag-kit update 迁移清理）");
+        } else {
+            console.log("   .codex: 非托管目录（已保留，不会自动删除）");
         }
     }
 }

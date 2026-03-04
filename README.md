@@ -19,16 +19,17 @@ npm install -g @mison/ag-kit-cn
 
 ```bash
 cd /path/to/your-project
-ag-kit init --target gemini   # 安装 Gemini 结构（.agent）
-ag-kit init --target codex    # 安装 Codex 结构（.agents + 托管规则注入）
-# 或者直接 ag-kit init，在交互中选择目标
+ag-kit init                   # 统一 full 安装（.agents 为主目录）
+# 兼容参数仍可用，但会归一为 full
+ag-kit init --target codex
+ag-kit init --target gemini
 ```
 
 可选：不做全局安装，直接在仓库目录执行：
 
 ```bash
 cd /path/to/antigravity-kit-cn
-node bin/ag-kit.js init --target codex --path /path/to/your-project
+node bin/ag-kit.js init --path /path/to/your-project
 ```
 
 如需源码开发安装：
@@ -39,7 +40,7 @@ cd antigravity-kit-cn
 npm install -g .
 ```
 
-这会把所选目标结构安装到你的项目中（`gemini -> .agent`，`codex -> .agents`），并把 Codex 托管内容注入工作区 `AGENTS.md` 与 `antigravity.rules`（说明性托管区块，不是 Codex 官方 `.rules` 审批策略文件）。
+安装会统一写入 `.agents`，并自动生成兼容投影（`.agent`、`.gemini`），同时把托管内容注入工作区 `AGENTS.md` 与 `antigravity.rules`（说明性托管区块，不是 Codex 官方 `.rules` 审批策略文件）。
 
 ### Codex 规则边界说明
 
@@ -50,10 +51,10 @@ npm install -g .
 
 ### ⚠️ 关于 `.gitignore` 的重要说明
 
-如果你正在使用 **Cursor** 或 **Windsurf** 等 AI 编辑器，将 `.agent/`、`.agents/` 添加到 `.gitignore` 可能会阻止 IDE 索引工作流，导致斜杠命令（如 `/plan`、`/debug`）无法出现在对话建议中。
+如果你正在使用 **Cursor** 或 **Windsurf** 等 AI 编辑器，将 `.agent/`、`.agents/`、`.gemini/` 添加到 `.gitignore` 可能会阻止 IDE 索引工作流，导致斜杠命令（如 `/plan`、`/debug`）无法出现在对话建议中。
 
 **推荐方案：**
-1. 确保 `.agent/`、`.agents/` **不要** 出现在项目的 `.gitignore` 中。
+1. 确保 `.agent/`、`.agents/`、`.gemini/` **不要** 出现在项目的 `.gitignore` 中。
 2. 作为替代方案，将其加入本地排除文件：`.git/info/exclude`。
 
 ## 包含内容
@@ -133,8 +134,8 @@ CLI（命令行界面）工具：
 
 | 命令 | 描述 |
 | --- | --- |
-| `ag-kit init` | 安装指定目标：gemini/codex |
-| `ag-kit update` | 更新当前项目已安装目标 |
+| `ag-kit init` | 安装统一 full 结构（`.agents` + 兼容投影） |
+| `ag-kit update` | 更新当前项目（自动收敛 legacy 目录） |
 | `ag-kit update-all` | 批量更新所有已登记工作区 |
 | `ag-kit doctor` | 诊断安装完整性（可 `--fix` 自愈） |
 | `ag-kit exclude` | 管理全局索引排除清单 |
@@ -143,17 +144,18 @@ CLI（命令行界面）工具：
 ### 常用选项
 
 ```bash
-ag-kit init --target gemini --path ./myapp        # 安装 Gemini 到指定目录
-ag-kit init --target codex --path ./myapp         # 安装 Codex 到指定目录
-ag-kit init --targets gemini,codex --path ./myapp # 一次安装多个目标
-ag-kit init --non-interactive --target codex      # 非交互模式必须显式指定目标
-ag-kit init --target codex --no-index --path ./tmp-workspace # 安装但不写入全局索引
+ag-kit init --path ./myapp                        # full 安装（.agents 主目录）
+ag-kit init --target codex --path ./myapp         # 兼容写法，仍归一为 full
+ag-kit init --target gemini --path ./myapp        # 兼容写法，仍归一为 full
+ag-kit init --non-interactive --path ./myapp      # 非交互默认 full
+ag-kit init --no-index --path ./tmp-workspace     # 安装但不写入全局索引
 ag-kit init --branch dev --force                  # 覆盖安装并指定分支
 ag-kit init --quiet --dry-run                     # 预览操作而不执行
-ag-kit update --target codex --path ./myapp       # 更新指定目标（默认会刷新索引）
-ag-kit update --target codex --no-index --path ./myapp # 更新但不刷新索引
-ag-kit doctor --target codex --fix --path ./myapp # 检查并自动修复
-ag-kit update-all --targets codex                 # 批量更新所有登记工作区里的 codex 目标
+ag-kit update --path ./myapp                      # 更新并收敛 legacy
+ag-kit update --target codex --path ./myapp       # 兼容写法，仍归一为 full
+ag-kit update --no-index --path ./myapp           # 更新但不刷新索引
+ag-kit doctor --fix --path ./myapp                # 检查并自动修复
+ag-kit update-all --targets full                  # 批量更新登记工作区
 ag-kit update-all --prune-missing                 # 清理索引中已失效的路径
 ag-kit exclude list                               # 查看排除清单
 ag-kit exclude add --path /path/to/dir            # 新增排除路径
@@ -210,14 +212,17 @@ macOS / Linux / WSL:
 
 ```bash
 cd /path/to/your-project
-rm -rf .agent .agents .agents-backup .codex
+rm -rf .agent .agents .agents-backup .gemini antigravity.rules
+# 若确认 .codex 是本工具托管 legacy（含 manifest.json 且 target=codex/full），可再删除：
+# rm -rf .codex
 ```
 
 Windows PowerShell:
 
 ```powershell
 Set-Location C:\path\to\your-project
-Remove-Item .agent,.agents,.agents-backup,.codex -Recurse -Force -ErrorAction SilentlyContinue
+Remove-Item .agent,.agents,.agents-backup,.gemini,antigravity.rules -Recurse -Force -ErrorAction SilentlyContinue
+# 若确认 .codex 为本工具托管 legacy，再手动删除 .codex
 ```
 
 Windows CMD:
@@ -227,7 +232,9 @@ cd /d C:\path\to\your-project
 rmdir /s /q .agent
 rmdir /s /q .agents
 rmdir /s /q .agents-backup
-rmdir /s /q .codex
+rmdir /s /q .gemini
+del /f /q antigravity.rules
+REM 若确认 .codex 为本工具托管 legacy，再手动删除 .codex
 ```
 
 ### 清理批量更新索引（可选）

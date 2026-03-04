@@ -18,7 +18,7 @@ describe('RuleGenerator', () => {
         const { agentsMd, antigravityRules, codexJson } = RuleGenerator.generate(transformResult, '2.0.1');
 
         assert.ok(agentsMd.includes('test-skill'));
-        assert.ok(agentsMd.includes('ag-kit doctor --target codex --fix'));
+        assert.ok(agentsMd.includes('ag-kit doctor --fix'));
         assert.ok(agentsMd.includes('.agents/skills'));
 
         assert.ok(antigravityRules.includes('Managed skills are stored under `.agents/skills`.'));
@@ -33,7 +33,7 @@ describe('RuleGenerator', () => {
         const transformResult = { metadata: [] };
         const { agentsMd, antigravityRules, codexJson } = RuleGenerator.generate(transformResult, '2.0.1');
 
-        assert.ok(agentsMd.includes('Codex Managed'));
+        assert.ok(agentsMd.includes('AG-Kit Managed'));
         assert.ok(antigravityRules.includes('Antigravity Risk Controls'));
         assert.deepStrictEqual(codexJson.skills, []);
     });

@@ -15,51 +15,96 @@ function askQuestion(rl, query) {
     });
 }
 
-/**
- * Prompt user to select targets from a list.
- * Supports multiple selection by comma separated numbers or names.
- * Currently simplified for 'gemini' and 'codex'.
- * @param {object} options CLI options
- * @returns {Promise<string[]>} List of selected targets
- */
-async function selectTargets(options) {
-    if (options.nonInteractive) {
-        throw new Error("非交互模式下必须通过 --target 或 --targets 指定目标");
-    }
-
+async function askChoice(promptTitle, options) {
     const rl = createInterface();
-    
     try {
-        console.log("\n🎯 请选择要安装的目标 (多选请用逗号分隔):");
-        console.log("   1. Gemini (适用于 Cursor/VSCode)");
-        console.log("   2. Codex (兼容性增强版)");
-        
-        const answer = await askQuestion(rl, "\n请输入序号或名称（必填）: ");
-        const input = answer.trim();
-
-        if (!input) {
-            throw new Error("必须选择至少一个目标");
-        }
-        
-        const selection = [];
-        const parts = input.split(/[,，\s]+/);
-        
-        for (const part of parts) {
-            const p = part.toLowerCase();
-            if (p === "1" || p === "gemini") selection.push("gemini");
-            else if (p === "2" || p === "codex") selection.push("codex");
+        console.log(`\n${promptTitle}`);
+        for (let i = 0; i < options.length; i++) {
+            const item = options[i];
+            console.log(`   ${i + 1}. ${item.label}`);
+            if (item.hint) {
+                console.log(`      ${item.hint}`);
+            }
         }
 
-        if (selection.length === 0) {
-            throw new Error("无效的目标选择，请输入 1 / 2 / gemini / codex（可多选）");
-        }
+        while (true) {
+            const answer = (await askQuestion(rl, "\n请输入序号（必填）: ")).trim();
+            if (!answer) {
+                console.log("   请输入有效序号。");
+                continue;
+            }
 
-        return [...new Set(selection)];
+            const index = Number.parseInt(answer, 10);
+            if (!Number.isFinite(index) || index < 1 || index > options.length) {
+                console.log(`   无效输入: ${answer}`);
+                continue;
+            }
+
+            return options[index - 1].value;
+        }
     } finally {
         rl.close();
     }
 }
 
+/**
+ * 统一 full 安装模式下，保留兼容返回。
+ * @returns {Promise<string[]>}
+ */
+async function selectTargets() {
+    return ["full"];
+}
+
+/**
+ * 冲突：已有 .agent 且无法确定是否托管时，询问处理策略。
+ * @returns {Promise<"backup_replace"|"keep"|"rename_disable">}
+ */
+async function selectAgentConflictPolicy() {
+    return askChoice("检测到已有 .agent 目录，请选择处理方式:", [
+        {
+            value: "backup_replace",
+            label: "备份后替换（推荐）",
+            hint: "将现有 .agent 备份到 .agents-backup 后，用 .agents 投影覆盖",
+        },
+        {
+            value: "keep",
+            label: "保留不动",
+            hint: "跳过 .agent 投影，继续安装 .agents",
+        },
+        {
+            value: "rename_disable",
+            label: "改名失效后创建新投影",
+            hint: "把原目录改名为 .agent.user.<ts>，再生成新的 .agent 投影",
+        },
+    ]);
+}
+
+/**
+ * 冲突：已有 .gemini/agents 时，询问处理策略。
+ * @returns {Promise<"append"|"backup_replace"|"skip">}
+ */
+async function selectGeminiAgentsPolicy() {
+    return askChoice("检测到已有 .gemini/agents 目录，请选择处理方式:", [
+        {
+            value: "append",
+            label: "追加 ag-kit-*.md（推荐）",
+            hint: "保留用户文件，仅追加/更新本项目 namespaced agents",
+        },
+        {
+            value: "backup_replace",
+            label: "备份后替换",
+            hint: "备份现有 .gemini/agents 后，仅写入本项目 agents",
+        },
+        {
+            value: "skip",
+            label: "跳过写入",
+            hint: "不触碰 .gemini/agents",
+        },
+    ]);
+}
+
 module.exports = {
-    selectTargets
+    selectTargets,
+    selectAgentConflictPolicy,
+    selectGeminiAgentsPolicy,
 };

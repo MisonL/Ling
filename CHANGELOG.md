@@ -7,6 +7,25 @@
 
 ## [Unreleased]
 
+## [3.0.0-beta.0] - 2026-03-04
+
+### 新增
+
+- 统一 full 目录体系：`ag-kit init/update` 默认安装 `.agents`（Canonical），并自动生成 `.agent` / `.gemini` 兼容投影。
+- Context7 MCP 双通道：默认同步 `context7`（官方）与 `context7_backup`（备用）配置。
+- 冲突交互：检测到已有 `.agent` 或 `.gemini/agents` 时，支持交互式处理策略选择。
+
+### 变更
+
+- `--target gemini|codex` 保持兼容，但内部归一为 full 安装流程。
+- `doctor/status/update-all` 统一按 full 模式工作，索引目标收敛为 `full`。
+- `.codex` 迁移策略更新：仅清理可识别为本工具托管的 legacy 目录；非托管目录保留。
+
+### 修复
+
+- 修复升级场景对非托管 `.codex` 目录的误删除风险。
+- 修复 `.gemini/settings.json` 合并行为，保留用户非托管字段。
+
 
 ## [2.0.2] - 2026-02-04
 

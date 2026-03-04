@@ -33,7 +33,7 @@ describe("CodexAdapter", () => {
         assert.ok(fs.existsSync(manifest));
 
         const manifestJson = JSON.parse(fs.readFileSync(manifest, "utf8"));
-        assert.strictEqual(manifestJson.target, "codex");
+        assert.strictEqual(manifestJson.target, "full");
         assert.ok(manifestJson.files["file.txt"]);
         assert.strictEqual(typeof manifestJson.files["file.txt"].hash, "string");
         assert.strictEqual(typeof manifestJson.files["file.txt"].source, "string");
