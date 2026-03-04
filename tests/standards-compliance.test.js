@@ -148,6 +148,7 @@ describe('Standards Compliance', () => {
                     continue;
                 }
                 if (!abs.includes(`${path.sep}scripts${path.sep}`)) continue;
+                if (abs.includes(`${path.sep}__pycache__${path.sep}`) || abs.endsWith('.pyc')) continue;
 
                 const rel = path.relative(refScriptsRoot, abs);
                 const localFile = path.resolve('.agent', rel);
