@@ -162,6 +162,10 @@ ag-kit exclude add --path /path/to/dir            # 新增排除路径
 ag-kit exclude remove --path /path/to/dir         # 删除排除路径
 ```
 
+### 升级指引
+
+- 旧项目升级到 `3.0.0-beta.0`：`docs/migration-v3-beta.md`
+
 ### 批量更新机制
 
 - 执行 `ag-kit init` / `ag-kit update` 时，会把工作区路径登记到全局索引文件：
