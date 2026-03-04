@@ -1,53 +1,44 @@
-# 官方文档本地归档
+# 官方规则文档索引
 
-本目录用于保存官方规范文档的本地快照，作为本仓库在 Antigravity + Codex 双适配时的对照基线。
+本目录用于记录 Antigravity、Codex、Gemini CLI 的官方规则约定，作为本仓库的对照基线。
 
-- 归档时间：2026-02-12
-- 归档方式：先抓取官方源，再整理为中文 Markdown 版本（不改机制语义）
-- 证据索引：`docs/official/sources-index.md`（记录来源 URL、拉取时间、SHA256）
+## 记录原则
 
-## Antigravity
+1. 以官方文档原始地址为准，不编造机制。
+2. 本目录可做中文整理，但不应改变官方规则语义。
+3. 每次核对都写入证据索引（URL、时间、SHA/提交记录）。
 
-- `docs/official/antigravity/agent-modes-settings.md`
-  - 来源：`https://antigravity.google/docs/agent-modes-settings`
-  - 抓取源：`https://antigravity.google/assets/docs/agent/agent-modes-settings.md`
-- `docs/official/antigravity/rules-workflows.md`
-  - 来源：`https://antigravity.google/docs/rules-workflows`
-  - 抓取源：`https://antigravity.google/assets/docs/agent/rules-workflows.md`
-- `docs/official/antigravity/skills.md`
-  - 来源：`https://antigravity.google/docs/skills`
-  - 抓取源：`https://antigravity.google/assets/docs/agent/skills.md`
+## 当前基线
 
-## Codex
+- 规则汇总：`docs/official/rules-baseline.md`
+- 证据索引：`docs/official/sources-index.md`
+- 最近集中核对日期：2026-03-04（UTC）
 
-- `docs/official/codex/config-basic.md`
-  - 来源：`https://developers.openai.com/codex/config-basic`
-  - 抓取源：`https://developers.openai.com/codex/config-basic.md`
-- `docs/official/codex/config-advanced.md`
-  - 来源：`https://developers.openai.com/codex/config-advanced`
-  - 抓取源：`https://developers.openai.com/codex/config-advanced.md`
-- `docs/official/codex/config-reference.md`
-  - 来源：`https://developers.openai.com/codex/config-reference`
-  - 抓取源：`https://developers.openai.com/codex/config-reference.md`
-- `docs/official/codex/config-sample.md`
-  - 来源：`https://developers.openai.com/codex/config-sample`
-  - 抓取源：`https://developers.openai.com/codex/config-sample.md`
-- `docs/official/codex/rules.md`
-  - 来源：`https://developers.openai.com/codex/rules`
-  - 抓取源：`https://developers.openai.com/codex/rules.md`
-- `docs/official/codex/agents-md.md`
-  - 来源：`https://developers.openai.com/codex/guides/agents-md`
-  - 抓取源：`https://developers.openai.com/codex/guides/agents-md.md`
-- `docs/official/codex/mcp.md`
-  - 来源：`https://developers.openai.com/codex/mcp`
-  - 抓取源：`https://developers.openai.com/codex/mcp.md`
-- `docs/official/codex/skills.md`
-  - 来源：`https://developers.openai.com/codex/skills`
-  - 抓取源：`https://developers.openai.com/codex/skills.md`
+## 覆盖范围
 
-## 更新建议
+### Antigravity
 
-后续更新时，优先覆盖本目录快照，再做差异评审：
+- Skills：`https://antigravity.google/assets/docs/agent/skills.md`
+- Rules / Workflows：`https://antigravity.google/assets/docs/agent/rules-workflows.md`
+- Agent Modes / Settings：`https://antigravity.google/assets/docs/agent/agent-modes-settings.md`
+- Strict Mode：`https://antigravity.google/assets/docs/agent/strict-mode.md`
+- Sandboxing：`https://antigravity.google/assets/docs/agent/sandbox-mode.md`
+- MCP：`https://antigravity.google/assets/docs/tools/mcp.md`
 
-1. 对比上次归档与新版官方文档差异。
-2. 若差异影响本仓库机制，再同步到 `docs/`、`.agent/` 相关规范文档。
+### Codex
+
+- Skills：`https://developers.openai.com/codex/skills.md`
+- Rules：`https://developers.openai.com/codex/rules.md`
+- AGENTS.md：`https://developers.openai.com/codex/guides/agents-md.md`
+- MCP：`https://developers.openai.com/codex/mcp.md`
+- Workflows：`https://developers.openai.com/codex/workflows.md`
+- Security：`https://developers.openai.com/codex/security.md`
+
+### Gemini CLI
+
+- Skills：`https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/skills.md`
+- Gemini.md：`https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/gemini-md.md`
+- Plan Mode：`https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/plan-mode.md`
+- Subagents：`https://github.com/google-gemini/gemini-cli/blob/main/docs/core/subagents.md`
+- MCP Server：`https://github.com/google-gemini/gemini-cli/blob/main/docs/tools/mcp-server.md`
+- Policy Engine（规则引擎）：`https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/policy-engine.md`
