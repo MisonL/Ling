@@ -43,4 +43,4 @@ ag-kit doctor --fix
 - `context7`（官方）
 - `context7_backup`（备用）
 
-官方不可用时可改走备用。
+执行约定：优先 `context7`，官方不可用时再尝试 `context7_backup`。

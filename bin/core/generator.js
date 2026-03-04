@@ -37,6 +37,7 @@ class RuleGenerator {
         agentsMd += `1. Managed resources are synchronized under \`.agents/skills\`.\n`;
         agentsMd += `2. Do not rename managed skill folders manually.\n`;
         agentsMd += `3. Use \`ag-kit doctor --fix\` to recover missing managed artifacts.\n`;
+        agentsMd += `4. For Context7 docs lookup, try \`context7\` first, then fallback to \`context7_backup\` when unavailable.\n`;
 
         // 3. Generate risk controls
         let antigravityRules = `# Antigravity Risk Controls (Codex Managed)\n\n`;
@@ -47,6 +48,7 @@ class RuleGenerator {
         antigravityRules += `- Keep generated skill IDs stable to avoid selector drift.\n`;
         antigravityRules += `- If integrity checks fail, run \`ag-kit doctor --fix\`.\n`;
         antigravityRules += `- Before destructive updates, preserve manual edits in source control.\n`;
+        antigravityRules += `- For Context7 MCP, use \`context7\` first and fallback to \`context7_backup\` on failure.\n`;
 
         return {
             agentsMd,

@@ -33,6 +33,7 @@ ag-kit update
 
 - `--target gemini|codex` 仍兼容，但内部归一为 full。
 - 非交互默认 full；遇到 `.agent` / `.gemini/agents` 冲突时，交互询问处理策略。
+- 首轮执行 `init/update/update-all/doctor --fix` 时，会对索引中的受管 legacy 工作区执行一次自动迁移并记录状态。
 
 ### 2.2 批量更新
 ```bash
@@ -40,6 +41,7 @@ ag-kit update-all --targets full
 ```
 
 - 工作区索引：`~/.ag-kit/workspaces.json`（或 `AG_KIT_INDEX_PATH` 自定义）。
+- 自动迁移状态：`~/.ag-kit/migrations/v3.json`（或 `AG_KIT_MIGRATION_STATE_PATH` 自定义）。
 - 可配合 `--prune-missing` 清理失效路径。
 
 ### 2.3 诊断与修复
@@ -62,7 +64,7 @@ ag-kit doctor --fix
 - `context7`: `@upstash/context7-mcp`
 - `context7_backup`: `@iflow-mcp/context7-mcp@1.0.0`
 
-说明：官方不可用时可切备用；配置示例仅使用规范字段（如 `env`），不使用 `values`。
+说明：执行时优先 `context7`，官方不可用时尝试 `context7_backup`；配置示例仅使用规范字段（如 `env`），不使用 `values`。
 
 ## 5. 卸载注意
 

@@ -37,8 +37,10 @@ log_step "验证 CLI 核心链路"
 TMP_ROOT="$(mktemp -d /tmp/ag-kit-health-check-XXXXXX)"
 WORKSPACE_DIR="${TMP_ROOT}/workspace"
 INDEX_PATH="${TMP_ROOT}/workspaces.json"
+MIGRATION_STATE_PATH="${TMP_ROOT}/migration-v3.json"
 mkdir -p "${WORKSPACE_DIR}"
 export AG_KIT_INDEX_PATH="${INDEX_PATH}"
+export AG_KIT_MIGRATION_STATE_PATH="${MIGRATION_STATE_PATH}"
 
 node bin/ag-kit.js init --targets gemini,codex --path "${WORKSPACE_DIR}" --quiet
 if [[ "$(node bin/ag-kit.js status --path "${WORKSPACE_DIR}" --quiet)" != "installed" ]]; then

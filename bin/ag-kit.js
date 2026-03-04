@@ -9,19 +9,18 @@ const { readGlobalNpmDependencies } = require("./utils");
 const CodexAdapter = require("./adapters/codex");
 const {
     isManagedProjectionDir,
-    hasLegacyAgentLayoutSignal,
-    hasLegacyGeminiLayoutSignal,
-} = require("./utils/legacy-layout");
+    hasManagedAgentProjectionSignal,
+    hasManagedGeminiProjectionSignal,
+} = require("./utils/managed-evidence");
 const {
     selectTargets,
     selectAgentConflictPolicy,
     selectGeminiAgentsPolicy,
 } = require("./interactive");
 
-const BUNDLED_AGENT_DIR = fs.existsSync(path.resolve(__dirname, "../.agents"))
-    ? path.resolve(__dirname, "../.agents")
-    : path.resolve(__dirname, "../.agent");
+const BUNDLED_AGENT_DIR = path.resolve(__dirname, "../.agents");
 const WORKSPACE_INDEX_VERSION = 2;
+const MIGRATION_STATE_VERSION = 1;
 const UPSTREAM_GLOBAL_PACKAGE = "@vudovn/ag-kit";
 const TOOLKIT_PACKAGE_NAMES = new Set(["@mison/ag-kit-cn", "antigravity-kit-cn", "antigravity-kit"]);
 const SUPPORTED_TARGETS = ["full", "agents", "gemini", "codex"];
@@ -47,6 +46,22 @@ function getWorkspaceIndexPath() {
     return path.join(os.homedir(), ".ag-kit", "workspaces.json");
 }
 
+function getMigrationStatePath() {
+    const customPath = process.env.AG_KIT_MIGRATION_STATE_PATH;
+    if (customPath) {
+        return path.resolve(process.cwd(), customPath);
+    }
+    return path.join(os.homedir(), ".ag-kit", "migrations", "v3.json");
+}
+
+function createEmptyMigrationState() {
+    return {
+        version: MIGRATION_STATE_VERSION,
+        updatedAt: "",
+        migratedWorkspaces: {},
+    };
+}
+
 function createEmptyWorkspaceIndex() {
     return {
         version: WORKSPACE_INDEX_VERSION,
@@ -59,7 +74,7 @@ function createEmptyWorkspaceIndex() {
 function printUsage() {
     console.log("用法:");
     console.log("  ag-kit init [--force] [--path <dir>] [--branch <name>] [--target <name>|--targets <a,b>] [--non-interactive] [--no-index] [--quiet] [--dry-run]");
-    console.log("  ag-kit update [--path <dir>] [--branch <name>] [--target <name>|--targets <a,b>] [--no-index] [--quiet] [--dry-run]");
+    console.log("  ag-kit update [--path <dir>] [--branch <name>] [--target <name>|--targets <a,b>] [--non-interactive] [--no-index] [--quiet] [--dry-run]");
     console.log("  ag-kit update-all [--branch <name>] [--targets <a,b>] [--prune-missing] [--quiet] [--dry-run]");
     console.log("  ag-kit doctor [--path <dir>] [--target <name>|--targets <a,b>] [--fix] [--quiet]");
     console.log("  ag-kit exclude list [--quiet]");
@@ -168,7 +183,7 @@ function parseArgs(argv) {
 
 const COMMAND_ALLOWED_FLAGS = {
     init: ["--force", "--path", "--branch", "--target", "--targets", "--non-interactive", "--no-index", "--quiet", "--dry-run"],
-    update: ["--path", "--branch", "--target", "--targets", "--no-index", "--quiet", "--dry-run"],
+    update: ["--path", "--branch", "--target", "--targets", "--non-interactive", "--no-index", "--quiet", "--dry-run"],
     "update-all": ["--branch", "--targets", "--prune-missing", "--quiet", "--dry-run"],
     doctor: ["--path", "--target", "--targets", "--fix", "--quiet"],
     status: ["--path", "--quiet"],
@@ -472,6 +487,123 @@ function writeWorkspaceIndex(indexPath, index) {
 
     fs.mkdirSync(path.dirname(indexPath), { recursive: true });
     fs.writeFileSync(indexPath, `${JSON.stringify(payload, null, 2)}\n`, "utf8");
+}
+
+function normalizeMigrationEntry(entry, normalizedPath) {
+    if (!entry || typeof entry !== "object") {
+        return null;
+    }
+
+    const status = typeof entry.status === "string" ? entry.status : "";
+    if (!status) {
+        return null;
+    }
+
+    return {
+        path: normalizedPath,
+        status,
+        updatedAt: typeof entry.updatedAt === "string" ? entry.updatedAt : "",
+        cliVersion: typeof entry.cliVersion === "string" ? entry.cliVersion : "",
+    };
+}
+
+function readMigrationState() {
+    const statePath = getMigrationStatePath();
+    if (!fs.existsSync(statePath)) {
+        return { statePath, state: createEmptyMigrationState() };
+    }
+
+    const raw = fs.readFileSync(statePath, "utf8").trim();
+    if (!raw) {
+        return { statePath, state: createEmptyMigrationState() };
+    }
+
+    let parsed;
+    try {
+        parsed = JSON.parse(raw);
+    } catch (_err) {
+        return { statePath, state: createEmptyMigrationState() };
+    }
+
+    const normalized = createEmptyMigrationState();
+    normalized.updatedAt = typeof parsed.updatedAt === "string" ? parsed.updatedAt : "";
+
+    const migratedWorkspaces = parsed && parsed.migratedWorkspaces && typeof parsed.migratedWorkspaces === "object"
+        ? parsed.migratedWorkspaces
+        : {};
+
+    for (const [rawPath, entry] of Object.entries(migratedWorkspaces)) {
+        if (typeof rawPath !== "string" || rawPath.trim() === "") {
+            continue;
+        }
+        const normalizedPath = normalizeAbsolutePath(rawPath);
+        const normalizedEntry = normalizeMigrationEntry(entry, normalizedPath);
+        if (!normalizedEntry) {
+            continue;
+        }
+        normalized.migratedWorkspaces[pathCompareKey(normalizedPath)] = normalizedEntry;
+    }
+
+    return { statePath, state: normalized };
+}
+
+function writeMigrationState(statePath, state) {
+    const payload = createEmptyMigrationState();
+    payload.updatedAt = state.updatedAt || nowISO();
+
+    const entries = state && state.migratedWorkspaces && typeof state.migratedWorkspaces === "object"
+        ? state.migratedWorkspaces
+        : {};
+
+    for (const entry of Object.values(entries)) {
+        if (!entry || typeof entry.path !== "string" || entry.path.trim() === "") {
+            continue;
+        }
+
+        const normalizedPath = normalizeAbsolutePath(entry.path);
+        const normalizedEntry = normalizeMigrationEntry(entry, normalizedPath);
+        if (!normalizedEntry) {
+            continue;
+        }
+        payload.migratedWorkspaces[normalizedPath] = normalizedEntry;
+    }
+
+    fs.mkdirSync(path.dirname(statePath), { recursive: true });
+    fs.writeFileSync(statePath, `${JSON.stringify(payload, null, 2)}\n`, "utf8");
+}
+
+function upsertMigrationRecord(state, workspaceRoot, status, timestamp) {
+    if (!state.migratedWorkspaces || typeof state.migratedWorkspaces !== "object") {
+        state.migratedWorkspaces = {};
+    }
+
+    const normalizedPath = normalizeAbsolutePath(workspaceRoot);
+    state.migratedWorkspaces[pathCompareKey(normalizedPath)] = {
+        path: normalizedPath,
+        status,
+        updatedAt: timestamp,
+        cliVersion: pkg.version,
+    };
+}
+
+function getMigrationRecord(state, workspaceRoot) {
+    if (!state || !state.migratedWorkspaces || typeof state.migratedWorkspaces !== "object") {
+        return null;
+    }
+
+    const normalizedPath = normalizeAbsolutePath(workspaceRoot);
+    const key = pathCompareKey(normalizedPath);
+    const entry = state.migratedWorkspaces[key];
+    if (!entry || typeof entry !== "object") {
+        return null;
+    }
+
+    return {
+        path: typeof entry.path === "string" ? entry.path : normalizedPath,
+        status: typeof entry.status === "string" ? entry.status : "",
+        updatedAt: typeof entry.updatedAt === "string" ? entry.updatedAt : "",
+        cliVersion: typeof entry.cliVersion === "string" ? entry.cliVersion : "",
+    };
 }
 
 function sleepSync(ms) {
@@ -785,14 +917,14 @@ function isManagedLegacyCodexDir(workspaceRoot) {
     }
 }
 
-function hasLegacyLayoutSignal(workspaceRoot) {
-    return hasLegacyAgentLayoutSignal(workspaceRoot)
-        || hasLegacyGeminiLayoutSignal(workspaceRoot)
+function hasManagedLegacyLayoutSignal(workspaceRoot) {
+    return hasManagedAgentProjectionSignal(workspaceRoot)
+        || hasManagedGeminiProjectionSignal(workspaceRoot)
         || isManagedLegacyCodexDir(workspaceRoot);
 }
 
 function detectInstalledTargets(workspaceRoot) {
-    if (fs.existsSync(path.join(workspaceRoot, ".agents")) || hasLegacyLayoutSignal(workspaceRoot)) {
+    if (fs.existsSync(path.join(workspaceRoot, ".agents")) || hasManagedLegacyLayoutSignal(workspaceRoot)) {
         return ["full"];
     }
     return [];
@@ -801,7 +933,7 @@ function detectInstalledTargets(workspaceRoot) {
 function isTargetInstalled(workspaceRoot, targetName) {
     const normalized = normalizeTargetName(targetName);
     if (normalized === "full") {
-        return fs.existsSync(path.join(workspaceRoot, ".agents")) || hasLegacyLayoutSignal(workspaceRoot);
+        return fs.existsSync(path.join(workspaceRoot, ".agents")) || hasManagedLegacyLayoutSignal(workspaceRoot);
     }
     return false;
 }
@@ -863,6 +995,116 @@ async function resolveConflictPolicies(workspaceRoot, options) {
     }
 
     return next;
+}
+
+function shouldRunAutoMigration(command, options) {
+    if (options.dryRun) {
+        return false;
+    }
+
+    if (command === "init" || command === "update" || command === "update-all") {
+        return true;
+    }
+
+    return command === "doctor" && options.fix;
+}
+
+function ensureBundledTemplates() {
+    if (fs.existsSync(BUNDLED_AGENT_DIR)) {
+        return;
+    }
+    throw new Error(`缺少内置模板目录: ${BUNDLED_AGENT_DIR}`);
+}
+
+async function runAutoMigrationOnce(command, options) {
+    if (!shouldRunAutoMigration(command, options)) {
+        return;
+    }
+    if (process.env.AG_KIT_SKIP_AUTO_MIGRATION === "1") {
+        return;
+    }
+
+    const { index } = readWorkspaceIndex();
+    const records = Array.isArray(index.workspaces) ? index.workspaces : [];
+    if (records.length === 0) {
+        return;
+    }
+
+    const { statePath, state } = readMigrationState();
+    let touchedState = false;
+    let migratedCount = 0;
+    let failedCount = 0;
+    let alreadyManagedCount = 0;
+
+    for (const rawRecord of records) {
+        if (!rawRecord || typeof rawRecord.path !== "string" || rawRecord.path.trim() === "") {
+            continue;
+        }
+
+        const workspacePath = normalizeAbsolutePath(rawRecord.path);
+        if (getMigrationRecord(state, workspacePath)) {
+            continue;
+        }
+
+        if (!fs.existsSync(workspacePath)) {
+            continue;
+        }
+
+        const exclusion = evaluateWorkspaceExclusion(index, workspacePath);
+        if (exclusion.excluded) {
+            continue;
+        }
+
+        if (fs.existsSync(path.join(workspacePath, ".agents"))) {
+            upsertMigrationRecord(state, workspacePath, "already_v3", nowISO());
+            touchedState = true;
+            alreadyManagedCount += 1;
+            continue;
+        }
+
+        if (!hasManagedLegacyLayoutSignal(workspacePath)) {
+            continue;
+        }
+
+        try {
+            const runOptions = {
+                ...options,
+                path: workspacePath,
+                force: true,
+                nonInteractive: true,
+                noIndex: false,
+                quiet: true,
+                silentIndexLog: true,
+                agentConflictPolicy: "backup_replace",
+                geminiAgentsPolicy: "append",
+            };
+            const adapter = createAdapter("full", workspacePath, runOptions);
+            adapter.update(BUNDLED_AGENT_DIR);
+            registerWorkspaceTarget(workspacePath, "full", runOptions);
+            upsertMigrationRecord(state, workspacePath, "migrated", nowISO());
+            touchedState = true;
+            migratedCount += 1;
+        } catch (err) {
+            failedCount += 1;
+            if (!options.quiet) {
+                console.warn(`⚠️ 自动迁移失败: ${workspacePath}`);
+                console.warn(`   ${err.message}`);
+            }
+        }
+    }
+
+    if (touchedState) {
+        state.updatedAt = nowISO();
+        writeMigrationState(statePath, state);
+    }
+
+    if (!options.quiet && (migratedCount > 0 || failedCount > 0 || alreadyManagedCount > 0)) {
+        log(options, "🧭 自动迁移检查（v3）完成");
+        log(options, `   已迁移: ${migratedCount}`);
+        log(options, `   已是 v3: ${alreadyManagedCount}`);
+        log(options, `   失败: ${failedCount}`);
+        log(options, `   状态文件: ${statePath}`);
+    }
 }
 
 async function commandInit(options) {
@@ -1340,6 +1582,17 @@ function commandStatus(options) {
     console.log(`   CLI 版本: ${pkg.version}`);
     console.log(`   工作区: ${workspaceRoot}`);
     console.log(`   Mode: ${installedTargets.join(", ")}`);
+    let migrationStatus = "pending";
+    try {
+        const { state } = readMigrationState();
+        const entry = getMigrationRecord(state, workspaceRoot);
+        if (entry) {
+            migrationStatus = `${entry.status}${entry.updatedAt ? ` @ ${entry.updatedAt}` : ""}`;
+        }
+    } catch (_err) {
+        migrationStatus = "unknown";
+    }
+    console.log(`   Auto-Migration(v3): ${migrationStatus}`);
 
     const managedDir = path.join(workspaceRoot, ".agents");
     const agentProjectionDir = path.join(workspaceRoot, ".agent");
@@ -1395,6 +1648,14 @@ async function main() {
 
         validateOptionScope(command, options, providedFlags);
         maybeWarnUpstreamGlobalConflict(command, options);
+        const requiresBundledTemplates = command === "init"
+            || command === "update"
+            || command === "update-all"
+            || (command === "doctor" && options.fix);
+        if (requiresBundledTemplates) {
+            ensureBundledTemplates();
+        }
+        await runAutoMigrationOnce(command, options);
 
         if (command === "init") {
             await commandInit(options);

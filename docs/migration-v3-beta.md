@@ -24,6 +24,7 @@ ag-kit status
 - 主目录为 `.agents/`
 - 自动生成兼容投影：`.agent/`、`.gemini/`
 - 根 `AGENTS.md`/`antigravity.rules` 托管区块已刷新
+- 首轮执行 `init/update/update-all/doctor --fix` 时，会对索引中的受管 legacy 工作区做一次自动迁移
 
 ## 3. 旧目录兼容规则
 
@@ -45,6 +46,12 @@ CI 或自动化可用非交互：
 ```bash
 ag-kit update --non-interactive
 ```
+
+自动迁移一次性状态默认保存在：
+```text
+~/.ag-kit/migrations/v3.json
+```
+可通过 `AG_KIT_MIGRATION_STATE_PATH` 覆盖路径（便于 CI/测试隔离）。
 
 ## 5. 故障回滚
 

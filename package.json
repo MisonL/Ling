@@ -32,7 +32,6 @@
   },
   "files": [
     ".agents/**",
-    ".agent/**",
     "bin/**",
     "scripts/postinstall-check.js",
     "README.md",

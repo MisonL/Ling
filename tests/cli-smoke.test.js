@@ -39,15 +39,19 @@ describe("CLI Smoke", () => {
     let tempDir;
     let workspaceDir;
     let indexPath;
+    let migrationStatePath;
 
     beforeEach(() => {
         tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "ag-kit-cli-test-"));
         workspaceDir = path.join(tempDir, "workspace");
         indexPath = path.join(tempDir, "workspaces.json");
+        migrationStatePath = path.join(tempDir, "migration-v3.json");
+        process.env.AG_KIT_MIGRATION_STATE_PATH = migrationStatePath;
         fs.mkdirSync(workspaceDir, { recursive: true });
     });
 
     afterEach(() => {
+        delete process.env.AG_KIT_MIGRATION_STATE_PATH;
         fs.rmSync(tempDir, { recursive: true, force: true });
     });
 
@@ -241,9 +245,33 @@ describe("CLI Smoke", () => {
         assert.strictEqual(result.status, 0, result.stderr || result.stdout);
     });
 
+    test("update should accept --non-interactive option", () => {
+        writeManagedProjectionMarker(workspaceDir, ".agent", "agent");
+
+        const result = runCli(
+            ["update", "--target", "gemini", "--non-interactive", "--path", workspaceDir, "--dry-run", "--quiet"],
+            { env: { AG_KIT_INDEX_PATH: indexPath } },
+        );
+        assert.strictEqual(result.status, 0, result.stderr || result.stdout);
+    });
+
     test("update should fail when only non-managed .agent exists", () => {
         fs.mkdirSync(path.join(workspaceDir, ".agent"), { recursive: true });
         fs.writeFileSync(path.join(workspaceDir, ".agent", "custom.md"), "# custom agent config\n", "utf8");
+
+        const result = runCli(
+            ["update", "--path", workspaceDir, "--quiet"],
+            { env: { AG_KIT_INDEX_PATH: indexPath } },
+        );
+        assert.notStrictEqual(result.status, 0);
+        assert.match(result.stderr || result.stdout, /未检测到 Antigravity Kit 安装/);
+    });
+
+    test("update should fail when .agent has legacy-like files but no managed evidence", () => {
+        fs.mkdirSync(path.join(workspaceDir, ".agent", "skills"), { recursive: true });
+        fs.mkdirSync(path.join(workspaceDir, ".agent", "rules"), { recursive: true });
+        fs.writeFileSync(path.join(workspaceDir, ".agent", "skills", "doc.md"), "# legacy skill\n", "utf8");
+        fs.writeFileSync(path.join(workspaceDir, ".agent", "rules", "GEMINI.md"), "# legacy rule\n", "utf8");
 
         const result = runCli(
             ["update", "--path", workspaceDir, "--quiet"],
@@ -373,6 +401,55 @@ describe("CLI Smoke", () => {
             assert.ok(record.targets && record.targets.full, "full target should be refreshed into index");
         } finally {
             fs.rmSync(localWorkspace, { recursive: true, force: true });
+        }
+    });
+
+    test("init should auto-migrate indexed managed legacy workspace once", () => {
+        const legacyWorkspace = fs.mkdtempSync(path.join(REPO_ROOT, ".tmp-ag-kit-auto-migrate-"));
+        const triggerWorkspace = path.join(tempDir, "trigger-workspace");
+        const triggerWorkspace2 = path.join(tempDir, "trigger-workspace-2");
+        try {
+            fs.mkdirSync(triggerWorkspace, { recursive: true });
+            fs.mkdirSync(triggerWorkspace2, { recursive: true });
+            writeManagedProjectionMarker(legacyWorkspace, ".agent", "agent");
+            fs.writeFileSync(path.join(legacyWorkspace, ".agent", "legacy.md"), "# legacy\n", "utf8");
+
+            const now = new Date().toISOString();
+            const seedIndex = {
+                version: 2,
+                updatedAt: now,
+                workspaces: [
+                    {
+                        path: legacyWorkspace,
+                        targets: {},
+                    },
+                ],
+                excludedPaths: [],
+            };
+            fs.writeFileSync(indexPath, `${JSON.stringify(seedIndex, null, 2)}\n`, "utf8");
+
+            const first = runCli(
+                ["init", "--path", triggerWorkspace, "--quiet"],
+                { env: { AG_KIT_INDEX_PATH: indexPath } },
+            );
+            assert.strictEqual(first.status, 0, first.stderr || first.stdout);
+            assert.ok(fs.existsSync(path.join(legacyWorkspace, ".agents", "manifest.json")), "legacy workspace should be migrated");
+
+            const state = JSON.parse(fs.readFileSync(migrationStatePath, "utf8"));
+            const migrationEntries = Object.values(state.migratedWorkspaces || {});
+            assert.ok(migrationEntries.some((entry) => entry && entry.path === legacyWorkspace), "migration state should record legacy workspace");
+
+            const sentinel = path.join(legacyWorkspace, ".agents", "sentinel.txt");
+            fs.writeFileSync(sentinel, "keep\n", "utf8");
+
+            const second = runCli(
+                ["init", "--path", triggerWorkspace2, "--quiet"],
+                { env: { AG_KIT_INDEX_PATH: indexPath } },
+            );
+            assert.strictEqual(second.status, 0, second.stderr || second.stdout);
+            assert.ok(fs.existsSync(sentinel), "auto migration should run once per workspace");
+        } finally {
+            fs.rmSync(legacyWorkspace, { recursive: true, force: true });
         }
     });
 

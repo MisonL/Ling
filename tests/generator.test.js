@@ -20,8 +20,10 @@ describe('RuleGenerator', () => {
         assert.ok(agentsMd.includes('test-skill'));
         assert.ok(agentsMd.includes('ag-kit doctor --fix'));
         assert.ok(agentsMd.includes('.agents/skills'));
+        assert.ok(agentsMd.includes('context7_backup'));
 
         assert.ok(antigravityRules.includes('Managed skills are stored under `.agents/skills`.'));
+        assert.ok(antigravityRules.includes('context7_backup'));
         assert.ok(!antigravityRules.includes('.codex'));
 
         assert.strictEqual(codexJson.version, '2.0.1');

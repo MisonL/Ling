@@ -153,6 +153,7 @@ ag-kit init --branch dev --force                  # 覆盖安装并指定分支
 ag-kit init --quiet --dry-run                     # 预览操作而不执行
 ag-kit update --path ./myapp                      # 更新并收敛 legacy
 ag-kit update --target codex --path ./myapp       # 兼容写法，仍归一为 full
+ag-kit update --non-interactive --path ./myapp    # 非交互更新（CI 推荐）
 ag-kit update --no-index --path ./myapp           # 更新但不刷新索引
 ag-kit doctor --fix --path ./myapp                # 检查并自动修复
 ag-kit update-all --targets full                  # 批量更新登记工作区
@@ -165,6 +166,7 @@ ag-kit exclude remove --path /path/to/dir         # 删除排除路径
 ### 升级指引
 
 - 旧项目升级到 `3.0.0-beta.0`：`docs/migration-v3-beta.md`
+- 首轮执行 `init/update/update-all/doctor --fix` 时，会按全局索引对受管 legacy 工作区执行一次自动迁移。
 
 ### 批量更新机制
 
@@ -179,6 +181,7 @@ ag-kit exclude remove --path /path/to/dir         # 删除排除路径
 - 对于历史项目（尚未登记，或曾经 `--no-index` 跳过登记），可在该项目执行一次不带 `--no-index` 的 `ag-kit update`（或 `ag-kit init --force`）后纳入索引。
 - 可通过 `ag-kit exclude add/remove/list` 维护自定义排除路径（支持排除整棵目录树）。
 - 也可通过环境变量 `AG_KIT_INDEX_PATH` 指定自定义索引路径。
+- 自动迁移状态默认在 `~/.ag-kit/migrations/v3.json`，可用 `AG_KIT_MIGRATION_STATE_PATH` 自定义。
 
 ### 开发维护命令
 
