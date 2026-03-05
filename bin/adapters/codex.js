@@ -493,6 +493,7 @@ class CodexAdapter extends BaseAdapter {
 
         fs.mkdirSync(targetAgentsDir, { recursive: true });
 
+        const desired = new Set();
         const entries = fs.readdirSync(sourceAgentsDir, { withFileTypes: true });
         for (const entry of entries) {
             if (!entry.isFile() || !entry.name.endsWith(".md")) {
@@ -500,7 +501,17 @@ class CodexAdapter extends BaseAdapter {
             }
             const src = path.join(sourceAgentsDir, entry.name);
             const dest = path.join(targetAgentsDir, `ag-kit-${entry.name}`);
+            desired.add(path.basename(dest));
             fs.copyFileSync(src, dest);
+        }
+
+        // Keep `.gemini/agents` user content, but clean up our own namespaced stale files.
+        const targetEntries = fs.readdirSync(targetAgentsDir, { withFileTypes: true });
+        for (const entry of targetEntries) {
+            if (!entry.isFile()) continue;
+            if (!/^ag-kit-.*\.md$/i.test(entry.name)) continue;
+            if (desired.has(entry.name)) continue;
+            fs.rmSync(path.join(targetAgentsDir, entry.name), { force: true });
         }
     }
 

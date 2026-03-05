@@ -82,10 +82,10 @@ function printUsage() {
     console.log("用法:");
     console.log("  ag-kit init [--force] [--path <dir>] [--branch <name>] [--target <name>|--targets <a,b>] [--non-interactive] [--disable-agent-projection] [--no-index] [--quiet] [--dry-run]");
     console.log("  ag-kit update [--path <dir>] [--branch <name>] [--target <name>|--targets <a,b>] [--accept-legacy-agent] [--non-interactive] [--disable-agent-projection] [--no-index] [--quiet] [--dry-run]");
-    console.log("  ag-kit update-all [--branch <name>] [--targets <a,b>] [--accept-legacy-agent] [--prune-missing] [--disable-agent-projection] [--quiet] [--dry-run]");
+    console.log("  ag-kit update-all [--branch <name>] [--targets <a,b>] [--accept-legacy-agent] [--non-interactive] [--prune-missing] [--disable-agent-projection] [--quiet] [--dry-run]");
     console.log("  ag-kit verify [--path <dir>] [--json] [--quiet]");
     console.log("  ag-kit rollback [--path <dir>] [--backup <timestamp>] [--quiet] [--dry-run]");
-    console.log("  ag-kit doctor [--path <dir>] [--target <name>|--targets <a,b>] [--accept-legacy-agent] [--fix] [--quiet]");
+    console.log("  ag-kit doctor [--path <dir>] [--target <name>|--targets <a,b>] [--accept-legacy-agent] [--non-interactive] [--fix] [--quiet]");
     console.log("  ag-kit exclude list [--quiet]");
     console.log("  ag-kit exclude add --path <dir> [--dry-run] [--quiet]");
     console.log("  ag-kit exclude remove --path <dir> [--dry-run] [--quiet]");
@@ -212,10 +212,10 @@ function parseArgs(argv) {
 const COMMAND_ALLOWED_FLAGS = {
     init: ["--force", "--path", "--branch", "--target", "--targets", "--non-interactive", "--disable-agent-projection", "--no-index", "--quiet", "--dry-run"],
     update: ["--path", "--branch", "--target", "--targets", "--accept-legacy-agent", "--non-interactive", "--disable-agent-projection", "--no-index", "--quiet", "--dry-run"],
-    "update-all": ["--branch", "--targets", "--accept-legacy-agent", "--prune-missing", "--disable-agent-projection", "--quiet", "--dry-run"],
+    "update-all": ["--branch", "--targets", "--accept-legacy-agent", "--non-interactive", "--prune-missing", "--disable-agent-projection", "--quiet", "--dry-run"],
     verify: ["--path", "--json", "--quiet"],
     rollback: ["--path", "--backup", "--quiet", "--dry-run"],
-    doctor: ["--path", "--target", "--targets", "--accept-legacy-agent", "--fix", "--quiet"],
+    doctor: ["--path", "--target", "--targets", "--accept-legacy-agent", "--non-interactive", "--fix", "--quiet"],
     status: ["--path", "--quiet"],
     "exclude:list": ["--quiet"],
     "exclude:add": ["--path", "--dry-run", "--quiet"],

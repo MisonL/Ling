@@ -290,6 +290,34 @@ describe("CLI Smoke", () => {
         assert.strictEqual(result.status, 0, result.stderr || result.stdout);
     });
 
+    test("update-all should accept --non-interactive option", () => {
+        const initResult = runCli(
+            ["init", "--path", workspaceDir, "--quiet"],
+            { env: { AG_KIT_INDEX_PATH: indexPath } },
+        );
+        assert.strictEqual(initResult.status, 0, initResult.stderr || initResult.stdout);
+
+        const result = runCli(
+            ["update-all", "--dry-run", "--non-interactive", "--quiet"],
+            { env: { AG_KIT_INDEX_PATH: indexPath } },
+        );
+        assert.strictEqual(result.status, 0, result.stderr || result.stdout);
+    });
+
+    test("doctor should accept --non-interactive option", () => {
+        const initResult = runCli(
+            ["init", "--path", workspaceDir, "--quiet"],
+            { env: { AG_KIT_INDEX_PATH: indexPath } },
+        );
+        assert.strictEqual(initResult.status, 0, initResult.stderr || initResult.stdout);
+
+        const result = runCli(
+            ["doctor", "--path", workspaceDir, "--non-interactive", "--quiet"],
+            { env: { AG_KIT_INDEX_PATH: indexPath } },
+        );
+        assert.strictEqual(result.status, 0, result.stderr || result.stdout);
+    });
+
     test("update should support --disable-agent-projection and remove managed .agent", () => {
         const initResult = runCli(
             ["init", "--path", workspaceDir, "--quiet"],
@@ -495,6 +523,7 @@ describe("CLI Smoke", () => {
         writeManagedProjectionMarker(workspaceDir, ".agent", "agent");
         fs.mkdirSync(path.join(workspaceDir, ".gemini", "agents"), { recursive: true });
         fs.writeFileSync(path.join(workspaceDir, ".gemini", "agents", "user-note.md"), "# keep me\n", "utf8");
+        fs.writeFileSync(path.join(workspaceDir, ".gemini", "agents", "ag-kit-stale-test.md"), "# stale\n", "utf8");
 
         const first = runCli(
             ["update", "--path", workspaceDir, "--quiet"],
@@ -503,6 +532,7 @@ describe("CLI Smoke", () => {
         assert.strictEqual(first.status, 0, first.stderr || first.stdout);
 
         const agentsDir = path.join(workspaceDir, ".gemini", "agents");
+        assert.ok(!fs.existsSync(path.join(agentsDir, "ag-kit-stale-test.md")), "stale ag-kit namespace file should be cleaned up");
         const firstEntries = fs.readdirSync(agentsDir);
         const firstManagedCount = firstEntries.filter((name) => /^ag-kit-.*\.md$/i.test(name)).length;
         assert.ok(firstManagedCount > 0, "managed ag-kit agents should be appended");
