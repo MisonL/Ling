@@ -32,6 +32,7 @@ ag-kit update
 ```
 
 - `--target gemini|codex` 仍兼容，但内部归一为 full。
+- 若项目仅存在 legacy `.agent`（无托管证据），可通过 `--accept-legacy-agent` 触发迁移到 v3 `.agents`（`update/update-all/doctor --fix` 均支持）。
 - 非交互默认 full；遇到 `.agent` / `.gemini/agents` 冲突时，交互询问处理策略。
 - 首轮执行 `init/update/update-all/doctor --fix` 时，会对索引中的受管 legacy 工作区执行一次自动迁移并记录状态。
 
@@ -44,6 +45,7 @@ ag-kit update-all --targets full
 - 自动迁移状态：`~/.ag-kit/migrations/v3.json`（或 `AG_KIT_MIGRATION_STATE_PATH` 自定义）。
 - `ag-kit status` 只读显示 `Auto-Migration(v3): done|pending`。
 - 可配合 `--prune-missing` 清理失效路径。
+- 如需批量迁移仅 legacy `.agent` 的旧项目，可加 `--accept-legacy-agent`（会为每个工作区创建 rollback 快照）。
 - 交互终端下，若某个工作区存在 `.agent` / `.gemini/agents` 冲突，会逐工作区询问策略（`.agent`：备份替换 / 直接替换 / 保留 / 改名失效 / 停用投影；`.gemini/agents`：追加 / 备份替换 / 跳过）。
 - 非交互环境下，默认策略仍为：`.agent` 备份替换，`.gemini/agents` 追加。
 - 可使用 `--disable-agent-projection` 停用 `.agent` 兼容投影（会移除托管 `.agent`，或将非托管 `.agent` 改名保留）。
@@ -56,6 +58,7 @@ ag-kit doctor --fix
 
 - 检查 `.agents` 与 manifest 完整性。
 - 自动重放托管区块与兼容投影。
+- 若项目仅存在 legacy `.agent`，可使用 `ag-kit doctor --fix --accept-legacy-agent` 迁移到 v3 并完成自检。
 
 ### 2.4 一键回退
 ```bash
@@ -82,6 +85,7 @@ npm run verify:3platform -- --path /path/to/workspace
 ## 3. 备份与漂移
 
 - 安装/更新前会创建一键回退快照到 `~/.ag-kit/backups/<workspace-key>/<timestamp>/`（含 `rollback-manifest.json` 与 `rollback/`）。
+- 单次操作（install/update/doctor 修复）产生的 rollback 快照与冲突备份统一落在同一 `<timestamp>` 目录，便于追溯。
 - 可通过 `AG_KIT_BACKUP_ROOT` 自定义备份根目录。
 - `manifest.json` 无法解析时仍可通过 rollback 快照回退（建议先执行 `ag-kit rollback --dry-run` 预演）。
 

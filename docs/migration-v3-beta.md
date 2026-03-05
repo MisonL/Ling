@@ -32,6 +32,8 @@ ag-kit status
 1. 旧 `.agent`：可迁移到 `.agents`，并重建投影。
    - 若仅存在 legacy `.agent` 且无托管证据（常见于 v2 gemini-only 安装），交互终端下执行 `ag-kit update` 会询问是否迁移。
    - 非交互/CI 环境请使用 `ag-kit update --accept-legacy-agent`，或直接使用 `ag-kit init --force` 覆盖升级（均会创建 rollback 快照）。
+   - 批量升级可使用 `ag-kit update-all --accept-legacy-agent` 迁移索引中的此类工作区。
+   - 也可在项目内执行 `ag-kit doctor --fix --accept-legacy-agent` 触发迁移与自检。
 2. 旧 `.codex`：
 - 若可识别为本工具托管 legacy，会迁移并清理。
 - 若为非托管目录，会保留不删除。
@@ -49,6 +51,8 @@ CI 或自动化可用非交互：
 ```bash
 ag-kit update --non-interactive
 ag-kit update --accept-legacy-agent
+ag-kit update-all --accept-legacy-agent
+ag-kit doctor --fix --accept-legacy-agent
 ag-kit update --disable-agent-projection
 ```
 
@@ -90,4 +94,5 @@ ag-kit doctor --fix
 3. 需要批量升级：
 ```bash
 ag-kit update-all --targets full --prune-missing
+ag-kit update-all --targets full --prune-missing --accept-legacy-agent
 ```

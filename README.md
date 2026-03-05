@@ -168,7 +168,9 @@ ag-kit rollback --path ./myapp                    # 回退到最近一次快照
 ag-kit rollback --path ./myapp --backup <ts>      # 指定备份时间戳回退
 ag-kit rollback --path ./myapp --dry-run          # 预演回退操作
 ag-kit doctor --fix --path ./myapp                # 检查并自动修复
+ag-kit doctor --fix --accept-legacy-agent --path ./myapp # 迁移仅 .agent 的旧版安装并自检
 ag-kit update-all --targets full                  # 批量更新登记工作区
+ag-kit update-all --accept-legacy-agent           # 批量迁移索引中的 legacy .agent 工作区
 ag-kit update-all --prune-missing                 # 清理索引中已失效的路径
 ag-kit exclude list                               # 查看排除清单
 ag-kit exclude add --path /path/to/dir            # 新增排除路径
@@ -190,6 +192,7 @@ ag-kit exclude remove --path /path/to/dir         # 删除排除路径
 - `ag-kit update` 只依赖当前目录（或 `--path` 指定目录）的已安装目标，不依赖全局索引。
 - 执行 `ag-kit update-all` 时，会遍历索引并批量更新每个工作区（可通过 `--targets` 限定目标）。
 - 在交互终端执行 `ag-kit update-all` 时，若某个工作区存在 `.agent` / `.gemini/agents` 冲突，会按工作区询问处理策略；`.agent` 支持「备份替换 / 直接替换 / 保留 / 改名失效 / 停用投影」。
+- 若索引中存在仅 legacy `.agent` 的旧工作区，可使用 `--accept-legacy-agent`（或在交互终端按提示确认）迁移到 v3 `.agents`。
 - 非交互环境默认 `.agent` 备份替换、`.gemini/agents` 追加；如需避免 `.agent` 重复扫描，可加 `--disable-agent-projection`。
 - 可用 `--prune-missing` 自动移除索引里已失效的工作区路径。
 - 对于历史项目（尚未登记，或曾经 `--no-index` 跳过登记），可在该项目执行一次不带 `--no-index` 的 `ag-kit update`（或 `ag-kit init --force`）后纳入索引。

@@ -36,6 +36,7 @@
 - 仅覆盖/清理 manifest 或命名空间可识别的托管文件。
 - 非托管 `.codex` 不删除。
 - 任何覆盖前先备份到 `~/.ag-kit/backups/<workspace-key>/<timestamp>/`（兼容旧版 `.agents-backup`）。
+- 单次 install/update/doctor 修复产生的 rollback 快照与冲突备份统一落在同一 `<timestamp>` 目录，便于追溯与回退。
 
 ### 3.2 交互策略
 当检测到以下冲突且为交互终端时，必须询问用户：
@@ -47,14 +48,18 @@
    - 追加 `ag-kit-*.md`
    - 备份后替换
    - 跳过写入
+3. 仅检测到疑似旧版仅 `.agent` 安装（无托管证据）：
+   - 询问是否迁移到 v3 `.agents` 体系
+   - 非交互需显式 `--accept-legacy-agent` 才会迁移（避免误覆盖用户自建 `.agent`）
 
 非交互默认：`.agent` 备份后替换；`.gemini/agents` 追加。
 
 ## 4. CLI 行为定义
 1. `init`/`update` 统一执行 full 安装（不再分开安装 gemini/codex）。
 2. `--target gemini|codex` 保留兼容，但内部归一为 full。
-3. `status` 显示 canonical + projection + legacy 状态。
-4. `doctor --fix` 收敛到 v3，并保持幂等。
+3. 对仅 legacy `.agent` 的工作区，`update/update-all/doctor --fix` 支持通过 `--accept-legacy-agent` 迁移到 v3。
+4. `status` 显示 canonical + projection + legacy 状态。
+5. `doctor --fix` 收敛到 v3，并保持幂等。
 
 ## 5. MCP 双通道策略（Context7）
 - `context7`：`@upstash/context7-mcp`
