@@ -90,21 +90,21 @@ function printVersion() {
 function printHelpGeneral({ advanced }) {
     console.log(`Ag-Kit CLI（v${pkg.version}）`);
     console.log("");
-    console.log("最常用（90% 场景无参数即可）:");
-    console.log("  ag-kit sync                 # 一键同步（未安装则 init，已安装则 update）");
-    console.log("  ag-kit init                 # 首次安装（生成 .agents + 兼容投影）");
-    console.log("  ag-kit update               # 升级当前项目（含 legacy 收敛）");
-    console.log("  ag-kit doctor --fix         # 自检并修复（幂等，必要时用）");
+    console.log("推荐（大多数人只需要这些）:");
+    console.log("  ag-kit sync                 # 安装/升级/自愈（默认推荐）");
+    console.log("  ag-kit verify --json        # CI 校验（结构化输出）");
     console.log("  ag-kit rollback --dry-run   # 先预演再回退");
-    console.log("  ag-kit update-all           # 批量升级（全局索引）");
-    console.log("  ag-kit verify --json        # 结构化校验输出（CI 友好）");
     console.log("");
     console.log("帮助:");
     console.log("  ag-kit help");
     console.log("  ag-kit help <command>");
+    console.log("  ag-kit help --advanced");
     console.log("  ag-kit <command> --help");
 
     if (advanced) {
+        console.log("");
+        console.log("高级命令（少用）:");
+        console.log("  ag-kit init / update / update-all / doctor / status / exclude");
         console.log("");
         console.log("高级说明:");
         console.log("  - `--target/--targets` 为兼容参数，已归一为 full（.agents 为唯一主目录）。");
@@ -139,12 +139,15 @@ function printHelpForCommand(command, options = {}) {
         console.log("选项:");
         console.log("  --path <dir>                指定工作区（默认当前目录）");
         console.log("  --force                     覆盖安装（危险：会替换受管目录）");
-        console.log("  --non-interactive           禁用交互询问，按默认策略处理冲突");
-        console.log("  --disable-agent-projection  停用 .agent 投影（避免重复规则扫描）");
-        console.log("  --no-index                  不写入全局工作区索引（避免副作用）");
         console.log("  --quiet                     静默输出");
         console.log("  --dry-run                   仅预览，不写入文件");
-        if (advanced) {
+        if (!advanced) {
+            console.log("");
+            console.log("更多选项: ag-kit help init --advanced");
+        } else {
+            console.log("  --non-interactive           禁用交互询问，按默认策略处理冲突");
+            console.log("  --disable-agent-projection  停用 .agent 投影（避免重复规则扫描）");
+            console.log("  --no-index                  不写入全局工作区索引（避免副作用）");
             console.log("  --branch <name>             从远程分支拉取模板（需网络与 git）");
             console.log("  --target/--targets           兼容参数（仍归一为 full）");
         }
@@ -161,13 +164,16 @@ function printHelpForCommand(command, options = {}) {
         console.log("");
         console.log("选项:");
         console.log("  --path <dir>                指定工作区（默认当前目录）");
-        console.log("  --accept-legacy-agent       允许迁移“仅 legacy .agent 且无托管证据”的旧安装（非交互必需）");
-        console.log("  --non-interactive           禁用交互询问，按默认策略处理冲突");
-        console.log("  --disable-agent-projection  停用 .agent 投影");
-        console.log("  --no-index                  不写入/刷新全局索引");
         console.log("  --quiet                     静默输出");
         console.log("  --dry-run                   仅预览，不写入文件");
-        if (advanced) {
+        if (!advanced) {
+            console.log("");
+            console.log("更多选项: ag-kit help sync --advanced");
+        } else {
+            console.log("  --accept-legacy-agent       允许迁移“仅 legacy .agent 且无托管证据”的旧安装（非交互必需）");
+            console.log("  --non-interactive           禁用交互询问，按默认策略处理冲突");
+            console.log("  --disable-agent-projection  停用 .agent 投影");
+            console.log("  --no-index                  不写入/刷新全局索引");
             console.log("  --branch <name>             从远程分支拉取模板（需网络与 git）");
             console.log("  --force                     当需要覆盖安装时可用（等价 init --force 的覆盖语义）");
             console.log("  --target/--targets           兼容参数（仍归一为 full）");
@@ -189,13 +195,16 @@ function printHelpForCommand(command, options = {}) {
         console.log("");
         console.log("选项:");
         console.log("  --path <dir>                指定工作区（默认当前目录）");
-        console.log("  --accept-legacy-agent       允许迁移“仅 legacy .agent 且无托管证据”的旧安装（非交互必需）");
-        console.log("  --non-interactive           禁用交互询问，按默认策略处理冲突");
-        console.log("  --disable-agent-projection  停用 .agent 投影");
-        console.log("  --no-index                  更新但不刷新全局索引");
         console.log("  --quiet                     静默输出");
         console.log("  --dry-run                   仅预览，不写入文件");
-        if (advanced) {
+        if (!advanced) {
+            console.log("");
+            console.log("更多选项: ag-kit help update --advanced");
+        } else {
+            console.log("  --accept-legacy-agent       允许迁移“仅 legacy .agent 且无托管证据”的旧安装（非交互必需）");
+            console.log("  --non-interactive           禁用交互询问，按默认策略处理冲突");
+            console.log("  --disable-agent-projection  停用 .agent 投影");
+            console.log("  --no-index                  更新但不刷新全局索引");
             console.log("  --branch <name>             从远程分支拉取模板（需网络与 git）");
             console.log("  --target/--targets           兼容参数（仍归一为 full）");
         }
@@ -212,13 +221,16 @@ function printHelpForCommand(command, options = {}) {
         console.log("  ag-kit update-all --accept-legacy-agent");
         console.log("");
         console.log("选项:");
-        console.log("  --accept-legacy-agent       允许批量迁移 legacy .agent 工作区");
-        console.log("  --non-interactive           禁用交互询问，按默认策略处理冲突");
         console.log("  --prune-missing             从索引移除已不存在的路径");
-        console.log("  --disable-agent-projection  停用 .agent 投影");
         console.log("  --quiet                     静默输出");
         console.log("  --dry-run                   仅预览，不写入文件/索引");
-        if (advanced) {
+        if (!advanced) {
+            console.log("");
+            console.log("更多选项: ag-kit help update-all --advanced");
+        } else {
+            console.log("  --accept-legacy-agent       允许批量迁移 legacy .agent 工作区");
+            console.log("  --non-interactive           禁用交互询问，按默认策略处理冲突");
+            console.log("  --disable-agent-projection  停用 .agent 投影");
             console.log("  --branch <name>             从远程分支拉取模板（需网络与 git）");
             console.log("  --targets <a,b>             兼容参数（仍归一为 full）");
         }
@@ -237,10 +249,13 @@ function printHelpForCommand(command, options = {}) {
         console.log("选项:");
         console.log("  --path <dir>                指定工作区（默认当前目录）");
         console.log("  --fix                       自动修复（会创建 rollback 快照）");
-        console.log("  --accept-legacy-agent       允许迁移 legacy .agent（仅在 --fix 时生效）");
-        console.log("  --non-interactive           禁用交互询问");
         console.log("  --quiet                     静默输出");
-        if (advanced) {
+        if (!advanced) {
+            console.log("");
+            console.log("更多选项: ag-kit help doctor --advanced");
+        } else {
+            console.log("  --accept-legacy-agent       允许迁移 legacy .agent（仅在 --fix 时生效）");
+            console.log("  --non-interactive           禁用交互询问");
             console.log("  --target/--targets           兼容参数（仍归一为 full）");
         }
         return;
@@ -305,9 +320,8 @@ function printHelpForCommand(command, options = {}) {
     }
 
     console.log(`未知命令: ${name}`);
-    console.log("可用命令: sync, init, update, update-all, doctor, rollback, verify, exclude, status");
-    console.log("");
-    console.log("提示: ag-kit help");
+    console.log("推荐命令: sync, verify, rollback");
+    console.log("提示: ag-kit help（或 ag-kit help --advanced 查看全部命令）");
 }
 
 function parseArgs(argv) {

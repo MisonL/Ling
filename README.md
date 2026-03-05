@@ -17,21 +17,18 @@ npm install -g @mison/ag-kit-cn
 
 运行环境要求：Node.js `>=18`（建议使用当前 LTS）。
 
-然后在你的目标项目中初始化：
+然后在你的目标项目中执行一次同步（推荐）：
 
 ```bash
 cd /path/to/your-project
-ag-kit init                   # 统一 full 安装（.agents 为主目录）
-# 兼容参数仍可用，但会归一为 full
-ag-kit init --target codex
-ag-kit init --target gemini
+ag-kit sync
 ```
 
 可选：不做全局安装，直接在仓库目录执行：
 
 ```bash
 cd /path/to/antigravity-kit-cn
-node bin/ag-kit.js init --path /path/to/your-project
+node bin/ag-kit.js sync --path /path/to/your-project
 ```
 
 如需源码开发安装：
@@ -132,79 +129,75 @@ AI：🤖 正在使用 @debugger 进行系统化分析...
 
 ## CLI 工具
 
-CLI（命令行界面）工具：
+把它当成一个按钮：绝大多数情况只需要 `ag-kit sync`。
 
 | 命令 | 描述 |
 | --- | --- |
-| `ag-kit sync` | 一键同步（未安装则 init，已安装则 update） |
-| `ag-kit init` | 安装统一 full 结构（`.agents` + 兼容投影） |
-| `ag-kit update` | 更新当前项目（自动收敛 legacy 目录） |
-| `ag-kit update-all` | 批量更新所有已登记工作区 |
-| `ag-kit verify` | 三平台（Codex/Gemini/Antigravity）可用性与一致性检查 |
-| `ag-kit rollback` | 一键回退到升级前快照（默认最近一次） |
-| `ag-kit doctor` | 诊断安装完整性（可 `--fix` 自愈） |
-| `ag-kit exclude` | 管理全局索引排除清单 |
-| `ag-kit status` | 检查安装状态 |
+| `ag-kit sync` | 同步当前项目到最新状态（未安装则 init，已安装则 update，必要时自愈） |
+| `ag-kit verify --json` | 结构化校验输出（CI 友好） |
+| `ag-kit rollback --dry-run` | 回退预演（确认后再执行 rollback） |
 
 ### 上手（精简）
 
 ```bash
-# 在项目根目录（通常只需要一条）
 ag-kit sync
 
-# 如需显式拆分流程：
-ag-kit init
-ag-kit update
-ag-kit doctor --fix
-
-# legacy 迁移（仅当项目只剩旧版 .agent 且无托管证据时需要）
-ag-kit update --accept-legacy-agent
-
-# 批量升级（需要先 init/update 建立索引）
-ag-kit update-all --prune-missing --non-interactive
-
-# CI / 自动化（结构化输出）
 ag-kit verify --json --path ./myapp
 
-# 预演/静默（常用调试开关）
-ag-kit update --dry-run --path ./myapp
-ag-kit update --quiet --path ./myapp
+ag-kit rollback --dry-run
 ```
 
 更多参数与解释请直接看帮助：
 
 ```bash
 ag-kit help
-ag-kit help update
-ag-kit update --help
+ag-kit help sync
+ag-kit help --advanced
 ```
 
-### 升级指引
+### 高级（少用）
 
+只有当你明确知道自己需要时，再使用这些命令/参数（不建议抄一堆参数当“习惯用法”）：
+
+```bash
+# 显式拆分流程
+ag-kit init
+ag-kit update
+ag-kit doctor --fix
+
+# 强制覆盖安装（危险）
+ag-kit init --force --path ./myapp
+
+# 预演/静默（调试开关）
+ag-kit update --dry-run --path ./myapp
+ag-kit update --quiet --path ./myapp
+
+# 索引/批量升级
+ag-kit update-all --prune-missing --non-interactive
+ag-kit update-all --targets full
+ag-kit sync --no-index
+
+# legacy 迁移（仅当项目只剩旧版 .agent 且无托管证据时）
+ag-kit update --accept-legacy-agent
+ag-kit update-all --accept-legacy-agent
+ag-kit doctor --fix --accept-legacy-agent
+
+# 兼容参数（仍会归一为 full）
+ag-kit init --target codex
+ag-kit init --target gemini
+
+# 索引排除
+ag-kit exclude list
+ag-kit exclude add --path /path/to/dir
+ag-kit exclude remove --path /path/to/dir
+
+# 状态（只读）
+ag-kit status --path ./myapp
+```
+
+升级与迁移说明：
 - 旧项目升级到 `3.0.0-beta.0`：`docs/migration-v3-beta.md`
-- 首轮执行 `sync/init/update/update-all/doctor --fix` 时，会按全局索引对受管 legacy 工作区执行一次自动迁移。
-
-### 批量更新机制
-
-- 执行 `ag-kit init` / `ag-kit update` 时，会把工作区路径登记到全局索引文件：
-  - macOS / Linux / WSL: `~/.ag-kit/workspaces.json`
-  - Windows PowerShell / CMD: `%USERPROFILE%\.ag-kit\workspaces.json`
-- 默认会自动排除 Ag-Kit 工具包源码目录和系统临时目录（如 macOS `/var/folders/...`、`/tmp`、`/private/tmp`，Linux `/tmp`，Windows `%TEMP%`）。
-- 可通过 `--no-index` 让 `init/update` 跳过索引登记（适合临时验证目录）。
-- `ag-kit update` 只依赖当前目录（或 `--path` 指定目录）的已安装目标，不依赖全局索引。
-- 执行 `ag-kit update-all` 时，会遍历索引并批量更新每个工作区（可通过 `--targets` 限定目标）。
-- 在交互终端执行 `ag-kit update-all` 时，若某个工作区存在 `.agent` / `.gemini/agents` 冲突，会按工作区询问处理策略；`.agent` 支持「备份替换 / 直接替换 / 保留 / 改名失效 / 停用投影」。
-- 若索引中存在仅 legacy `.agent` 的旧工作区，可使用 `--accept-legacy-agent`（或在交互终端按提示确认）迁移到 v3 `.agents`。
-- 非交互环境默认 `.agent` 备份替换、`.gemini/agents` 追加；如需避免 `.agent` 重复扫描，可加 `--disable-agent-projection`。
-- 可用 `--prune-missing` 自动移除索引里已失效的工作区路径。
-- 对于历史项目（尚未登记，或曾经 `--no-index` 跳过登记），可在该项目执行一次不带 `--no-index` 的 `ag-kit update`（或 `ag-kit init --force`）后纳入索引。
-- 可通过 `ag-kit exclude add/remove/list` 维护自定义排除路径（支持排除整棵目录树）。
-- 也可通过环境变量 `AG_KIT_INDEX_PATH` 指定自定义索引路径。
-- 自动迁移状态默认在 `~/.ag-kit/migrations/v3.json`，可用 `AG_KIT_MIGRATION_STATE_PATH` 自定义。
-- 如需跳过自动迁移，可设置 `AG_KIT_SKIP_AUTO_MIGRATION=1`（`--no-index` 也会跳过自动迁移以避免全局副作用）。
-- `ag-kit status` 会显示 `Auto-Migration(v3): done|pending`（只读状态）。
-- `ag-kit rollback` 默认回退到最近一次快照；快照在升级/安装前自动写入 `~/.ag-kit/backups/<workspace-key>/<timestamp>/rollback-manifest.json`。
-- 可通过 `AG_KIT_BACKUP_ROOT` 自定义快照根目录（CI 或隔离测试推荐）。
+- 运维/批量升级/索引机制：`docs/operations.md`
 
 ### 开发维护命令
 
