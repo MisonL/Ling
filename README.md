@@ -145,36 +145,34 @@ CLI（命令行界面）工具：
 | `ag-kit exclude` | 管理全局索引排除清单 |
 | `ag-kit status` | 检查安装状态 |
 
-### 常用选项
+### 上手（精简）
 
 ```bash
-ag-kit init --path ./myapp                        # full 安装（.agents 主目录）
-ag-kit init --target codex --path ./myapp         # 兼容写法，仍归一为 full
-ag-kit init --target gemini --path ./myapp        # 兼容写法，仍归一为 full
-ag-kit init --non-interactive --path ./myapp      # 非交互默认 full
-ag-kit init --disable-agent-projection --path ./myapp  # 停用 .agent 兼容投影（避免重复规则扫描）
-ag-kit init --no-index --path ./tmp-workspace     # 安装但不写入全局索引
-ag-kit init --branch dev --force                  # 覆盖安装并指定分支
-ag-kit init --quiet --dry-run                     # 预览操作而不执行
-ag-kit update --path ./myapp                      # 更新并收敛 legacy
-ag-kit update --target codex --path ./myapp       # 兼容写法，仍归一为 full
-ag-kit update --accept-legacy-agent --path ./myapp # 迁移仅 .agent 的旧版安装到 v3
-ag-kit update --non-interactive --path ./myapp    # 非交互更新（CI 推荐）
-ag-kit update --disable-agent-projection --path ./myapp # 删除/停用托管 .agent 投影
-ag-kit update --no-index --path ./myapp           # 更新但不刷新索引
-ag-kit verify --path ./myapp                      # 三平台可用性检查（人类可读输出）
-ag-kit verify --path ./myapp --json               # 结构化输出（CI 推荐）
-ag-kit rollback --path ./myapp                    # 回退到最近一次快照
-ag-kit rollback --path ./myapp --backup <ts>      # 指定备份时间戳回退
-ag-kit rollback --path ./myapp --dry-run          # 预演回退操作
-ag-kit doctor --fix --path ./myapp                # 检查并自动修复
-ag-kit doctor --fix --accept-legacy-agent --path ./myapp # 迁移仅 .agent 的旧版安装并自检
-ag-kit update-all --targets full                  # 批量更新登记工作区
-ag-kit update-all --accept-legacy-agent           # 批量迁移索引中的 legacy .agent 工作区
-ag-kit update-all --prune-missing                 # 清理索引中已失效的路径
-ag-kit exclude list                               # 查看排除清单
-ag-kit exclude add --path /path/to/dir            # 新增排除路径
-ag-kit exclude remove --path /path/to/dir         # 删除排除路径
+# 在项目根目录（通常不需要任何参数）
+ag-kit init
+ag-kit update
+ag-kit doctor --fix
+
+# legacy 迁移（仅当项目只剩旧版 .agent 且无托管证据时需要）
+ag-kit update --accept-legacy-agent
+
+# 批量升级（需要先 init/update 建立索引）
+ag-kit update-all --prune-missing --non-interactive
+
+# CI / 自动化（结构化输出）
+ag-kit verify --json --path ./myapp
+
+# 预演/静默（常用调试开关）
+ag-kit update --dry-run --path ./myapp
+ag-kit update --quiet --path ./myapp
+```
+
+更多参数与解释请直接看帮助：
+
+```bash
+ag-kit help
+ag-kit help update
+ag-kit update --help
 ```
 
 ### 升级指引

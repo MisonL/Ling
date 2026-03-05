@@ -79,25 +79,204 @@ function createEmptyWorkspaceIndex() {
 }
 
 function printUsage() {
-    console.log("用法:");
-    console.log("  ag-kit init [--force] [--path <dir>] [--branch <name>] [--target <name>|--targets <a,b>] [--non-interactive] [--disable-agent-projection] [--no-index] [--quiet] [--dry-run]");
-    console.log("  ag-kit update [--path <dir>] [--branch <name>] [--target <name>|--targets <a,b>] [--accept-legacy-agent] [--non-interactive] [--disable-agent-projection] [--no-index] [--quiet] [--dry-run]");
-    console.log("  ag-kit update-all [--branch <name>] [--targets <a,b>] [--accept-legacy-agent] [--non-interactive] [--prune-missing] [--disable-agent-projection] [--quiet] [--dry-run]");
-    console.log("  ag-kit verify [--path <dir>] [--json] [--quiet]");
-    console.log("  ag-kit rollback [--path <dir>] [--backup <timestamp>] [--quiet] [--dry-run]");
-    console.log("  ag-kit doctor [--path <dir>] [--target <name>|--targets <a,b>] [--accept-legacy-agent] [--non-interactive] [--fix] [--quiet]");
-    console.log("  ag-kit exclude list [--quiet]");
-    console.log("  ag-kit exclude add --path <dir> [--dry-run] [--quiet]");
-    console.log("  ag-kit exclude remove --path <dir> [--dry-run] [--quiet]");
-    console.log("  ag-kit status [--path <dir>] [--quiet]");
-    console.log("  ag-kit --version");
-    console.log("");
-    console.log("说明:");
-    console.log("  --target gemini/codex/full 现均归一为统一 full 安装（.agents 为主目录）");
+    printHelpGeneral({ advanced: false });
 }
 
 function printVersion() {
     console.log(`ag-kit version ${pkg.version}`);
+}
+
+function printHelpGeneral({ advanced }) {
+    console.log(`Ag-Kit CLI（v${pkg.version}）`);
+    console.log("");
+    console.log("最常用（90% 场景无参数即可）:");
+    console.log("  ag-kit init                 # 首次安装（生成 .agents + 兼容投影）");
+    console.log("  ag-kit update               # 升级当前项目（含 legacy 收敛）");
+    console.log("  ag-kit doctor --fix         # 自检并修复（幂等）");
+    console.log("  ag-kit rollback --dry-run   # 先预演再回退");
+    console.log("  ag-kit update-all           # 批量升级（全局索引）");
+    console.log("  ag-kit verify --json        # 结构化校验输出（CI 友好）");
+    console.log("");
+    console.log("帮助:");
+    console.log("  ag-kit help");
+    console.log("  ag-kit help <command>");
+    console.log("  ag-kit <command> --help");
+
+    if (advanced) {
+        console.log("");
+        console.log("高级说明:");
+        console.log("  - `--target/--targets` 为兼容参数，已归一为 full（.agents 为唯一主目录）。");
+        console.log("  - 环境变量: AG_KIT_INDEX_PATH / AG_KIT_MIGRATION_STATE_PATH / AG_KIT_BACKUP_ROOT 等见 docs/operations.md。");
+    }
+}
+
+function printHelpForCommand(command, options = {}) {
+    const advanced = !!options.advanced;
+    const name = String(command || "").trim().toLowerCase();
+
+    if (!name) {
+        printHelpGeneral({ advanced });
+        return;
+    }
+
+    const header = (title) => {
+        console.log(`ag-kit ${title}`);
+        console.log("");
+    };
+
+    if (name === "init") {
+        header("init");
+        console.log("用途: 首次安装 v3 统一结构（.agents 为主目录），并生成 .agent/.gemini 投影与根托管区块。");
+        console.log("");
+        console.log("常用:");
+        console.log("  ag-kit init");
+        console.log("  ag-kit init --path <dir>");
+        console.log("  ag-kit init --force");
+        console.log("");
+        console.log("选项:");
+        console.log("  --path <dir>                指定工作区（默认当前目录）");
+        console.log("  --force                     覆盖安装（危险：会替换受管目录）");
+        console.log("  --non-interactive           禁用交互询问，按默认策略处理冲突");
+        console.log("  --disable-agent-projection  停用 .agent 投影（避免重复规则扫描）");
+        console.log("  --no-index                  不写入全局工作区索引（避免副作用）");
+        console.log("  --quiet                     静默输出");
+        console.log("  --dry-run                   仅预览，不写入文件");
+        if (advanced) {
+            console.log("  --branch <name>             从远程分支拉取模板（需网络与 git）");
+            console.log("  --target/--targets           兼容参数（仍归一为 full）");
+        }
+        return;
+    }
+
+    if (name === "update") {
+        header("update");
+        console.log("用途: 升级当前项目（.agents 原子更新 + 投影同步 + 托管区块刷新），并收敛 legacy 结构。");
+        console.log("");
+        console.log("常用:");
+        console.log("  ag-kit update");
+        console.log("  ag-kit update --accept-legacy-agent   # 迁移仅 legacy .agent 的旧安装");
+        console.log("");
+        console.log("选项:");
+        console.log("  --path <dir>                指定工作区（默认当前目录）");
+        console.log("  --accept-legacy-agent       允许迁移“仅 legacy .agent 且无托管证据”的旧安装（非交互必需）");
+        console.log("  --non-interactive           禁用交互询问，按默认策略处理冲突");
+        console.log("  --disable-agent-projection  停用 .agent 投影");
+        console.log("  --no-index                  更新但不刷新全局索引");
+        console.log("  --quiet                     静默输出");
+        console.log("  --dry-run                   仅预览，不写入文件");
+        if (advanced) {
+            console.log("  --branch <name>             从远程分支拉取模板（需网络与 git）");
+            console.log("  --target/--targets           兼容参数（仍归一为 full）");
+        }
+        return;
+    }
+
+    if (name === "update-all") {
+        header("update-all");
+        console.log("用途: 遍历全局索引批量升级所有工作区。");
+        console.log("");
+        console.log("常用:");
+        console.log("  ag-kit update-all");
+        console.log("  ag-kit update-all --prune-missing");
+        console.log("  ag-kit update-all --accept-legacy-agent");
+        console.log("");
+        console.log("选项:");
+        console.log("  --accept-legacy-agent       允许批量迁移 legacy .agent 工作区");
+        console.log("  --non-interactive           禁用交互询问，按默认策略处理冲突");
+        console.log("  --prune-missing             从索引移除已不存在的路径");
+        console.log("  --disable-agent-projection  停用 .agent 投影");
+        console.log("  --quiet                     静默输出");
+        console.log("  --dry-run                   仅预览，不写入文件/索引");
+        if (advanced) {
+            console.log("  --branch <name>             从远程分支拉取模板（需网络与 git）");
+            console.log("  --targets <a,b>             兼容参数（仍归一为 full）");
+        }
+        return;
+    }
+
+    if (name === "doctor") {
+        header("doctor");
+        console.log("用途: 诊断安装完整性；可用 --fix 执行幂等修复。");
+        console.log("");
+        console.log("常用:");
+        console.log("  ag-kit doctor");
+        console.log("  ag-kit doctor --fix");
+        console.log("  ag-kit doctor --fix --accept-legacy-agent");
+        console.log("");
+        console.log("选项:");
+        console.log("  --path <dir>                指定工作区（默认当前目录）");
+        console.log("  --fix                       自动修复（会创建 rollback 快照）");
+        console.log("  --accept-legacy-agent       允许迁移 legacy .agent（仅在 --fix 时生效）");
+        console.log("  --non-interactive           禁用交互询问");
+        console.log("  --quiet                     静默输出");
+        if (advanced) {
+            console.log("  --target/--targets           兼容参数（仍归一为 full）");
+        }
+        return;
+    }
+
+    if (name === "rollback") {
+        header("rollback");
+        console.log("用途: 回退到升级/安装前自动创建的 rollback 快照。");
+        console.log("");
+        console.log("常用:");
+        console.log("  ag-kit rollback --dry-run");
+        console.log("  ag-kit rollback");
+        console.log("");
+        console.log("选项:");
+        console.log("  --path <dir>                指定工作区（默认当前目录）");
+        console.log("  --backup <id>               指定快照（默认最近一次）");
+        console.log("  --dry-run                   仅预演，不写入文件");
+        console.log("  --quiet                     静默输出");
+        return;
+    }
+
+    if (name === "verify") {
+        header("verify");
+        console.log("用途: 三平台（Codex/Gemini/Antigravity）可用性与一致性检查。");
+        console.log("");
+        console.log("常用:");
+        console.log("  ag-kit verify");
+        console.log("  ag-kit verify --json");
+        console.log("");
+        console.log("选项:");
+        console.log("  --path <dir>                指定工作区（默认当前目录）");
+        console.log("  --json                      输出 JSON 报告（CI 友好）");
+        console.log("  --quiet                     静默输出");
+        return;
+    }
+
+    if (name === "status") {
+        header("status");
+        console.log("用途: 检查当前工作区安装状态（只读）。");
+        console.log("");
+        console.log("常用:");
+        console.log("  ag-kit status");
+        console.log("");
+        console.log("选项:");
+        console.log("  --path <dir>                指定工作区（默认当前目录）");
+        console.log("  --quiet                     静默输出（仅输出 installed/错误）");
+        return;
+    }
+
+    if (name === "exclude") {
+        header("exclude");
+        console.log("用途: 管理全局索引排除清单。");
+        console.log("");
+        console.log("常用:");
+        console.log("  ag-kit exclude list");
+        console.log("  ag-kit exclude add --path <dir>");
+        console.log("  ag-kit exclude remove --path <dir>");
+        console.log("");
+        console.log("说明:");
+        console.log("  - 排除路径支持整棵目录树；会影响 update-all 的批量范围。");
+        return;
+    }
+
+    console.log(`未知命令: ${name}`);
+    console.log("可用命令: init, update, update-all, doctor, rollback, verify, exclude, status");
+    console.log("");
+    console.log("提示: ag-kit help");
 }
 
 function parseArgs(argv) {
@@ -115,6 +294,8 @@ function parseArgs(argv) {
         noIndex: false,
         fix: false,
         subcommand: "",
+        help: false,
+        advanced: false,
         path: "",
         json: false,
         backup: "",
@@ -128,18 +309,27 @@ function parseArgs(argv) {
     const providedFlags = [];
 
     let startIndex = 1;
-    if (command === "exclude") {
+    if (command === "exclude" || command === "help") {
         if (argv.length > 1 && !argv[1].startsWith("--")) {
             options.subcommand = argv[1];
             startIndex = 2;
         } else {
-            options.subcommand = "list";
+            options.subcommand = command === "exclude" ? "list" : "";
             startIndex = 1;
         }
     }
 
     for (let i = startIndex; i < argv.length; i++) {
         const arg = argv[i];
+
+        if (arg === "--help" || arg === "-h") {
+            options.help = true;
+            continue;
+        }
+        if (arg === "--advanced") {
+            options.advanced = true;
+            continue;
+        }
 
         if (arg === "--force") {
             providedFlags.push(arg);
@@ -2041,11 +2231,24 @@ async function main() {
     try {
         const { command, options, providedFlags } = parseArgs(process.argv.slice(2));
 
-        if (!command || command === "--help" || command === "-h") {
+        if (!command) {
             printUsage();
-            if (!command || command === "--help" || command === "-h") {
-                return;
-            }
+            return;
+        }
+
+        if (command === "--help" || command === "-h") {
+            printHelpGeneral({ advanced: options.advanced });
+            return;
+        }
+
+        if (command === "help") {
+            printHelpForCommand(options.subcommand || "", { advanced: options.advanced });
+            return;
+        }
+
+        if (options.help) {
+            printHelpForCommand(command, { advanced: options.advanced });
+            return;
         }
 
         if (command === "--version" || command === "-v") {
