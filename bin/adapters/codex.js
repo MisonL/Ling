@@ -680,7 +680,11 @@ class CodexAdapter extends BaseAdapter {
             this.options,
         );
         if (cleanupResult.removedCount > 0) {
-            this.log(`🧹 已从 .gitignore 移除 ${cleanupResult.removedCount} 条规则`);
+            if (this.options.dryRun) {
+                this.log(`[dry-run] 将从 .gitignore 移除 ${cleanupResult.removedCount} 条规则`);
+            } else {
+                this.log(`🧹 已从 .gitignore 移除 ${cleanupResult.removedCount} 条规则`);
+            }
         }
     }
 
