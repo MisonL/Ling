@@ -43,6 +43,7 @@ describe("CLI Smoke", () => {
     let indexPath;
     let migrationStatePath;
     let backupRoot;
+    let configPath;
 
     beforeEach(() => {
         tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "ag-kit-cli-test-"));
@@ -50,14 +51,17 @@ describe("CLI Smoke", () => {
         indexPath = path.join(tempDir, "workspaces.json");
         migrationStatePath = path.join(tempDir, "migration-v3.json");
         backupRoot = path.join(tempDir, "backups");
+        configPath = path.join(tempDir, "config.json");
         process.env.AG_KIT_MIGRATION_STATE_PATH = migrationStatePath;
         process.env.AG_KIT_BACKUP_ROOT = backupRoot;
+        process.env.AG_KIT_CONFIG_PATH = configPath;
         fs.mkdirSync(workspaceDir, { recursive: true });
     });
 
     afterEach(() => {
         delete process.env.AG_KIT_MIGRATION_STATE_PATH;
         delete process.env.AG_KIT_BACKUP_ROOT;
+        delete process.env.AG_KIT_CONFIG_PATH;
         fs.rmSync(tempDir, { recursive: true, force: true });
     });
 
@@ -268,6 +272,34 @@ describe("CLI Smoke", () => {
         );
         assert.strictEqual(result.status, 0, result.stderr || result.stdout);
         assert.ok(fs.existsSync(path.join(workspaceDir, ".agents")));
+    });
+
+    test("sync should init when workspace is not installed", () => {
+        const result = runCli(
+            ["sync", "--path", workspaceDir, "--quiet"],
+            { env: { AG_KIT_INDEX_PATH: indexPath } },
+        );
+        assert.strictEqual(result.status, 0, result.stderr || result.stdout);
+        assert.ok(fs.existsSync(path.join(workspaceDir, ".agents")));
+    });
+
+    test("sync should update when workspace is already installed", () => {
+        const initResult = runCli(
+            ["init", "--path", workspaceDir, "--quiet"],
+            { env: { AG_KIT_INDEX_PATH: indexPath } },
+        );
+        assert.strictEqual(initResult.status, 0, initResult.stderr || initResult.stdout);
+
+        const sentinelPath = path.join(workspaceDir, ".agents", "sentinel-before-sync.txt");
+        fs.writeFileSync(sentinelPath, "before-sync\n", "utf8");
+        assert.ok(fs.existsSync(sentinelPath));
+
+        const syncResult = runCli(
+            ["sync", "--path", workspaceDir, "--quiet"],
+            { env: { AG_KIT_INDEX_PATH: indexPath } },
+        );
+        assert.strictEqual(syncResult.status, 0, syncResult.stderr || syncResult.stdout);
+        assert.ok(!fs.existsSync(sentinelPath), "sync should refresh managed .agents directory");
     });
 
     test("update should run in gemini dry-run mode", () => {

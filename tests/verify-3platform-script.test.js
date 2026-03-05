@@ -38,6 +38,7 @@ describe("verify-3platform script", () => {
             AG_KIT_INDEX_PATH: indexPath,
             AG_KIT_MIGRATION_STATE_PATH: migrationStatePath,
             AG_KIT_BACKUP_ROOT: backupRoot,
+            AG_KIT_CONFIG_PATH: path.join(tempDir, "config.json"),
         };
     });
 

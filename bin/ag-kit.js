@@ -7,6 +7,7 @@ const path = require("path");
 const pkg = require("../package.json");
 const { readGlobalNpmDependencies } = require("./utils");
 const CodexAdapter = require("./adapters/codex");
+const { loadUserConfig, applyConfigDefaults } = require("./utils/config-store");
 const {
     hasManagedCanonicalManifestSignal,
     isManagedProjectionDir,
@@ -90,9 +91,10 @@ function printHelpGeneral({ advanced }) {
     console.log(`Ag-Kit CLI（v${pkg.version}）`);
     console.log("");
     console.log("最常用（90% 场景无参数即可）:");
+    console.log("  ag-kit sync                 # 一键同步（未安装则 init，已安装则 update）");
     console.log("  ag-kit init                 # 首次安装（生成 .agents + 兼容投影）");
     console.log("  ag-kit update               # 升级当前项目（含 legacy 收敛）");
-    console.log("  ag-kit doctor --fix         # 自检并修复（幂等）");
+    console.log("  ag-kit doctor --fix         # 自检并修复（幂等，必要时用）");
     console.log("  ag-kit rollback --dry-run   # 先预演再回退");
     console.log("  ag-kit update-all           # 批量升级（全局索引）");
     console.log("  ag-kit verify --json        # 结构化校验输出（CI 友好）");
@@ -107,6 +109,7 @@ function printHelpGeneral({ advanced }) {
         console.log("高级说明:");
         console.log("  - `--target/--targets` 为兼容参数，已归一为 full（.agents 为唯一主目录）。");
         console.log("  - 环境变量: AG_KIT_INDEX_PATH / AG_KIT_MIGRATION_STATE_PATH / AG_KIT_BACKUP_ROOT 等见 docs/operations.md。");
+        console.log("  - 用户配置: ~/.ag-kit/config.json（或 AG_KIT_CONFIG_PATH）可设置默认 nonInteractive/disableAgentProjection 等。");
     }
 }
 
@@ -144,6 +147,34 @@ function printHelpForCommand(command, options = {}) {
         if (advanced) {
             console.log("  --branch <name>             从远程分支拉取模板（需网络与 git）");
             console.log("  --target/--targets           兼容参数（仍归一为 full）");
+        }
+        return;
+    }
+
+    if (name === "sync") {
+        header("sync");
+        console.log("用途: 一键同步当前项目到最新状态。未安装则执行 init；已安装则执行 update；遇到 legacy .agent 会按迁移策略处理。");
+        console.log("");
+        console.log("常用:");
+        console.log("  ag-kit sync");
+        console.log("  ag-kit sync --path <dir>");
+        console.log("");
+        console.log("选项:");
+        console.log("  --path <dir>                指定工作区（默认当前目录）");
+        console.log("  --accept-legacy-agent       允许迁移“仅 legacy .agent 且无托管证据”的旧安装（非交互必需）");
+        console.log("  --non-interactive           禁用交互询问，按默认策略处理冲突");
+        console.log("  --disable-agent-projection  停用 .agent 投影");
+        console.log("  --no-index                  不写入/刷新全局索引");
+        console.log("  --quiet                     静默输出");
+        console.log("  --dry-run                   仅预览，不写入文件");
+        if (advanced) {
+            console.log("  --branch <name>             从远程分支拉取模板（需网络与 git）");
+            console.log("  --force                     当需要覆盖安装时可用（等价 init --force 的覆盖语义）");
+            console.log("  --target/--targets           兼容参数（仍归一为 full）");
+            console.log("");
+            console.log("配置文件（可选）:");
+            console.log("  - 默认路径: ~/.ag-kit/config.json（或 AG_KIT_CONFIG_PATH 指定）");
+            console.log("  - 支持 defaults: { nonInteractive, disableAgentProjection, noIndex, quiet, acceptLegacyAgent, agentConflictPolicy, geminiAgentsPolicy }");
         }
         return;
     }
@@ -274,7 +305,7 @@ function printHelpForCommand(command, options = {}) {
     }
 
     console.log(`未知命令: ${name}`);
-    console.log("可用命令: init, update, update-all, doctor, rollback, verify, exclude, status");
+    console.log("可用命令: sync, init, update, update-all, doctor, rollback, verify, exclude, status");
     console.log("");
     console.log("提示: ag-kit help");
 }
@@ -400,6 +431,7 @@ function parseArgs(argv) {
 }
 
 const COMMAND_ALLOWED_FLAGS = {
+    sync: ["--force", "--path", "--branch", "--target", "--targets", "--accept-legacy-agent", "--non-interactive", "--disable-agent-projection", "--no-index", "--quiet", "--dry-run"],
     init: ["--force", "--path", "--branch", "--target", "--targets", "--non-interactive", "--disable-agent-projection", "--no-index", "--quiet", "--dry-run"],
     update: ["--path", "--branch", "--target", "--targets", "--accept-legacy-agent", "--non-interactive", "--disable-agent-projection", "--no-index", "--quiet", "--dry-run"],
     "update-all": ["--branch", "--targets", "--accept-legacy-agent", "--non-interactive", "--prune-missing", "--disable-agent-projection", "--quiet", "--dry-run"],
@@ -1055,7 +1087,7 @@ function maybeWarnUpstreamGlobalConflict(command, options) {
     if (process.env.AG_KIT_SKIP_UPSTREAM_CHECK === "1") {
         return;
     }
-    if (command !== "init" && command !== "update" && command !== "update-all") {
+    if (command !== "init" && command !== "update" && command !== "sync" && command !== "update-all") {
         return;
     }
 
@@ -1266,7 +1298,7 @@ function shouldRunAutoMigration(command, options) {
         return false;
     }
 
-    if (command === "init" || command === "update" || command === "update-all") {
+    if (command === "init" || command === "update" || command === "sync" || command === "update-all") {
         return true;
     }
 
@@ -1454,6 +1486,40 @@ async function commandUpdate(options) {
     if (!updatedAny) {
         throw new Error("未找到可更新的目标");
     }
+}
+
+async function commandSync(options) {
+    const workspaceRoot = resolveWorkspaceRoot(options.path);
+    const installedTargets = detectInstalledTargets(workspaceRoot);
+    const legacyAgentCandidate = looksLikeLegacyAgentWorkspace(workspaceRoot);
+
+    const hasManagedSignal = hasManagedAgentProjectionSignal(workspaceRoot)
+        || hasManagedGeminiProjectionSignal(workspaceRoot)
+        || isManagedLegacyCodexDir(workspaceRoot);
+
+    if (installedTargets.length > 0 || legacyAgentCandidate) {
+        try {
+            await commandUpdate(options);
+            return;
+        } catch (err) {
+            const message = err && err.message ? String(err.message) : "";
+            if (
+                message.includes("目录存在但未检测到受管 manifest")
+                && fs.existsSync(path.join(workspaceRoot, ".agents"))
+                && hasManagedSignal
+            ) {
+                if (options.dryRun) {
+                    log(options, "[dry-run] 检测到 .agents 缺少受管 manifest，但存在托管信号；正式运行将尝试通过 doctor --fix 修复。");
+                    return;
+                }
+                await commandDoctor({ ...options, fix: true });
+                return;
+            }
+            throw err;
+        }
+    }
+
+    await commandInit(options);
 }
 
 function mergeUpdatedTargets(record, workspacePath, targetNames, timestamp) {
@@ -2256,54 +2322,69 @@ async function main() {
             return;
         }
 
-        validateOptionScope(command, options, providedFlags);
-        maybeWarnUpstreamGlobalConflict(command, options);
+        let effectiveOptions = options;
+        const { configPath, config, error } = loadUserConfig();
+        if (error && !options.quiet) {
+            console.warn(`⚠️ 用户配置解析失败，已忽略: ${configPath}`);
+            console.warn(`   ${error.message}`);
+        } else {
+            effectiveOptions = applyConfigDefaults(options, providedFlags, config);
+        }
+
+        validateOptionScope(command, effectiveOptions, providedFlags);
+        maybeWarnUpstreamGlobalConflict(command, effectiveOptions);
         const requiresBundledTemplates = command === "init"
             || command === "update"
+            || command === "sync"
             || command === "update-all"
-            || (command === "doctor" && options.fix);
+            || (command === "doctor" && effectiveOptions.fix);
         if (requiresBundledTemplates) {
             ensureBundledTemplates();
         }
-        await runAutoMigrationOnce(command, options);
+        await runAutoMigrationOnce(command, effectiveOptions);
 
         if (command === "init") {
-            await commandInit(options);
+            await commandInit(effectiveOptions);
             return;
         }
 
         if (command === "update") {
-            await commandUpdate(options);
+            await commandUpdate(effectiveOptions);
+            return;
+        }
+
+        if (command === "sync") {
+            await commandSync(effectiveOptions);
             return;
         }
 
         if (command === "update-all") {
-            await commandUpdateAll(options);
+            await commandUpdateAll(effectiveOptions);
             return;
         }
 
         if (command === "verify") {
-            commandVerify(options);
+            commandVerify(effectiveOptions);
             return;
         }
 
         if (command === "rollback") {
-            commandRollback(options);
+            commandRollback(effectiveOptions);
             return;
         }
 
         if (command === "doctor") {
-            await commandDoctor(options);
+            await commandDoctor(effectiveOptions);
             return;
         }
 
         if (command === "exclude") {
-            commandExclude(options);
+            commandExclude(effectiveOptions);
             return;
         }
 
         if (command === "status") {
-            commandStatus(options);
+            commandStatus(effectiveOptions);
             return;
         }
 

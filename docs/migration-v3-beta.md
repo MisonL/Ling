@@ -14,6 +14,9 @@ npm i -g @mison/ag-kit-cn@beta
 ## 2. 推荐升级流程
 
 ```bash
+ag-kit sync
+
+# 等价拆分（便于理解）：
 ag-kit status
 ag-kit update
 ag-kit doctor --fix
@@ -24,7 +27,7 @@ ag-kit status
 - 主目录为 `.agents/`
 - 自动生成兼容投影：`.agent/`、`.gemini/`
 - 根 `AGENTS.md`/`antigravity.rules` 托管区块已刷新
-- 首轮执行 `init/update/update-all/doctor --fix` 时，会对索引中的受管 legacy 工作区做一次自动迁移
+- 首轮执行 `sync/init/update/update-all/doctor --fix` 时，会对索引中的受管 legacy 工作区做一次自动迁移
 - `ag-kit status` 中 `Auto-Migration(v3)` 为 `done` 或 `pending`
 
 ## 3. 旧目录兼容规则

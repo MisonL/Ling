@@ -97,6 +97,7 @@ async function main() {
             AG_KIT_INDEX_PATH: indexPath,
             AG_KIT_MIGRATION_STATE_PATH: migrationStatePath,
             AG_KIT_BACKUP_ROOT: backupRoot,
+            AG_KIT_CONFIG_PATH: path.join(tmpRoot, "config.json"),
         };
 
         runCli(["init", "--targets", "gemini,codex", "--path", workspaceDir, "--quiet"], env);
@@ -138,4 +139,3 @@ main().catch((err) => {
     console.error(`❌ ${err.message}`);
     process.exit(1);
 });
-

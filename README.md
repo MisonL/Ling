@@ -136,6 +136,7 @@ CLI（命令行界面）工具：
 
 | 命令 | 描述 |
 | --- | --- |
+| `ag-kit sync` | 一键同步（未安装则 init，已安装则 update） |
 | `ag-kit init` | 安装统一 full 结构（`.agents` + 兼容投影） |
 | `ag-kit update` | 更新当前项目（自动收敛 legacy 目录） |
 | `ag-kit update-all` | 批量更新所有已登记工作区 |
@@ -148,7 +149,10 @@ CLI（命令行界面）工具：
 ### 上手（精简）
 
 ```bash
-# 在项目根目录（通常不需要任何参数）
+# 在项目根目录（通常只需要一条）
+ag-kit sync
+
+# 如需显式拆分流程：
 ag-kit init
 ag-kit update
 ag-kit doctor --fix
@@ -178,7 +182,7 @@ ag-kit update --help
 ### 升级指引
 
 - 旧项目升级到 `3.0.0-beta.0`：`docs/migration-v3-beta.md`
-- 首轮执行 `init/update/update-all/doctor --fix` 时，会按全局索引对受管 legacy 工作区执行一次自动迁移。
+- 首轮执行 `sync/init/update/update-all/doctor --fix` 时，会按全局索引对受管 legacy 工作区执行一次自动迁移。
 
 ### 批量更新机制
 

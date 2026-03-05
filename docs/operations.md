@@ -27,6 +27,7 @@
 
 ### 2.1 初始化/升级
 ```bash
+ag-kit sync
 ag-kit init
 ag-kit update
 ```
@@ -34,7 +35,8 @@ ag-kit update
 - `--target gemini|codex` 仍兼容，但内部归一为 full。
 - 若项目仅存在 legacy `.agent`（无托管证据），可通过 `--accept-legacy-agent` 触发迁移到 v3 `.agents`（`update/update-all/doctor --fix` 均支持）。
 - 非交互默认 full；遇到 `.agent` / `.gemini/agents` 冲突时，交互询问处理策略。
-- 首轮执行 `init/update/update-all/doctor --fix` 时，会对索引中的受管 legacy 工作区执行一次自动迁移并记录状态。
+- 首轮执行 `sync/init/update/update-all/doctor --fix` 时，会对索引中的受管 legacy 工作区执行一次自动迁移并记录状态。
+- 可选：使用 `~/.ag-kit/config.json`（或 `AG_KIT_CONFIG_PATH`）设置默认 `nonInteractive/disableAgentProjection` 等参数，减少反复传参。
 
 ### 2.2 批量更新
 ```bash
@@ -84,6 +86,25 @@ npm run verify:3platform -- --path /path/to/workspace
 - 自动检查 Canonical/Projection 结构、`manifest`、Gemini MCP 主备、`status/doctor/rollback --dry-run`。
 - 输出 Codex / Gemini CLI / Antigravity 的运行时提问词与“分平台预期口径”。
 - 注意：Codex 往往仅回显 `AGENTS.md` 指令入口；Antigravity/Gemini 更常回显 GEMINI 规则来源，不要求三家展示完全同一组路径。
+
+### 2.6 用户配置（可选）
+
+配置文件路径：
+- 默认：`~/.ag-kit/config.json`
+- 覆盖：环境变量 `AG_KIT_CONFIG_PATH`
+
+示例（把 CLI 常用默认固化下来，减少反复传参）：
+
+```json
+{
+  "defaults": {
+    "nonInteractive": true,
+    "disableAgentProjection": true
+  }
+}
+```
+
+说明：CLI 参数优先于配置文件。
 
 ## 3. 备份与漂移
 
