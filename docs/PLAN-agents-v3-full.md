@@ -35,7 +35,7 @@
 ### 3.1 归属与边界
 - 仅覆盖/清理 manifest 或命名空间可识别的托管文件。
 - 非托管 `.codex` 不删除。
-- 任何覆盖前先备份到 `.agents-backup/<timestamp>/`。
+- 任何覆盖前先备份到 `~/.ag-kit/backups/<workspace-key>/<timestamp>/`（兼容旧版 `.agents-backup`）。
 
 ### 3.2 交互策略
 当检测到以下冲突且为交互终端时，必须询问用户：

@@ -14,7 +14,7 @@
 │   └── mcp_config.json   # MCP（含 Context7 主备）
 ├── .agent/               # Antigravity 兼容投影（自动生成）
 ├── .gemini/              # Gemini 兼容投影（自动生成/合并）
-├── .agents-backup/       # 覆盖前自动备份
+├── .agents-backup/       # 旧版本地备份目录（升级后会自动迁移）
 ├── AGENTS.md             # 根入口（保留用户内容 + 托管区块）
 └── antigravity.rules     # 根托管说明（保留用户内容 + 托管区块）
 ```
@@ -44,6 +44,9 @@ ag-kit update-all --targets full
 - 自动迁移状态：`~/.ag-kit/migrations/v3.json`（或 `AG_KIT_MIGRATION_STATE_PATH` 自定义）。
 - `ag-kit status` 只读显示 `Auto-Migration(v3): done|pending`。
 - 可配合 `--prune-missing` 清理失效路径。
+- 交互终端下，若某个工作区存在 `.agent` / `.gemini/agents` 冲突，会逐工作区询问策略（`.agent`：备份替换 / 直接替换 / 保留 / 改名失效 / 停用投影；`.gemini/agents`：追加 / 备份替换 / 跳过）。
+- 非交互环境下，默认策略仍为：`.agent` 备份替换，`.gemini/agents` 追加。
+- 可使用 `--disable-agent-projection` 停用 `.agent` 兼容投影（会移除托管 `.agent`，或将非托管 `.agent` 改名保留）。
 
 ### 2.3 诊断与修复
 ```bash
@@ -54,9 +57,32 @@ ag-kit doctor --fix
 - 检查 `.agents` 与 manifest 完整性。
 - 自动重放托管区块与兼容投影。
 
+### 2.4 一键回退
+```bash
+ag-kit rollback
+ag-kit rollback --backup <timestamp>
+```
+
+- 默认使用最近一次可用快照。
+- 快照文件位于 `~/.ag-kit/backups/<workspace-key>/<timestamp>/rollback-manifest.json`（升级/安装前自动创建）。
+- 兼容读取旧版 `.agents-backup/<timestamp>/rollback-manifest.json`。
+- 建议先执行 `ag-kit rollback --dry-run` 预演，再执行正式回退。
+
+### 2.5 三平台可用性检查
+```bash
+ag-kit verify --path /path/to/workspace
+ag-kit verify --path /path/to/workspace --json
+npm run verify:3platform -- --path /path/to/workspace
+```
+
+- 自动检查 Canonical/Projection 结构、`manifest`、Gemini MCP 主备、`status/doctor/rollback --dry-run`。
+- 输出 Codex / Gemini CLI / Antigravity 的运行时提问词与“分平台预期口径”。
+- 注意：Codex 往往仅回显 `AGENTS.md` 指令入口；Antigravity/Gemini 更常回显 GEMINI 规则来源，不要求三家展示完全同一组路径。
+
 ## 3. 备份与漂移
 
-- 更新前若检测到用户修改冲突，会备份到 `.agents-backup/<timestamp>/`。
+- 更新前若检测到用户修改冲突，会备份到 `~/.ag-kit/backups/<workspace-key>/<timestamp>/`。
+- 可通过 `AG_KIT_BACKUP_ROOT` 自定义备份根目录。
 - `manifest.json` 无法解析时，走全量快照备份后再更新。
 
 ## 4. MCP（Context7 主备）

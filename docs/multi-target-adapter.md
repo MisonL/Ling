@@ -18,7 +18,7 @@ graph TD
 1. 单一事实源：只维护 `.agents`。
 2. 兼容投影：对 Antigravity/Gemini/Codex 做最小兼容输出。
 3. 只处理托管文件：非托管 `.codex`、用户 `.gemini` 自定义文件不被覆盖删除。
-4. 冲突可恢复：覆盖前统一备份到 `.agents-backup/<timestamp>/`。
+4. 冲突可恢复：覆盖前统一备份到 `~/.ag-kit/backups/<workspace-key>/<timestamp>/`（兼容读取旧版 `.agents-backup`）。
 
 ## 命令语义
 

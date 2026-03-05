@@ -137,6 +137,8 @@ CLI（命令行界面）工具：
 | `ag-kit init` | 安装统一 full 结构（`.agents` + 兼容投影） |
 | `ag-kit update` | 更新当前项目（自动收敛 legacy 目录） |
 | `ag-kit update-all` | 批量更新所有已登记工作区 |
+| `ag-kit verify` | 三平台（Codex/Gemini/Antigravity）可用性与一致性检查 |
+| `ag-kit rollback` | 一键回退到升级前快照（默认最近一次） |
 | `ag-kit doctor` | 诊断安装完整性（可 `--fix` 自愈） |
 | `ag-kit exclude` | 管理全局索引排除清单 |
 | `ag-kit status` | 检查安装状态 |
@@ -148,13 +150,20 @@ ag-kit init --path ./myapp                        # full 安装（.agents 主目
 ag-kit init --target codex --path ./myapp         # 兼容写法，仍归一为 full
 ag-kit init --target gemini --path ./myapp        # 兼容写法，仍归一为 full
 ag-kit init --non-interactive --path ./myapp      # 非交互默认 full
+ag-kit init --disable-agent-projection --path ./myapp  # 停用 .agent 兼容投影（避免重复规则扫描）
 ag-kit init --no-index --path ./tmp-workspace     # 安装但不写入全局索引
 ag-kit init --branch dev --force                  # 覆盖安装并指定分支
 ag-kit init --quiet --dry-run                     # 预览操作而不执行
 ag-kit update --path ./myapp                      # 更新并收敛 legacy
 ag-kit update --target codex --path ./myapp       # 兼容写法，仍归一为 full
 ag-kit update --non-interactive --path ./myapp    # 非交互更新（CI 推荐）
+ag-kit update --disable-agent-projection --path ./myapp # 删除/停用托管 .agent 投影
 ag-kit update --no-index --path ./myapp           # 更新但不刷新索引
+ag-kit verify --path ./myapp                      # 三平台可用性检查（人类可读输出）
+ag-kit verify --path ./myapp --json               # 结构化输出（CI 推荐）
+ag-kit rollback --path ./myapp                    # 回退到最近一次快照
+ag-kit rollback --path ./myapp --backup <ts>      # 指定备份时间戳回退
+ag-kit rollback --path ./myapp --dry-run          # 预演回退操作
 ag-kit doctor --fix --path ./myapp                # 检查并自动修复
 ag-kit update-all --targets full                  # 批量更新登记工作区
 ag-kit update-all --prune-missing                 # 清理索引中已失效的路径
@@ -177,12 +186,16 @@ ag-kit exclude remove --path /path/to/dir         # 删除排除路径
 - 可通过 `--no-index` 让 `init/update` 跳过索引登记（适合临时验证目录）。
 - `ag-kit update` 只依赖当前目录（或 `--path` 指定目录）的已安装目标，不依赖全局索引。
 - 执行 `ag-kit update-all` 时，会遍历索引并批量更新每个工作区（可通过 `--targets` 限定目标）。
+- 在交互终端执行 `ag-kit update-all` 时，若某个工作区存在 `.agent` / `.gemini/agents` 冲突，会按工作区询问处理策略；`.agent` 支持「备份替换 / 直接替换 / 保留 / 改名失效 / 停用投影」。
+- 非交互环境默认 `.agent` 备份替换、`.gemini/agents` 追加；如需避免 `.agent` 重复扫描，可加 `--disable-agent-projection`。
 - 可用 `--prune-missing` 自动移除索引里已失效的工作区路径。
 - 对于历史项目（尚未登记，或曾经 `--no-index` 跳过登记），可在该项目执行一次不带 `--no-index` 的 `ag-kit update`（或 `ag-kit init --force`）后纳入索引。
 - 可通过 `ag-kit exclude add/remove/list` 维护自定义排除路径（支持排除整棵目录树）。
 - 也可通过环境变量 `AG_KIT_INDEX_PATH` 指定自定义索引路径。
 - 自动迁移状态默认在 `~/.ag-kit/migrations/v3.json`，可用 `AG_KIT_MIGRATION_STATE_PATH` 自定义。
 - `ag-kit status` 会显示 `Auto-Migration(v3): done|pending`（只读状态）。
+- `ag-kit rollback` 默认回退到最近一次快照；快照在升级/安装前自动写入 `~/.ag-kit/backups/<workspace-key>/<timestamp>/rollback-manifest.json`。
+- 可通过 `AG_KIT_BACKUP_ROOT` 自定义快照根目录（CI 或隔离测试推荐）。
 
 ### 开发维护命令
 
@@ -191,6 +204,7 @@ npm run clean           # 清理本地生成产物（如 web/.next、web/node_mo
 npm run clean:dry-run   # 预览将被清理的路径
 npm test                # 只执行 tests/ 目录下测试
 npm run health-check    # 一键执行全链路健康复检
+npm run verify:3platform -- --path /path/to/workspace  # 三平台可用性与配置一致性检查
 ```
 
 如果你在 `web/` 子项目内开发，可按需执行：
@@ -229,6 +243,8 @@ macOS / Linux / WSL:
 ```bash
 cd /path/to/your-project
 rm -rf .agent .agents .agents-backup .gemini antigravity.rules
+# 如需清理 v3 新版全局回退快照：
+# rm -rf ~/.ag-kit/backups
 # 若确认 .codex 是本工具托管 legacy（含 manifest.json 且 target=codex/full），可再删除：
 # rm -rf .codex
 ```
@@ -238,6 +254,8 @@ Windows PowerShell:
 ```powershell
 Set-Location C:\path\to\your-project
 Remove-Item .agent,.agents,.agents-backup,.gemini,antigravity.rules -Recurse -Force -ErrorAction SilentlyContinue
+# 如需清理 v3 新版全局回退快照：
+# Remove-Item "$env:USERPROFILE\.ag-kit\backups" -Recurse -Force -ErrorAction SilentlyContinue
 # 若确认 .codex 为本工具托管 legacy，再手动删除 .codex
 ```
 
@@ -251,6 +269,8 @@ rmdir /s /q .agents-backup
 rmdir /s /q .gemini
 del /f /q antigravity.rules
 REM 若确认 .codex 为本工具托管 legacy，再手动删除 .codex
+REM 如需清理 v3 新版全局回退快照:
+REM rmdir /s /q %USERPROFILE%\.ag-kit\backups
 ```
 
 ### 清理批量更新索引（可选）

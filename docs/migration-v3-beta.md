@@ -40,12 +40,13 @@ ag-kit status
 ## 4. 交互冲突处理
 
 当检测到以下冲突时会询问：
-1. 已有 `.agent`：备份替换 / 保留不动 / 改名失效后重建。
+1. 已有 `.agent`：备份替换 / 直接替换（不备份）/ 保留不动 / 改名失效后重建 / 停用投影。
 2. 已有 `.gemini/agents`：追加 / 备份替换 / 跳过写入。
 
 CI 或自动化可用非交互：
 ```bash
 ag-kit update --non-interactive
+ag-kit update --disable-agent-projection
 ```
 
 自动迁移一次性状态默认保存在：
@@ -58,10 +59,20 @@ ag-kit update --non-interactive
 
 升级覆盖前的冲突文件会备份到：
 ```text
-.agents-backup/<timestamp>/
+~/.ag-kit/backups/<workspace-key>/<timestamp>/
 ```
 
-回滚时可从备份目录恢复目标文件，再执行：
+可直接使用一键回退：
+```bash
+ag-kit rollback
+```
+
+如需指定快照，可先查看 `~/.ag-kit/backups/<workspace-key>/<timestamp>/rollback-manifest.json`（兼容旧版 `.agents-backup/<timestamp>/rollback-manifest.json`），再执行：
+```bash
+ag-kit rollback --backup <timestamp>
+```
+
+回退完成后建议执行：
 ```bash
 ag-kit doctor --fix
 ```
