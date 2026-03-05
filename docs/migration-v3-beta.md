@@ -51,8 +51,10 @@ CI 或自动化可用非交互：
 ```bash
 ag-kit update --non-interactive
 ag-kit update --accept-legacy-agent
+ag-kit update-all --non-interactive
 ag-kit update-all --accept-legacy-agent
 ag-kit doctor --fix --accept-legacy-agent
+ag-kit doctor --fix --non-interactive
 ag-kit update --disable-agent-projection
 ```
 

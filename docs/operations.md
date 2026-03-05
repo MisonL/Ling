@@ -48,6 +48,8 @@ ag-kit update-all --targets full
 - 如需批量迁移仅 legacy `.agent` 的旧项目，可加 `--accept-legacy-agent`（会为每个工作区创建 rollback 快照）。
 - 交互终端下，若某个工作区存在 `.agent` / `.gemini/agents` 冲突，会逐工作区询问策略（`.agent`：备份替换 / 直接替换 / 保留 / 改名失效 / 停用投影；`.gemini/agents`：追加 / 备份替换 / 跳过）。
 - 非交互环境下，默认策略仍为：`.agent` 备份替换，`.gemini/agents` 追加。
+- `.gemini/agents` 默认仅管理本项目命名空间 `ag-kit-*.md`：会追加/更新并清理已不再存在的 namespaced 旧文件（不影响用户自定义文件）。
+- 如需在交互终端下避免逐工作区询问，可加 `--non-interactive` 强制按非交互默认策略执行。
 - 可使用 `--disable-agent-projection` 停用 `.agent` 兼容投影（会移除托管 `.agent`，或将非托管 `.agent` 改名保留）。
 
 ### 2.3 诊断与修复
@@ -59,6 +61,7 @@ ag-kit doctor --fix
 - 检查 `.agents` 与 manifest 完整性。
 - 自动重放托管区块与兼容投影。
 - 若项目仅存在 legacy `.agent`，可使用 `ag-kit doctor --fix --accept-legacy-agent` 迁移到 v3 并完成自检。
+- 如需在交互终端下避免提示，可加 `--non-interactive`；但 legacy `.agent` 迁移仍需显式 `--accept-legacy-agent`（非交互）或交互确认。
 
 ### 2.4 一键回退
 ```bash
