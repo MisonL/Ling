@@ -5,6 +5,8 @@ const os = require("os");
 const path = require("path");
 const { spawnSync } = require("node:child_process");
 
+const { getWorkspaceBackupBucket } = require("../bin/utils/backup-store");
+
 const REPO_ROOT = path.resolve(__dirname, "..");
 const CLI_PATH = path.join(REPO_ROOT, "bin", "ag-kit.js");
 const PROJECTION_MARKER = ".ag-kit-projection.json";
@@ -346,6 +348,72 @@ describe("CLI Smoke", () => {
         assert.strictEqual(result.status, 0, result.stderr || result.stdout);
         assert.ok(fs.existsSync(path.join(workspaceDir, ".agents", "manifest.json")));
         assert.ok(fs.existsSync(path.join(workspaceDir, ".agent", PROJECTION_MARKER)));
+    });
+
+    test("update-all should migrate legacy .agent workspace when --accept-legacy-agent is set", () => {
+        const legacyWorkspace = fs.mkdtempSync(path.join(REPO_ROOT, ".tmp-ag-kit-update-all-legacy-agent-"));
+        try {
+            fs.mkdirSync(path.join(legacyWorkspace, ".agent", "agents"), { recursive: true });
+            fs.mkdirSync(path.join(legacyWorkspace, ".agent", "skills"), { recursive: true });
+            fs.mkdirSync(path.join(legacyWorkspace, ".agent", "rules"), { recursive: true });
+            fs.mkdirSync(path.join(legacyWorkspace, ".agent", "workflows"), { recursive: true });
+            fs.writeFileSync(path.join(legacyWorkspace, ".agent", "rules", "GEMINI.md"), "# legacy rule\n", "utf8");
+            fs.writeFileSync(path.join(legacyWorkspace, ".agent", "agents", "orchestrator.md"), "# legacy orchestrator\n", "utf8");
+
+            const now = new Date().toISOString();
+            const seedIndex = {
+                version: 2,
+                updatedAt: now,
+                workspaces: [
+                    {
+                        path: legacyWorkspace,
+                        targets: {},
+                    },
+                ],
+                excludedPaths: [],
+            };
+            fs.writeFileSync(indexPath, `${JSON.stringify(seedIndex, null, 2)}\n`, "utf8");
+
+            const result = runCli(
+                ["update-all", "--accept-legacy-agent", "--quiet"],
+                { env: { AG_KIT_INDEX_PATH: indexPath } },
+            );
+            assert.strictEqual(result.status, 0, result.stderr || result.stdout);
+            assert.ok(fs.existsSync(path.join(legacyWorkspace, ".agents", "manifest.json")));
+            assert.ok(fs.existsSync(path.join(legacyWorkspace, ".agent", PROJECTION_MARKER)));
+
+            const indexData = JSON.parse(fs.readFileSync(indexPath, "utf8"));
+            const record = (indexData.workspaces || []).find((item) => item.path === legacyWorkspace);
+            assert.ok(record, "workspace should remain in index");
+            assert.ok(record.targets && record.targets.full, "full target should be added after migration");
+
+            const bucket = getWorkspaceBackupBucket(legacyWorkspace);
+            const backups = fs.existsSync(bucket) ? fs.readdirSync(bucket) : [];
+            assert.ok(backups.some((name) => fs.existsSync(path.join(bucket, name, "rollback-manifest.json"))));
+        } finally {
+            fs.rmSync(legacyWorkspace, { recursive: true, force: true });
+        }
+    });
+
+    test("doctor --fix should migrate legacy .agent workspace when --accept-legacy-agent is set", () => {
+        fs.mkdirSync(path.join(workspaceDir, ".agent", "agents"), { recursive: true });
+        fs.mkdirSync(path.join(workspaceDir, ".agent", "skills"), { recursive: true });
+        fs.mkdirSync(path.join(workspaceDir, ".agent", "rules"), { recursive: true });
+        fs.mkdirSync(path.join(workspaceDir, ".agent", "workflows"), { recursive: true });
+        fs.writeFileSync(path.join(workspaceDir, ".agent", "rules", "GEMINI.md"), "# legacy rule\n", "utf8");
+        fs.writeFileSync(path.join(workspaceDir, ".agent", "agents", "orchestrator.md"), "# legacy orchestrator\n", "utf8");
+
+        const result = runCli(
+            ["doctor", "--path", workspaceDir, "--fix", "--accept-legacy-agent", "--quiet"],
+            { env: { AG_KIT_INDEX_PATH: indexPath } },
+        );
+        assert.strictEqual(result.status, 0, result.stderr || result.stdout);
+        assert.ok(fs.existsSync(path.join(workspaceDir, ".agents", "manifest.json")));
+        assert.ok(fs.existsSync(path.join(workspaceDir, ".agent", PROJECTION_MARKER)));
+
+        const bucket = getWorkspaceBackupBucket(workspaceDir);
+        const backups = fs.existsSync(bucket) ? fs.readdirSync(bucket) : [];
+        assert.ok(backups.some((name) => fs.existsSync(path.join(bucket, name, "rollback-manifest.json"))));
     });
 
     test("update should fail when only non-managed .gemini exists", () => {

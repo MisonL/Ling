@@ -153,4 +153,46 @@ describe("CodexAdapter", () => {
         assert.ok(snapshotFile, "should contain rollback snapshot");
         assert.strictEqual(fs.readFileSync(snapshotFile, "utf8"), "user-modified");
     });
+
+    test("update should co-locate rollback and conflict backups under a single backup root", () => {
+        fs.mkdirSync(path.join(workDir, ".agent"), { recursive: true });
+        fs.writeFileSync(path.join(workDir, ".agent", "custom.md"), "# custom\n", "utf8");
+
+        fs.mkdirSync(path.join(workDir, ".gemini"), { recursive: true });
+        fs.writeFileSync(path.join(workDir, ".gemini", "settings.json"), "{invalid-json", "utf8");
+
+        const updateSource = path.join(workDir, "update_src_colocated");
+        fs.mkdirSync(updateSource);
+        fs.writeFileSync(path.join(updateSource, "file.txt"), "v2 content", "utf8");
+        fs.writeFileSync(path.join(updateSource, "mcp_config.json"), JSON.stringify({
+            mcpServers: {
+                context7: {
+                    command: "npx",
+                    args: ["-y", "@upstash/context7-mcp"],
+                },
+            },
+        }, null, 2), "utf8");
+
+        const adapter = new CodexAdapter(workDir, {
+            quiet: true,
+            force: true,
+            acceptLegacyAgent: true,
+            agentConflictPolicy: "backup_replace",
+        });
+        adapter.update(updateSource);
+
+        const bucket = getWorkspaceBackupBucket(workDir);
+        assert.ok(fs.existsSync(bucket), "backup bucket should exist");
+        const backupDirs = fs.readdirSync(bucket, { withFileTypes: true })
+            .filter((entry) => entry.isDirectory())
+            .filter((entry) => !entry.name.startsWith("legacy-"))
+            .map((entry) => path.join(bucket, entry.name));
+        assert.strictEqual(backupDirs.length, 1, "should create exactly one backup root for this run");
+
+        const backupRootDir = backupDirs[0];
+        assert.ok(fs.existsSync(path.join(backupRootDir, "rollback-manifest.json")), "rollback manifest should exist");
+        assert.ok(fs.existsSync(path.join(backupRootDir, "rollback", ".agent", "custom.md")), "rollback snapshot should capture pre-update .agent");
+        assert.ok(fs.existsSync(path.join(backupRootDir, "agent-conflict", "custom.md")), "agent conflict backup should exist");
+        assert.ok(fs.existsSync(path.join(backupRootDir, "gemini-settings-invalid.json")), "invalid gemini settings backup should exist");
+    });
 });
