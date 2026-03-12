@@ -11,6 +11,11 @@ describe("Health Check Script", () => {
         fs.accessSync(scriptPath, fs.constants.X_OK);
     });
 
+    test("health-check node entry should exist", () => {
+        const scriptPath = path.resolve(__dirname, "..", "scripts", "health-check.js");
+        assert.ok(fs.existsSync(scriptPath), "missing scripts/health-check.js");
+    });
+
     test("health-check script should pass bash syntax check", () => {
         const scriptPath = path.resolve(__dirname, "..", "scripts", "health-check.sh");
         const result = spawnSync("bash", ["-n", scriptPath], { encoding: "utf8" });
@@ -20,6 +25,6 @@ describe("Health Check Script", () => {
     test("package scripts should expose health-check command", () => {
         const packageJsonPath = path.resolve(__dirname, "..", "package.json");
         const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"));
-        assert.strictEqual(packageJson.scripts["health-check"], "bash scripts/health-check.sh");
+        assert.strictEqual(packageJson.scripts["health-check"], "node scripts/health-check.js");
     });
 });

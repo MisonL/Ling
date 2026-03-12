@@ -228,6 +228,58 @@ describe("CLI Smoke", () => {
         assert.strictEqual(result.status, 0, result.stderr || result.stdout);
     });
 
+    test("status --quiet should report missing with exit code 2 when nothing is installed", () => {
+        const result = runCli(
+            ["status", "--path", workspaceDir, "--quiet"],
+            { env: { AG_KIT_INDEX_PATH: indexPath } },
+        );
+        assert.strictEqual(result.status, 2);
+        assert.strictEqual((result.stdout || "").trim(), "missing");
+    });
+
+    test("status --quiet should report broken when installation is incomplete", () => {
+        fs.mkdirSync(path.join(workspaceDir, ".agent"), { recursive: true });
+
+        const result = runCli(
+            ["status", "--path", workspaceDir, "--quiet"],
+            { env: { AG_KIT_INDEX_PATH: indexPath } },
+        );
+        assert.strictEqual(result.status, 1);
+        assert.strictEqual((result.stdout || "").trim(), "broken");
+    });
+
+    test("status --quiet should report broken for codex drift", () => {
+        const initResult = runCli(
+            ["init", "--target", "codex", "--path", workspaceDir, "--quiet"],
+            { env: { AG_KIT_INDEX_PATH: indexPath } },
+        );
+        assert.strictEqual(initResult.status, 0, initResult.stderr || initResult.stdout);
+
+        fs.writeFileSync(path.join(workspaceDir, ".agents", "AGENTS.md"), "drifted", "utf8");
+
+        const result = runCli(
+            ["status", "--path", workspaceDir, "--quiet"],
+            { env: { AG_KIT_INDEX_PATH: indexPath } },
+        );
+        assert.strictEqual(result.status, 1);
+        assert.strictEqual((result.stdout || "").trim(), "broken");
+    });
+
+    test("status --quiet should report installed when installation is healthy", () => {
+        const initResult = runCli(
+            ["init", "--target", "codex", "--path", workspaceDir, "--quiet"],
+            { env: { AG_KIT_INDEX_PATH: indexPath } },
+        );
+        assert.strictEqual(initResult.status, 0, initResult.stderr || initResult.stdout);
+
+        const result = runCli(
+            ["status", "--path", workspaceDir, "--quiet"],
+            { env: { AG_KIT_INDEX_PATH: indexPath } },
+        );
+        assert.strictEqual(result.status, 0, result.stderr || result.stdout);
+        assert.strictEqual((result.stdout || "").trim(), "installed");
+    });
+
     test("status should reject unsupported --no-index option", () => {
         fs.mkdirSync(path.join(workspaceDir, ".agent"), { recursive: true });
 

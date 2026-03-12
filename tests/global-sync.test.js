@@ -37,7 +37,18 @@ describe("Global Sync", () => {
         const result = runCli(["global", "status", "--quiet"], {
             env: { AG_KIT_GLOBAL_ROOT: tempDir },
         });
-        assert.notStrictEqual(result.status, 0);
+        assert.strictEqual(result.status, 2);
+        assert.strictEqual((result.stdout || "").trim(), "missing");
+    });
+
+    test("global status should report broken when target root exists but skills are incomplete", () => {
+        fs.mkdirSync(path.join(tempDir, ".agents"), { recursive: true });
+
+        const result = runCli(["global", "status", "--quiet"], {
+            env: { AG_KIT_GLOBAL_ROOT: tempDir },
+        });
+        assert.strictEqual(result.status, 1);
+        assert.strictEqual((result.stdout || "").trim(), "broken");
     });
 
     test("global sync should install codex skills into $HOME/.agents/skills", () => {
@@ -64,6 +75,19 @@ describe("Global Sync", () => {
 
         const geminiRoot = path.join(tempDir, ".gemini", "antigravity", "skills");
         assert.ok(fs.existsSync(path.join(geminiRoot, "clean-code", "SKILL.md")), "missing expected gemini skill: clean-code");
+    });
+
+    test("global status should report installed after global sync", () => {
+        const syncResult = runCli(["global", "sync", "--quiet"], {
+            env: { AG_KIT_GLOBAL_ROOT: tempDir },
+        });
+        assert.strictEqual(syncResult.status, 0, syncResult.stderr || syncResult.stdout);
+
+        const statusResult = runCli(["global", "status", "--quiet"], {
+            env: { AG_KIT_GLOBAL_ROOT: tempDir },
+        });
+        assert.strictEqual(statusResult.status, 0, statusResult.stderr || statusResult.stdout);
+        assert.strictEqual((statusResult.stdout || "").trim(), "installed");
     });
 
     test("global sync should install gemini skills into ~/.gemini/antigravity/skills", () => {
