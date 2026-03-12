@@ -47,25 +47,28 @@ npm install -g .
 
 - 项目安装：`ag-kit init` / `ag-kit update`（功能最完整）
 - 全局安装：`ag-kit global sync`（仅同步 Skills，跨项目复用）
+- 默认行为：`ag-kit global sync` 未指定 `--target/--targets` 时，同步 `codex + gemini`
 
 示例：
 
 ```bash
+ag-kit global sync
 ag-kit global sync --target codex
 ag-kit global sync --target gemini
 ag-kit global status
 ```
 
 全局安装只同步 Skills，不写入 Rules/Agents/Workflows，避免全局副作用。
+覆盖同名 Skill 前会自动备份；手动回滚方式见 `docs/TECH.md`。
 
-规划与边界细节见：`docs/plan-global-install.md`
+规划与边界细节见：`docs/PLAN.md`（规划）与 `docs/TECH.md`（技术）。
 
 ### Codex 规则边界说明
 
 - `antigravity.rules`：本项目生成并注入的托管说明文件，用于记录受管资源与运维约束。
 - `.rules`（如 `~/.codex/rules/default.rules`）：Codex 官方的命令审批/执行策略文件（Starlark 规则，支持 `prefix_rule()`）。
 - 默认行为：本项目不会自动写入你的全局 `~/.codex/rules`，避免引入不可预期的全局副作用。
-- 如需启用官方 `.rules` 审批策略，请参考 `docs/codex-rules-template.md`。
+- 如需启用官方 `.rules` 审批策略，请参考 `docs/TECH.md` 的「Codex 官方 `.rules`（手动配置）」小节。
 
 ### ⚠️ 关于 `.gitignore` 的重要说明
 
@@ -156,6 +159,8 @@ CLI（命令行界面）工具：
 | `ag-kit update` | 更新当前项目已安装目标 |
 | `ag-kit update-all` | 批量更新所有已登记工作区 |
 | `ag-kit doctor` | 诊断安装完整性（可 `--fix` 自愈） |
+| `ag-kit global sync` | 全局同步 Skills（默认同步 codex+gemini） |
+| `ag-kit global status` | 查看全局 Skills 安装状态 |
 | `ag-kit exclude` | 管理全局索引排除清单 |
 | `ag-kit status` | 检查安装状态 |
 

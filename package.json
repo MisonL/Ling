@@ -39,12 +39,8 @@
     "LICENSE",
     "CHANGELOG.md",
     "AGENT_FLOW.md",
-    "docs/codex-rules-template.md",
-    "docs/mapping-spec.md",
-    "docs/multi-target-adapter.md",
-    "docs/operations.md",
-    "docs/terminology-style-guide.md",
-    "docs/official/**"
+    "docs/PLAN.md",
+    "docs/TECH.md"
   ],
   "bin": {
     "ag-kit": "./bin/ag-kit.js"

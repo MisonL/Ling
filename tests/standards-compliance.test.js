@@ -53,7 +53,8 @@ describe('Standards Compliance', () => {
     test('deprecated .codex primary-layout wording should be removed from user-facing docs and generator', () => {
         const targets = [
             'README.md',
-            'docs/operations.md',
+            'docs/PLAN.md',
+            'docs/TECH.md',
             'docs/code-review-report.md',
             'bin/core/generator.js',
         ];
@@ -131,8 +132,8 @@ describe('Standards Compliance', () => {
         );
     });
 
-    test('official codex skills doc should track current .agents skill locations', () => {
-        const file = path.resolve('docs/official/codex/skills.md');
+    test('user-facing docs should track current .agents skill locations', () => {
+        const file = path.resolve('docs/TECH.md');
         const content = fs.readFileSync(file, 'utf8');
 
         assert.ok(content.includes('$HOME/.agents/skills/'), 'missing global skill path: $HOME/.agents/skills/');
