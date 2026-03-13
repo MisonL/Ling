@@ -6,23 +6,10 @@
 
 > 面向 Gemini CLI、Antigravity 与 Codex 的中文 AI Agent 模板工具包，提供 Skills、Agents、Workflows 与 CLI 的一键安装、更新和治理。
 
-## 致谢
-
-本项目吸收并整合了社区项目的经验与资产，感谢：
-
-- [vudovn/antigravity-kit](https://github.com/vudovn/antigravity-kit)
-- [2217173240/Coding-Agent-prompt-best-practice](https://github.com/2217173240/Coding-Agent-prompt-best-practice)
-
 ## 快速安装
 
 ```bash
 npm install -g @mison/ling
-```
-
-或使用 Bun：
-
-```bash
-bun install -g @mison/ling
 ```
 
 然后在你的目标项目中初始化：
@@ -138,7 +125,7 @@ ling spec disable --target codex
 | 组件 | 数量 | 描述 |
 | --- | --- | --- |
 | Agents（智能体） | 20 | 专家级 AI 人设（前端、后端、安全、产品、QA 等） |
-| Skills（技能） | 37 | 特定领域的知识模块 |
+| Skills（技能） | 38 | 特定领域的知识模块 |
 | Workflows（工作流） | 12 | 斜杠命令流程 |
 
 ## 使用方法
@@ -263,20 +250,19 @@ ling exclude remove --path /path/to/dir         # 删除排除路径
 ### 开发维护命令
 
 ```bash
-bun run clean           # 清理本地生成产物（如 web/.next、web/node_modules）
-bun run clean:dry-run   # 预览将被清理的路径
-bun run test            # 只执行 tests/ 目录下测试
-bun run health-check    # 一键执行全链路健康复检
+npm run clean           # 清理本地生成产物（如 web/.next、web/node_modules）
+npm run clean:dry-run   # 预览将被清理的路径
+npm test                # 执行 tests/ 目录下测试
+npm run health-check    # 一键执行全链路健康复检
 ```
 
 如果你在 `web/` 子项目内开发，可按需执行：
 
 ```bash
-bun install --cwd web
-bun run lint --cwd web
+cd web
+npm install
+npm run lint
 ```
-
-> 说明：若你通过 `bun install -g` 安装 CLI，Bun 默认会阻止本包 `postinstall`。上游同名包冲突提示会在首次执行 `ling init/update/update-all/global sync` 时给出。
 
 ## 卸载
 
@@ -352,6 +338,13 @@ ling exclude add --path /path/to/your-project
     </td>
   </tr>
 </table>
+
+## 致谢
+
+本项目吸收并整合了社区项目的经验与资产，感谢：
+
+- [vudovn/antigravity-kit](https://github.com/vudovn/antigravity-kit)
+- [2217173240/Coding-Agent-prompt-best-practice](https://github.com/2217173240/Coding-Agent-prompt-best-practice)
 
 ## 许可证
 

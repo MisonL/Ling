@@ -2,11 +2,11 @@
 
 ## 快速验证（维护者）
 ```bash
-bun install
-bun run test
-bun run ci:verify
-bun run health-check
-cd web && bun install && bun run lint
+npm install
+npm test
+npm run ci:verify
+npm run health-check
+cd web && npm install && npm run lint
 ```
 
 ## 核心目录与职责
@@ -161,7 +161,6 @@ cp -a "$HOME/.ling/backups/global/$ts/antigravity/$skill" "$HOME/.gemini/antigra
 
 ## 安装提示机制
 - npm 全局安装：`postinstall` 会尽力检测并提示上游英文版 `@vudovn/ag-kit` 冲突。
-- Bun 全局安装：Bun 默认会阻止本包 `postinstall`；因此冲突提示以内置 CLI 运行期检查为准，会在 `init` / `update` / `update-all` / `global sync` 时提示。
 - 冲突提示只负责提醒，不会自动修改当前安装状态；如需清理可执行 `npm uninstall -g @vudovn/ag-kit`。
 
 ## 常见故障
