@@ -24,8 +24,8 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: "灵轨（Ling） - AI Agent 能力扩展工具包",
-  description: "包含技能、规则与工作流的 AI Agent 模板集合，帮助 Antigravity 编码助手提效。",
-  metadataBase: new URL("https://antigravity-kit.vercel.app/"),
+  description: "面向 Gemini CLI、Antigravity 与 Codex 的中文 AI Agent 模板集合，包含技能、规则与工作流。",
+  metadataBase: new URL("https://github.com/MisonL/Ling"),
   robots: {
     index: true,
     follow: true,
@@ -33,9 +33,11 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "zh_CN",
-    url: "https://antigravity-kit.vercel.app/",
+    url: "https://github.com/MisonL/Ling",
     siteName: "灵轨（Ling）",
-    images: ["/images/logo.png"],
+    images: [
+      "https://raw.githubusercontent.com/MisonL/Ling/main/web/public/images/logo.png",
+    ],
   },
 };
 
