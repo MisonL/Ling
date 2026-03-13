@@ -7,6 +7,17 @@
 
 ## [Unreleased]
 
+## [ling-1.0.1] - 2026-03-13
+
+### 修复
+
+- 健康检查脚本：允许 `ling spec status --quiet` 在 `missing` 状态返回非 0 退出码，并继续校验输出内容。
+- Web 文档站 lint：移除 `useEffect` 内同步 `setState` 的用法，改为渲染期平台判断并对快捷键提示增加 `suppressHydrationWarning`。
+
+### 维护
+
+- CLI 入口权限：`bin/ling.js` 设置为可执行，保持与 `bin/ag-kit.js` 一致。
+
 ## [ling-1.0.0] - 2026-03-13
 
 ### 版本与标签
@@ -39,5 +50,6 @@
 
 本项目在 Ling 重启前的 2.x/3.x 版本记录已冻结，不再维护。
 
-[Unreleased]: https://github.com/MisonL/Ling/compare/ling-1.0.0...HEAD
+[Unreleased]: https://github.com/MisonL/Ling/compare/ling-1.0.1...HEAD
+[ling-1.0.1]: https://github.com/MisonL/Ling/releases/tag/ling-1.0.1
 [ling-1.0.0]: https://github.com/MisonL/Ling/releases/tag/ling-1.0.0
