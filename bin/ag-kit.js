@@ -11,7 +11,7 @@ const AtomicWriter = require("./utils/atomic-writer");
 const CodexBuilder = require("./core/builder");
 const GeminiAdapter = require("./adapters/gemini");
 const CodexAdapter = require("./adapters/codex");
-const { selectTargets } = require("./interactive");
+const { selectTargets, createConflictPrompter } = require("./interactive");
 
 const BUNDLED_AGENT_DIR = path.resolve(__dirname, "../.agents");
 const BUNDLED_SPEC_DIR = path.resolve(__dirname, "../.spec");
@@ -154,6 +154,22 @@ function copyDirRecursive(src, dest) {
             fs.copyFileSync(srcPath, destPath);
         }
     }
+}
+
+function backupWorkspaceDir(workspaceRoot, sourceDir, backupRootName, timestamp, options, label) {
+    if (!fs.existsSync(sourceDir)) {
+        return "";
+    }
+    const assetName = path.basename(sourceDir) || "asset";
+    const backupDir = path.join(workspaceRoot, backupRootName, timestamp, "preflight", assetName);
+    if (options.dryRun) {
+        log(options, `[dry-run] 将备份 ${label}: ${sourceDir} -> ${backupDir}`);
+        return backupDir;
+    }
+    fs.mkdirSync(path.dirname(backupDir), { recursive: true });
+    copyDirRecursive(sourceDir, backupDir);
+    log(options, `[backup] 已备份 ${label}: ${sourceDir} -> ${backupDir}`);
+    return backupDir;
 }
 
 function areDirectoriesEqual(leftDir, rightDir) {
@@ -1219,6 +1235,103 @@ function syncGlobalSkillsFromRoot(targetName, skillsRoot, timestamp, options) {
     };
 }
 
+function planGlobalSyncTasks(targetName, agentDir) {
+    const destinations = getGlobalDestinations(targetName);
+
+    if (targetName === "codex") {
+        const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "ag-kit-global-codex-"));
+        const mockRoot = path.join(tempRoot, "source");
+        const mockAgent = path.join(mockRoot, ".agents");
+        const outputDir = path.join(tempRoot, "out");
+
+        copyDirRecursive(agentDir, mockAgent);
+        CodexBuilder.build(mockRoot, outputDir);
+        const skillsRoot = path.join(outputDir, "skills");
+        const skillNames = listSkillDirectories(skillsRoot);
+
+        const tasks = [];
+        for (const destination of destinations) {
+            for (const skillName of skillNames) {
+                tasks.push({
+                    destination,
+                    skillName,
+                    srcDir: path.join(skillsRoot, skillName),
+                    destDir: path.join(destination.skillsRoot, skillName),
+                });
+            }
+        }
+
+        return {
+            tasks,
+            cleanup: () => fs.rmSync(tempRoot, { recursive: true, force: true }),
+        };
+    }
+
+    if (targetName === "gemini") {
+        const skillsRoot = path.join(agentDir, "skills");
+        const skillNames = listSkillDirectories(skillsRoot);
+        const tasks = [];
+        for (const destination of destinations) {
+            for (const skillName of skillNames) {
+                tasks.push({
+                    destination,
+                    skillName,
+                    srcDir: path.join(skillsRoot, skillName),
+                    destDir: path.join(destination.skillsRoot, skillName),
+                });
+            }
+        }
+        return { tasks, cleanup: null };
+    }
+
+    throw new Error(`未知目标: ${targetName}`);
+}
+
+function summarizeGlobalSync(tasks) {
+    const perDestination = new Map();
+    let synced = 0;
+    let skipped = 0;
+    let backedUp = 0;
+
+    for (const task of tasks) {
+        const id = task.destination.id;
+        if (!perDestination.has(id)) {
+            perDestination.set(id, {
+                targetName: id,
+                family: task.destination.targetName,
+                destRoot: task.destination.skillsRoot,
+                total: 0,
+                synced: 0,
+                skipped: 0,
+                backedUp: 0,
+            });
+        }
+        const entry = perDestination.get(id);
+        entry.total += 1;
+        if (task.result === "skipped") {
+            skipped += 1;
+            entry.skipped += 1;
+            continue;
+        }
+        if (task.result === "synced") {
+            synced += 1;
+            entry.synced += 1;
+        }
+        if (task.backedUp) {
+            backedUp += 1;
+            entry.backedUp += 1;
+        }
+    }
+
+    return {
+        total: tasks.length,
+        synced,
+        skipped,
+        backedUp,
+        destinations: Array.from(perDestination.values()),
+    };
+}
+
 function applyGlobalSync(targetName, agentDir, timestamp, options) {
     if (targetName === "codex") {
         const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "ag-kit-global-codex-"));
@@ -1248,21 +1361,70 @@ async function commandGlobalSync(options) {
     const targets = await resolveTargetsForGlobalSync(options);
     const { agentDir, cleanup, sourceLabel } = resolveAgentInstallSource(options);
     const timestamp = nowISO().replace(/[:.]/g, "-");
+    const prompter = createConflictPrompter(options);
 
     try {
         log(options, `[global] 全局同步源: ${sourceLabel}`);
         for (const target of targets) {
             log(options, `[sync] 正在同步全局目标 [${target}] ...`);
-            const result = applyGlobalSync(target, agentDir, timestamp, options);
-            if (!options.dryRun) {
-                log(options, `[summary] 全局同步完成 [${target}]：总计 ${result.total}，新增/覆盖 ${result.synced}，跳过 ${result.skipped}，备份 ${result.backedUp}`);
-                for (const item of result.destinations) {
-                    log(options, `   - ${item.targetName}: ${item.destRoot}（每目标 ${item.total} 个 Skills）`);
+            const plan = planGlobalSyncTasks(target, agentDir);
+            try {
+                for (const task of plan.tasks) {
+                    const exists = fs.existsSync(task.destDir);
+                    const equal = exists ? areDirectoriesEqual(task.srcDir, task.destDir) : false;
+                    if (exists && equal) {
+                        task.result = "skipped";
+                        continue;
+                    }
+
+                    if (exists && !equal && prompter) {
+                        const action = await prompter.resolveConflict({
+                            category: `global:${task.destination.id}`,
+                            label: `全局 Skill ${task.destination.id}/${task.skillName}`,
+                            path: task.destDir,
+                        });
+                        task.action = action;
+                    } else if (exists && !equal && !prompter && (options.nonInteractive || !process.stdin.isTTY)) {
+                        // 非交互环境保持原有行为：备份后覆盖
+                        task.action = "backup";
+                    }
+
+                    if (task.action === "keep") {
+                        task.result = "skipped";
+                        continue;
+                    }
+
+                    if (options.dryRun) {
+                        log(options, `[dry-run] 将同步全局 Skill: ${task.destination.id}/${task.skillName}`);
+                        task.result = "skipped";
+                        continue;
+                    }
+
+                    if (exists && task.action !== "remove") {
+                        backupSkillDirectory(task.destination.id, task.skillName, task.destDir, timestamp, options);
+                        task.backedUp = true;
+                    }
+
+                    const logger = options.quiet ? (() => {}) : log.bind(null, options);
+                    AtomicWriter.atomicCopyDir(task.srcDir, task.destDir, { logger });
+                    log(options, `[ok] 已同步全局 Skill: ${task.destination.id}/${task.skillName}`);
+                    task.result = "synced";
                 }
+
+                const summary = summarizeGlobalSync(plan.tasks);
+                if (!options.dryRun) {
+                    log(options, `[summary] 全局同步完成 [${target}]：总计 ${summary.total}，新增/覆盖 ${summary.synced}，跳过 ${summary.skipped}，备份 ${summary.backedUp}`);
+                    for (const item of summary.destinations) {
+                        log(options, `   - ${item.targetName}: ${item.destRoot}（每目标 ${item.total} 个 Skills）`);
+                    }
+                }
+            } finally {
+                if (plan.cleanup) plan.cleanup();
             }
         }
     } finally {
         if (cleanup) cleanup();
+        if (prompter) prompter.close();
     }
 }
 
@@ -1437,7 +1599,7 @@ function removeDirIfExists(targetDir, options, label) {
     log(options, `[clean] 已删除 ${label}: ${targetDir}`);
 }
 
-function ensureSpecAssetsInstalled(state, timestamp, options) {
+async function ensureSpecAssetsInstalled(state, timestamp, options, prompter) {
     const specHome = getSpecHomeDir();
     const assets = {
         templates: {
@@ -1455,23 +1617,68 @@ function ensureSpecAssetsInstalled(state, timestamp, options) {
             continue;
         }
 
-        const backupPath = backupDirSnapshot(
-            config.destDir,
-            path.join(resolveSpecBackupRoot(timestamp), "assets", assetName),
-            options,
-            `Spec ${assetName}`,
-        );
+        const exists = fs.existsSync(config.destDir);
+        let action = exists ? "backup" : "";
+        if (exists && prompter) {
+            action = await prompter.resolveConflict({
+                category: "spec:assets",
+                label: `Spec ${assetName}`,
+                path: config.destDir,
+            });
+        }
+
+        if (action === "keep") {
+            log(options, `[skip] 已保留 Spec ${assetName} 资产，不覆盖: ${config.destDir}`);
+            state.assets[assetName] = {
+                destPath: config.destDir,
+                backupPath: "",
+                installedAt: nowISO(),
+                mode: "kept",
+            };
+            continue;
+        }
+
+        let backupPath = "";
+        if (exists && action !== "remove") {
+            backupPath = backupDirSnapshot(
+                config.destDir,
+                path.join(resolveSpecBackupRoot(timestamp), "assets", assetName),
+                options,
+                `Spec ${assetName}`,
+            );
+        } else if (exists && action === "remove") {
+            removeDirIfExists(config.destDir, options, `Spec ${assetName}`);
+        }
+
         applyDirSnapshot(config.sourceDir, config.destDir, options, `Spec ${assetName}`);
         state.assets[assetName] = {
             destPath: config.destDir,
             backupPath,
             installedAt: nowISO(),
+            mode: exists ? (action === "remove" ? "replaced" : "backup") : "created",
         };
     }
 }
 
+function normalizeSpecAssetMode(assetState) {
+    if (!assetState || typeof assetState !== "object") {
+        return "";
+    }
+    if (typeof assetState.mode === "string" && assetState.mode) {
+        return assetState.mode;
+    }
+    if (typeof assetState.backupPath === "string" && assetState.backupPath) {
+        return "backup";
+    }
+    return "created";
+}
+
 function restoreSpecAsset(assetState, options, label) {
     if (!assetState || typeof assetState.destPath !== "string") {
+        return;
+    }
+    const mode = normalizeSpecAssetMode(assetState);
+    if (mode === "kept") {
         return;
     }
     if (assetState.backupPath && fs.existsSync(assetState.backupPath)) {
@@ -1481,7 +1688,7 @@ function restoreSpecAsset(assetState, options, label) {
     removeDirIfExists(assetState.destPath, options, label);
 }
 
-function enableSpecTarget(targetName, state, timestamp, options) {
+async function enableSpecTarget(targetName, state, timestamp, options, prompter) {
     if (state.targets[targetName]) {
         log(options, `[skip] Spec 目标已启用: ${targetName}`);
         return;
@@ -1501,17 +1708,45 @@ function enableSpecTarget(targetName, state, timestamp, options) {
         for (const skillName of SPEC_SKILL_NAMES) {
             const srcDir = path.join(BUNDLED_SPEC_DIR, "skills", skillName);
             const destDir = path.join(destination.skillsRoot, skillName);
-            const backupPath = backupDirSnapshot(
-                destDir,
-                path.join(resolveSpecBackupRoot(timestamp), destination.id, "skills", skillName),
-                options,
-                `Spec Skill ${destination.id}/${skillName}`,
-            );
+            const exists = fs.existsSync(destDir);
+            let action = exists ? "backup" : "";
+            if (exists && prompter) {
+                action = await prompter.resolveConflict({
+                    category: `spec:skills:${destination.id}`,
+                    label: `Spec Skill ${destination.id}/${skillName}`,
+                    path: destDir,
+                });
+            }
+
+            if (action === "keep") {
+                log(options, `[skip] 已保留 Spec Skill，不覆盖: ${destination.id}/${skillName}`);
+                consumerState.skills.push({
+                    name: skillName,
+                    destPath: destDir,
+                    backupPath: "",
+                    mode: "kept",
+                });
+                continue;
+            }
+
+            let backupPath = "";
+            if (exists && action !== "remove") {
+                backupPath = backupDirSnapshot(
+                    destDir,
+                    path.join(resolveSpecBackupRoot(timestamp), destination.id, "skills", skillName),
+                    options,
+                    `Spec Skill ${destination.id}/${skillName}`,
+                );
+            } else if (exists && action === "remove") {
+                removeDirIfExists(destDir, options, `Spec Skill ${destination.id}/${skillName}`);
+            }
+
             applyDirSnapshot(srcDir, destDir, options, `Spec Skill ${destination.id}/${skillName}`);
             consumerState.skills.push({
                 name: skillName,
                 destPath: destDir,
                 backupPath,
+                mode: exists ? (action === "remove" ? "replaced" : "backup") : "created",
             });
         }
 
@@ -1530,6 +1765,10 @@ function disableSpecTarget(targetName, state, options) {
 
     for (const [consumerId, consumerState] of Object.entries(targetState.consumers || {})) {
         for (const skill of consumerState.skills || []) {
+            const mode = normalizeSpecAssetMode(skill);
+            if (mode === "kept") {
+                continue;
+            }
             if (skill.backupPath && fs.existsSync(skill.backupPath)) {
                 applyDirSnapshot(skill.backupPath, skill.destPath, options, `恢复 Spec Skill ${consumerId}/${skill.name}`);
             } else {
@@ -1608,15 +1847,20 @@ function commandSpecStatus(options) {
     setQuietStatusExitCode(summary.state);
 }
 
-function commandSpecEnable(options) {
+async function commandSpecEnable(options) {
     ensureBundledSpecResources();
     const targets = resolveTargetsForSpec(options);
     const { statePath, state } = readSpecState();
     const timestamp = nowISO().replace(/[:.]/g, "-");
+    const prompter = createConflictPrompter(options);
 
-    ensureSpecAssetsInstalled(state, timestamp, options);
-    for (const targetName of targets) {
-        enableSpecTarget(targetName, state, timestamp, options);
+    try {
+        await ensureSpecAssetsInstalled(state, timestamp, options, prompter);
+        for (const targetName of targets) {
+            await enableSpecTarget(targetName, state, timestamp, options, prompter);
+        }
+    } finally {
+        if (prompter) prompter.close();
     }
 
     state.updatedAt = nowISO();
@@ -1654,13 +1898,13 @@ function commandSpecDisable(options) {
     log(options, `[ok] Spec Profile 已停用 (Targets: ${targets.join(", ")})`);
 }
 
-function commandSpec(options) {
+async function commandSpec(options) {
     const subcommand = String(options.subcommand || "status").toLowerCase();
     if (subcommand === "status") {
         return commandSpecStatus(options);
     }
     if (subcommand === "enable") {
-        return commandSpecEnable(options);
+        return await commandSpecEnable(options);
     }
     if (subcommand === "disable") {
         return commandSpecDisable(options);
@@ -1671,12 +1915,83 @@ function commandSpec(options) {
 async function commandInit(options) {
     const workspaceRoot = resolveWorkspaceRoot(options.path);
     const targets = await resolveTargetsForInit(options);
+    const prompter = createConflictPrompter(options);
 
-    for (const target of targets) {
-        const adapter = createAdapter(target, workspaceRoot, options);
-        log(options, `[sync] 正在初始化目标 [${target}] ...`);
-        adapter.install(BUNDLED_AGENT_DIR);
-        registerWorkspaceTarget(workspaceRoot, target, options);
+    try {
+        for (const target of targets) {
+            const runOptions = { ...options };
+            const conflicts = [];
+
+            if (target === "gemini") {
+                const agentDir = path.join(workspaceRoot, ".agent");
+                if (fs.existsSync(agentDir)) {
+                    conflicts.push({
+                        category: "project:gemini",
+                        label: ".agent",
+                        path: agentDir,
+                        target,
+                    });
+                }
+            }
+
+            if (target === "codex") {
+                const managedDir = path.join(workspaceRoot, ".agents");
+                const legacyDir = path.join(workspaceRoot, ".codex");
+                if (fs.existsSync(managedDir) || fs.existsSync(legacyDir)) {
+                    if (fs.existsSync(managedDir)) {
+                        conflicts.push({
+                            category: "project:codex",
+                            label: ".agents",
+                            path: managedDir,
+                            target,
+                        });
+                    }
+                    if (fs.existsSync(legacyDir)) {
+                        conflicts.push({
+                            category: "project:codex",
+                            label: ".codex",
+                            path: legacyDir,
+                            target,
+                        });
+                    }
+                }
+            }
+
+            if (conflicts.length > 0) {
+                if (!prompter && !runOptions.force) {
+                    throw new Error("检测到已有资产且当前环境不可交互，请使用 --force 或在交互终端中重试。");
+                }
+
+                const timestamp = nowISO().replace(/[:.]/g, "-");
+                let shouldSkip = false;
+
+                for (const conflict of conflicts) {
+                    const action = prompter ? await prompter.resolveConflict(conflict) : "remove";
+                    if (action === "keep") {
+                        log(options, `[skip] 已保留现有资产，跳过初始化: ${conflict.label}`);
+                        shouldSkip = true;
+                        break;
+                    }
+                    if (action === "backup") {
+                        const backupRootName = conflict.label === ".agent" ? ".agent-backup" : ".agents-backup";
+                        backupWorkspaceDir(workspaceRoot, conflict.path, backupRootName, timestamp, options, `工作区资产 ${conflict.label}`);
+                    }
+                    // remove/backup 都需要强制覆盖才能继续
+                    runOptions.force = true;
+                }
+
+                if (shouldSkip) {
+                    continue;
+                }
+            }
+
+            const adapter = createAdapter(target, workspaceRoot, runOptions);
+            log(options, `[sync] 正在初始化目标 [${target}] ...`);
+            adapter.install(BUNDLED_AGENT_DIR);
+            registerWorkspaceTarget(workspaceRoot, target, runOptions);
+        }
+    } finally {
+        if (prompter) prompter.close();
     }
 
     if (targets.length > 0) {
@@ -1687,6 +2002,7 @@ async function commandInit(options) {
 async function commandUpdate(options) {
     const workspaceRoot = resolveWorkspaceRoot(options.path);
     const targets = resolveTargetsForUpdate(workspaceRoot, options);
+    const prompter = createConflictPrompter(options);
 
     if (targets.length === 0) {
         throw new Error(`此目录未检测到 ${PRIMARY_CLI_NAME} 安装，无法更新。请先执行 init。`);
@@ -1695,7 +2011,8 @@ async function commandUpdate(options) {
     log(options, `[update] 正在更新 Ling (Targets: ${targets.join(", ")})...`);
 
     let updatedAny = false;
-    for (const target of targets) {
+    try {
+        for (const target of targets) {
         if (!isTargetInstalled(workspaceRoot, target) && options.targets.length > 0) {
             throw new Error(`目标未安装: ${target}`);
         }
@@ -1705,15 +2022,103 @@ async function commandUpdate(options) {
         }
 
         const runOptions = { ...options, force: true };
+
+        if (prompter) {
+            const timestamp = nowISO().replace(/[:.]/g, "-");
+            if (target === "gemini") {
+                const agentDir = path.join(workspaceRoot, ".agent");
+                if (fs.existsSync(agentDir) && !areDirectoriesEqual(BUNDLED_AGENT_DIR, agentDir)) {
+                    const action = await prompter.resolveConflict({
+                        category: "project:gemini",
+                        label: ".agent",
+                        path: agentDir,
+                        target,
+                    });
+                    if (action === "keep") {
+                        log(options, "[skip] 已保留现有资产，跳过更新: .agent");
+                        continue;
+                    }
+                    if (action === "backup") {
+                        backupWorkspaceDir(workspaceRoot, agentDir, ".agent-backup", timestamp, options, "工作区资产 .agent");
+                    }
+                }
+            }
+
+            if (target === "codex") {
+                const managedDir = path.join(workspaceRoot, ".agents");
+                const legacyDir = path.join(workspaceRoot, ".codex");
+                const activeDir = fs.existsSync(managedDir) ? managedDir : legacyDir;
+                const manifestPath = path.join(activeDir, "manifest.json");
+                let hasConflict = false;
+
+                if (!fs.existsSync(manifestPath)) {
+                    hasConflict = true;
+                } else {
+                    try {
+                        const manager = new ManifestManager(manifestPath, { target: "codex" });
+                        manager.load();
+                        const drift = manager.checkDrift(activeDir);
+                        if (drift.modified.length > 0) {
+                            hasConflict = true;
+                        }
+                        const manifestFiles = manager.manifest.files || {};
+                        const unknownFiles = [];
+                        const stack = [activeDir];
+                        while (stack.length > 0) {
+                            const dir = stack.pop();
+                            const entries = fs.readdirSync(dir, { withFileTypes: true });
+                            for (const entry of entries) {
+                                const fullPath = path.join(dir, entry.name);
+                                if (entry.isDirectory()) {
+                                    stack.push(fullPath);
+                                    continue;
+                                }
+                                const relPath = path.relative(activeDir, fullPath).split(path.sep).join("/");
+                                if (!manifestFiles[relPath]) {
+                                    unknownFiles.push(relPath);
+                                }
+                            }
+                        }
+                        if (unknownFiles.length > 0) {
+                            hasConflict = true;
+                        }
+                    } catch (err) {
+                        hasConflict = true;
+                    }
+                }
+
+                if (hasConflict) {
+                    const action = await prompter.resolveConflict({
+                        category: "project:codex",
+                        label: fs.existsSync(managedDir) ? ".agents" : ".codex",
+                        path: activeDir,
+                        target,
+                    });
+                    if (action === "keep") {
+                        log(options, `[skip] 已保留现有资产，跳过更新: ${path.basename(activeDir)}`);
+                        continue;
+                    }
+                    if (action === "backup") {
+                        const backupRootName = fs.existsSync(managedDir) ? ".agents-backup" : ".agents-backup";
+                        backupWorkspaceDir(workspaceRoot, activeDir, backupRootName, timestamp, options, `工作区资产 ${path.basename(activeDir)}`);
+                    }
+                }
+            }
+        }
+
         const adapter = createAdapter(target, workspaceRoot, runOptions);
         log(options, `[sync] 更新 [${target}] ...`);
         adapter.update(BUNDLED_AGENT_DIR);
         registerWorkspaceTarget(workspaceRoot, target, runOptions);
         updatedAny = true;
+        }
+    } finally {
+        if (prompter) prompter.close();
     }
 
     if (!updatedAny) {
-        throw new Error("未找到可更新的目标");
+        log(options, "[skip] 未执行更新（已保留现有资产）");
+        return;
     }
 }
 
@@ -1754,6 +2159,7 @@ async function commandUpdateAll(options) {
 
     log(options, `[update] 开始批量更新工作区（共 ${records.length} 个）...`);
     log(options, `[index] 索引文件: ${indexPath}`);
+    const prompter = createConflictPrompter(options);
 
     let updated = 0;
     let skipped = 0;
@@ -1764,7 +2170,8 @@ async function commandUpdateAll(options) {
     const nextRecords = [];
     const removedRecordKeys = new Set();
 
-    for (let i = 0; i < records.length; i++) {
+    try {
+        for (let i = 0; i < records.length; i++) {
         const item = normalizeWorkspaceRecordV2(records[i], normalizeAbsolutePath(records[i].path));
         const workspacePath = normalizeAbsolutePath(item.path);
         const exclusion = evaluateWorkspaceExclusion(index, workspacePath);
@@ -1825,6 +2232,88 @@ async function commandUpdateAll(options) {
                     path: workspacePath,
                     silentIndexLog: true,
                 };
+
+                if (prompter) {
+                    const timestampForBackup = nowISO().replace(/[:.]/g, "-");
+
+                    if (target === "gemini") {
+                        const agentDir = path.join(workspacePath, ".agent");
+                        if (fs.existsSync(agentDir) && !areDirectoriesEqual(BUNDLED_AGENT_DIR, agentDir)) {
+                            const action = await prompter.resolveConflict({
+                                category: "update-all:project:gemini",
+                                label: `.agent (${workspacePath})`,
+                                path: agentDir,
+                            });
+                            if (action === "keep") {
+                                log(options, `[skip] [${i + 1}/${records.length}] 已保留现有资产，跳过更新: ${workspacePath} [gemini]`);
+                                continue;
+                            }
+                            if (action === "backup") {
+                                backupWorkspaceDir(workspacePath, agentDir, ".agent-backup", timestampForBackup, options, `工作区资产 .agent (${workspacePath})`);
+                            }
+                        }
+                    }
+
+                    if (target === "codex") {
+                        const managedDir = path.join(workspacePath, ".agents");
+                        const legacyDir = path.join(workspacePath, ".codex");
+                        const activeDir = fs.existsSync(managedDir) ? managedDir : legacyDir;
+                        const manifestPath = path.join(activeDir, "manifest.json");
+                        let hasConflict = false;
+
+                        if (!fs.existsSync(manifestPath)) {
+                            hasConflict = true;
+                        } else {
+                            try {
+                                const manager = new ManifestManager(manifestPath, { target: "codex" });
+                                manager.load();
+                                const drift = manager.checkDrift(activeDir);
+                                if (drift.modified.length > 0) {
+                                    hasConflict = true;
+                                }
+                                const manifestFiles = manager.manifest.files || {};
+                                const unknownFiles = [];
+                                const stack = [activeDir];
+                                while (stack.length > 0) {
+                                    const dir = stack.pop();
+                                    const entries = fs.readdirSync(dir, { withFileTypes: true });
+                                    for (const entry of entries) {
+                                        const fullPath = path.join(dir, entry.name);
+                                        if (entry.isDirectory()) {
+                                            stack.push(fullPath);
+                                            continue;
+                                        }
+                                        const relPath = path.relative(activeDir, fullPath).split(path.sep).join("/");
+                                        if (!manifestFiles[relPath]) {
+                                            unknownFiles.push(relPath);
+                                        }
+                                    }
+                                }
+                                if (unknownFiles.length > 0) {
+                                    hasConflict = true;
+                                }
+                            } catch (err) {
+                                hasConflict = true;
+                            }
+                        }
+
+                        if (hasConflict) {
+                            const action = await prompter.resolveConflict({
+                                category: "update-all:project:codex",
+                                label: `${path.basename(activeDir)} (${workspacePath})`,
+                                path: activeDir,
+                            });
+                            if (action === "keep") {
+                                log(options, `[skip] [${i + 1}/${records.length}] 已保留现有资产，跳过更新: ${workspacePath} [codex]`);
+                                continue;
+                            }
+                            if (action === "backup") {
+                                backupWorkspaceDir(workspacePath, activeDir, ".agents-backup", timestampForBackup, options, `工作区资产 ${path.basename(activeDir)} (${workspacePath})`);
+                            }
+                        }
+                    }
+                }
+
                 const adapter = createAdapter(target, workspacePath, runOptions);
                 adapter.update(BUNDLED_AGENT_DIR);
                 updatedTargets.push(target);
@@ -1844,44 +2333,49 @@ async function commandUpdateAll(options) {
             skipped += 1;
             nextRecords.push(item);
         }
-    }
+        }
 
-    if (!options.dryRun) {
-        withWorkspaceIndexLock(indexPath, () => {
-            const { index: latestIndex } = readWorkspaceIndex();
-            const mergedMap = new Map();
+        if (!options.dryRun) {
+            withWorkspaceIndexLock(indexPath, () => {
+                const { index: latestIndex } = readWorkspaceIndex();
+                const mergedMap = new Map();
 
-            for (const item of latestIndex.workspaces || []) {
-                if (!item || typeof item.path !== "string") continue;
-                mergedMap.set(pathCompareKey(item.path), normalizeWorkspaceRecordV2(item, normalizeAbsolutePath(item.path)));
-            }
+                for (const item of latestIndex.workspaces || []) {
+                    if (!item || typeof item.path !== "string") continue;
+                    mergedMap.set(pathCompareKey(item.path), normalizeWorkspaceRecordV2(item, normalizeAbsolutePath(item.path)));
+                }
 
-            for (const removedKey of removedRecordKeys) {
-                mergedMap.delete(removedKey);
-            }
+                for (const removedKey of removedRecordKeys) {
+                    mergedMap.delete(removedKey);
+                }
 
-            for (const item of nextRecords) {
-                if (!item || typeof item.path !== "string") continue;
-                mergedMap.set(pathCompareKey(item.path), normalizeWorkspaceRecordV2(item, normalizeAbsolutePath(item.path)));
-            }
+                for (const item of nextRecords) {
+                    if (!item || typeof item.path !== "string") continue;
+                    mergedMap.set(pathCompareKey(item.path), normalizeWorkspaceRecordV2(item, normalizeAbsolutePath(item.path)));
+                }
 
-            latestIndex.workspaces = Array.from(mergedMap.values()).sort((a, b) => a.path.localeCompare(b.path));
-            latestIndex.updatedAt = timestamp;
-            writeWorkspaceIndex(indexPath, latestIndex);
-        });
-    }
+                latestIndex.workspaces = Array.from(mergedMap.values()).sort((a, b) => a.path.localeCompare(b.path));
+                latestIndex.updatedAt = timestamp;
+                writeWorkspaceIndex(indexPath, latestIndex);
+            });
+        }
 
-    log(options, "[summary] 批量更新完成");
-    log(options, `   成功: ${updated}`);
-    log(options, `   跳过: ${skipped}`);
-    log(options, `   失败: ${failed}`);
-    log(options, `   清理排除路径: ${removedExcluded}`);
-    if (options.pruneMissing) {
-        log(options, `   清理失效索引: ${removedMissing}`);
-    }
+        log(options, "[summary] 批量更新完成");
+        log(options, `   成功: ${updated}`);
+        log(options, `   跳过: ${skipped}`);
+        log(options, `   失败: ${failed}`);
+        log(options, `   清理排除路径: ${removedExcluded}`);
+        if (options.pruneMissing) {
+            log(options, `   清理失效索引: ${removedMissing}`);
+        }
 
-    if (failed > 0) {
-        process.exitCode = 1;
+        if (failed > 0) {
+            process.exitCode = 1;
+        }
+    } finally {
+        if (prompter) {
+            prompter.close();
+        }
     }
 }
 
@@ -2240,7 +2734,7 @@ async function main() {
         }
 
         if (command === "spec") {
-            commandSpec(options);
+            await commandSpec(options);
             return;
         }
 

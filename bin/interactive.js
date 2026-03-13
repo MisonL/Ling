@@ -15,6 +15,10 @@ function askQuestion(rl, query) {
     });
 }
 
+function isInteractiveTerminal() {
+    return Boolean(process.stdin.isTTY && process.stdout.isTTY);
+}
+
 /**
  * Prompt user to select targets from a list.
  * Supports multiple selection by comma separated numbers or names.
@@ -25,6 +29,10 @@ function askQuestion(rl, query) {
 async function selectTargets(options) {
     if (options.nonInteractive) {
         throw new Error("非交互模式下必须通过 --target 或 --targets 指定目标");
+    }
+
+    if (!isInteractiveTerminal()) {
+        throw new Error("当前环境不是交互终端，请通过 --target 或 --targets 指定目标");
     }
 
     const rl = createInterface();
@@ -60,6 +68,65 @@ async function selectTargets(options) {
     }
 }
 
+/**
+ * Create an interactive prompter for resolving asset conflicts.
+ * @param {object} options CLI options
+ * @returns {{resolveConflict: function, close: function}|null}
+ */
+function createConflictPrompter(options) {
+    if (options.nonInteractive || !isInteractiveTerminal()) {
+        return null;
+    }
+
+    const rl = createInterface();
+    const categoryDefaults = new Map();
+
+    async function resolveConflict(conflict) {
+        const category = String(conflict.category || "default");
+        if (categoryDefaults.has(category)) {
+            return categoryDefaults.get(category);
+        }
+
+        const label = String(conflict.label || "未知资产");
+        const location = conflict.path ? ` (${conflict.path})` : "";
+
+        console.log(`\n[confirm] 检测到已存在资产: ${label}${location}`);
+        console.log("请选择处理方式:");
+        console.log("  k) 保留(跳过此资产)");
+        console.log("  b) 备份后移除(推荐)");
+        console.log("  r) 直接移除(不备份)");
+
+        while (true) {
+            const answer = String(await askQuestion(rl, "请输入 k / b / r: ")).trim().toLowerCase();
+            let action = "";
+            if (answer === "k") action = "keep";
+            if (answer === "b") action = "backup";
+            if (answer === "r") action = "remove";
+
+            if (!action) {
+                console.log("[warn] 输入无效，请重新输入。");
+                continue;
+            }
+
+            const applyAnswer = String(await askQuestion(rl, `是否对同类资产(类别: ${category})后续冲突复用该选择? (y/N): `))
+                .trim()
+                .toLowerCase();
+            if (applyAnswer === "y" || applyAnswer === "yes") {
+                categoryDefaults.set(category, action);
+            }
+
+            return action;
+        }
+    }
+
+    function close() {
+        rl.close();
+    }
+
+    return { resolveConflict, close };
+}
+
 module.exports = {
-    selectTargets
+    selectTargets,
+    createConflictPrompter,
 };
