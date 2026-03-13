@@ -201,7 +201,7 @@ const searchGroups: SearchGroup[] = [
 
 export default function SearchDialog() {
     const [open, setOpen] = useState(false);
-    const [isMac, setIsMac] = useState(false);
+    const isMac = isMacPlatform();
     const router = useRouter();
 
     function handleItemClick(item: SearchItem) {
@@ -210,7 +210,6 @@ export default function SearchDialog() {
     }
 
     useEffect(() => {
-        setIsMac(isMacPlatform());
         const down = (e: KeyboardEvent) => {
             if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
                 e.preventDefault();
@@ -255,7 +254,7 @@ export default function SearchDialog() {
                 </svg>
                 <span className="flex-1 text-left">搜索文档...</span>
                 <KbdGroup className="hidden sm:inline-flex">
-                    <Kbd>{isMac ? 'Cmd' : 'Ctrl'}</Kbd>
+                    <Kbd suppressHydrationWarning>{isMac ? 'Cmd' : 'Ctrl'}</Kbd>
                     <Kbd>K</Kbd>
                 </KbdGroup>
             </CommandDialogTrigger>
