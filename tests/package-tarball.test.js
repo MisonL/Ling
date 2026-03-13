@@ -11,7 +11,9 @@ describe("Package Tarball", () => {
         const result = spawnSync(NPM_COMMAND, ["pack", "--json", "--dry-run"], {
             cwd: REPO_ROOT,
             encoding: "utf8",
+            shell: process.platform === "win32",
         });
+        assert.ifError(result.error);
         assert.strictEqual(result.status, 0, result.stderr || result.stdout);
 
         const payload = JSON.parse(result.stdout);
