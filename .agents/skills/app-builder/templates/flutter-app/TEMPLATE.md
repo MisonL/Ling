@@ -22,28 +22,28 @@ description: Flutter mobile app template（移动应用模板）原则。Riverpo
 
 ```
 project_name/
-├── lib/
-│   ├── main.dart
-│   ├── app.dart
-│   ├── core/
-│   │   ├── constants/
-│   │   ├── theme/
-│   │   ├── router/
-│   │   └── utils/
-│   ├── features/
-│   │   ├── auth/
-│   │   │   ├── data/
-│   │   │   ├── domain/
-│   │   │   └── presentation/
-│   │   └── home/
-│   ├── shared/
-│   │   ├── widgets/
-│   │   └── providers/
-│   └── services/
-│       ├── api/
-│       └── storage/
-├── test/
-└── pubspec.yaml
++-- lib/
+|   +-- main.dart
+|   +-- app.dart
+|   +-- core/
+|   |   +-- constants/
+|   |   +-- theme/
+|   |   +-- router/
+|   |   +-- utils/
+|   +-- features/
+|   |   +-- auth/
+|   |   |   +-- data/
+|   |   |   +-- domain/
+|   |   |   +-- presentation/
+|   |   +-- home/
+|   +-- shared/
+|   |   +-- widgets/
+|   |   +-- providers/
+|   +-- services/
+|       +-- api/
+|       +-- storage/
++-- test/
++-- pubspec.yaml
 ```
 
 ---

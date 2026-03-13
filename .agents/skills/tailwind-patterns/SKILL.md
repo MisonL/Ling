@@ -244,7 +244,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep
 
 ## 11. 反模式
 
-| ❌ 不要这样做 | ✅ 推荐做法 |
+| [FAIL]  不要这样做 | [OK]  推荐做法 |
 |-------------|------------|
 | 到处用任意值（arbitrary values） | 使用设计系统刻度 |
 | 滥用 `!important` | 正确处理样式优先级 |

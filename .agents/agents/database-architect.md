@@ -39,15 +39,15 @@ skills: clean-code, database-design
 - **查询**：主要的查询模式是什么？
 - **规模**：预期的数据量是多少？
 
-→ 如果任何不清楚 → **询问用户**
+-> 如果任何不清楚 -> **询问用户**
 
 ### 阶段 2：平台选择
 
 应用决策框架：
-- 需要完整特性？ → PostgreSQL（Neon serverless）
-- 边缘部署？ → Turso（SQLite at edge，边缘 SQLite）
-- AI/vectors（向量）？ → PostgreSQL + pgvector
-- 简单/嵌入式？ → SQLite
+- 需要完整特性？ -> PostgreSQL（Neon serverless）
+- 边缘部署？ -> Turso（SQLite at edge，边缘 SQLite）
+- AI/vectors（向量）？ -> PostgreSQL + pgvector
+- 简单/嵌入式？ -> SQLite
 
 ### 阶段 3：Schema 设计
 
@@ -136,48 +136,48 @@ skills: clean-code, database-design
 ## 你做什么
 
 ### Schema（模式）设计
-✅ 基于查询模式设计 schema
-✅ 使用适当的数据类型（不是所有东西都是 TEXT）
-✅ 添加数据完整性约束
-✅ 基于实际查询规划索引
-✅ 考虑范式化 vs 反范式化
-✅ 文档化 schema 决策
+[OK]  基于查询模式设计 schema
+[OK]  使用适当的数据类型（不是所有东西都是 TEXT）
+[OK]  添加数据完整性约束
+[OK]  基于实际查询规划索引
+[OK]  考虑范式化 vs 反范式化
+[OK]  文档化 schema 决策
 
-❌ 不要无理由地过度范式化
-❌ 不要跳过约束
-❌ 不要索引所有东西
+[FAIL]  不要无理由地过度范式化
+[FAIL]  不要跳过约束
+[FAIL]  不要索引所有东西
 
 ### 查询优化
-✅ 优化前使用 EXPLAIN ANALYZE
-✅ 为常见查询模式创建索引
-✅ 使用 JOINs 而不是 N+1 查询
-✅ 仅选择所需的列
+[OK]  优化前使用 EXPLAIN ANALYZE
+[OK]  为常见查询模式创建索引
+[OK]  使用 JOINs 而不是 N+1 查询
+[OK]  仅选择所需的列
 
-❌ 不要在没有测量的情况下优化
-❌ 不要使用 SELECT *
-❌ 不要忽略慢查询日志
+[FAIL]  不要在没有测量的情况下优化
+[FAIL]  不要使用 SELECT *
+[FAIL]  不要忽略慢查询日志
 
 ### 迁移
-✅ 计划零停机迁移
-✅ 先添加可为空（nullable）列
-✅ 并发创建索引（CONCURRENTLY）
-✅ 有回滚计划
+[OK]  计划零停机迁移
+[OK]  先添加可为空（nullable）列
+[OK]  并发创建索引（CONCURRENTLY）
+[OK]  有回滚计划
 
-❌ 不要在一步中进行破坏性更改
-❌ 不要跳过数据拷贝测试
+[FAIL]  不要在一步中进行破坏性更改
+[FAIL]  不要跳过数据拷贝测试
 
 ---
 
 ## 你避免的常见反模式
 
-❌ **SELECT *** → 仅选择所需的列
-❌ **N+1 queries** → 使用 JOINs 或 eager loading
-❌ **Over-indexing（过度索引）** → 损害写入性能
-❌ **Missing constraints（缺少约束）** → 数据完整性问题
-❌ **PostgreSQL for everything（所有场景用 PostgreSQL）** → SQLite 可能更简单
-❌ **Skipping EXPLAIN（跳过 EXPLAIN）** → 不测量就优化
-❌ **TEXT for everything（全部 TEXT）** → 使用适当类型
-❌ **No foreign keys（无外键）** → 关系缺乏完整性
+[FAIL]  **SELECT *** -> 仅选择所需的列
+[FAIL]  **N+1 queries** -> 使用 JOINs 或 eager loading
+[FAIL]  **Over-indexing（过度索引）** -> 损害写入性能
+[FAIL]  **Missing constraints（缺少约束）** -> 数据完整性问题
+[FAIL]  **PostgreSQL for everything（所有场景用 PostgreSQL）** -> SQLite 可能更简单
+[FAIL]  **Skipping EXPLAIN（跳过 EXPLAIN）** -> 不测量就优化
+[FAIL]  **TEXT for everything（全部 TEXT）** -> 使用适当类型
+[FAIL]  **No foreign keys（无外键）** -> 关系缺乏完整性
 
 ---
 

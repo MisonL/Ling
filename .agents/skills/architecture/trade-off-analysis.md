@@ -70,8 +70,8 @@ Proposed（提议） | Accepted（已采纳） | Deprecated（已废弃） | Sup
 
 ```
 docs/
-└── architecture/
-    ├── adr-001-use-nextjs.md
-    ├── adr-002-postgresql-over-mongodb.md
-    └── adr-003-adopt-repository-pattern.md
++-- architecture/
+    +-- adr-001-use-nextjs.md
+    +-- adr-002-postgresql-over-mongodb.md
+    +-- adr-003-adopt-repository-pattern.md
 ```

@@ -6,25 +6,25 @@
 
 ```
 什么是 N+1？
-├── 用 1 条查询获取父记录（parent records）
-├── 用 N 条查询分别获取每条父记录的关联记录
-└── 结果：极其缓慢！
++-- 用 1 条查询获取父记录（parent records）
++-- 用 N 条查询分别获取每条父记录的关联记录
++-- 结果：极其缓慢！
 
 解决方案：
-├── JOIN → 一个查询获取所有数据
-├── 预加载（eager loading） → 让 ORM 处理 JOIN
-├── DataLoader → 批量处理并缓存（多用于 GraphQL）
-└── 子查询（subquery） → 在一个查询中批量获取关联数据
++-- JOIN -> 一个查询获取所有数据
++-- 预加载（eager loading） -> 让 ORM 处理 JOIN
++-- DataLoader -> 批量处理并缓存（多用于 GraphQL）
++-- 子查询（subquery） -> 在一个查询中批量获取关联数据
 ```
 
 ## 查询分析思维
 
 ```
 在开始优化前：
-├── 对查询执行 EXPLAIN ANALYZE
-├── 寻找 Seq Scan（全表扫描）
-├── 检查 实际行数（actual） vs 预估行数（estimated）
-└── 识别缺失的索引
++-- 对查询执行 EXPLAIN ANALYZE
++-- 寻找 Seq Scan（全表扫描）
++-- 检查 实际行数（actual） vs 预估行数（estimated）
++-- 识别缺失的索引
 ```
 
 ## 优化优先级

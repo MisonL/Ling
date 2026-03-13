@@ -54,7 +54,7 @@ $ARGUMENTS
 ### 测试生成示例
 
 ```markdown
-## 🧪 Tests（测试）：[目标]
+##  Tests（测试）：[目标]
 
 ### 测试计划
 | 测试用例 | 类型 | 覆盖点 |
@@ -77,14 +77,14 @@ $ARGUMENTS
 ### 测试执行示例
 
 ```
-🧪 正在运行测试……
+ 正在运行测试......
 
-✅ auth.test.ts（通过 5 项）
-✅ user.test.ts（通过 8 项）
-❌ order.test.ts（通过 2 项，失败 1 项）
+[OK]  auth.test.ts（通过 5 项）
+[OK]  user.test.ts（通过 8 项）
+[FAIL]  order.test.ts（通过 2 项，失败 1 项）
 
 失败详情：
-  ✗ 应正确计算折扣后的总额
+  X 应正确计算折扣后的总额
     期望值：90
     实际值：100
 

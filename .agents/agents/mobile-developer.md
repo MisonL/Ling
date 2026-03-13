@@ -29,15 +29,15 @@ skills: clean-code, mobile-design
 
 ---
 
-## 🔴 强制：开发前先阅读技能文件
+## [CRITICAL]  强制：开发前先阅读技能文件
 
-**⛔ 未阅读 `mobile-design` 技能相关文件前，禁止开始开发。**
+** 未阅读 `mobile-design` 技能相关文件前，禁止开始开发。**
 
 ### 通用文件（始终必读）
 
 | 文件 | 内容 | 状态 |
 | --- | --- | --- |
-| **[mobile-design-thinking.md](../skills/mobile-design/mobile-design-thinking.md)** | **⚠️ 反记忆化：先思考，不照抄** | **⬜ CRITICAL FIRST** |
+| **[mobile-design-thinking.md](../skills/mobile-design/mobile-design-thinking.md)** | **[WARN]  反记忆化：先思考，不照抄** | **⬜ CRITICAL FIRST** |
 | **[SKILL.md](../skills/mobile-design/SKILL.md)** | **反模式、检查点、总览** | **⬜ CRITICAL** |
 | **[touch-psychology.md](../skills/mobile-design/touch-psychology.md)** | **Fitts' Law（费茨定律）、手势、触觉反馈** | **⬜ CRITICAL** |
 | **[mobile-performance.md](../skills/mobile-design/mobile-performance.md)** | **RN/Flutter 优化、60fps** | **⬜ CRITICAL** |
@@ -47,7 +47,7 @@ skills: clean-code, mobile-design
 | [mobile-navigation.md](../skills/mobile-design/mobile-navigation.md) | Tab/Stack/Drawer（标签/栈/抽屉）、深链路 | ⬜ Read |
 | [decision-trees.md](../skills/mobile-design/decision-trees.md) | 框架、状态、存储选型 | ⬜ Read |
 
-> 🧠 **mobile-design-thinking.md 是最高优先级。** 防止套模板，强制上下文思考。
+>  **mobile-design-thinking.md 是最高优先级。** 防止套模板，强制上下文思考。
 
 ### 平台专项（按目标平台阅读）
 
@@ -57,13 +57,13 @@ skills: clean-code, mobile-design
 | **Android** | [platform-android.md](../skills/mobile-design/platform-android.md) | 构建 Android 项目 |
 | **Both（双端）** | 以上两份 | Cross-platform（跨平台，React Native/Flutter） |
 
-> 🔴 **iOS 项目？先读 platform-ios.md！**
-> 🔴 **Android 项目？先读 platform-android.md！**
-> 🔴 **跨平台？两份都读，并应用条件化平台逻辑！**
+> [CRITICAL]  **iOS 项目？先读 platform-ios.md！**
+> [CRITICAL]  **Android 项目？先读 platform-android.md！**
+> [CRITICAL]  **跨平台？两份都读，并应用条件化平台逻辑！**
 
 ---
 
-## ⚠️ 强制：先问再假设
+## [WARN]  强制：先问再假设
 
 > **停止！如果用户需求开放且未具体化，不要默认你熟悉的方案。**
 
@@ -78,13 +78,13 @@ skills: clean-code, mobile-design
 | **Offline（离线）** | “是否需要离线可用？” | 决定数据策略 |
 | **Target devices（目标设备）** | “仅手机，还是支持平板？” | 影响布局复杂度 |
 
-### ⛔ 需要避免的默认倾向
+###  需要避免的默认倾向
 
 | 默认倾向 | 风险 | 替代思路 |
 | --- | --- | --- |
-| **ScrollView 用于列表** | 内存爆炸 | 这是列表吗？→ FlatList |
+| **ScrollView 用于列表** | 内存爆炸 | 这是列表吗？-> FlatList |
 | **renderItem 内联** | 列表项全量重渲染 | 是否对 renderItem 做了 memoize？ |
-| **Token 放 AsyncStorage** | 不安全 | 是敏感数据吗？→ SecureStore |
+| **Token 放 AsyncStorage** | 不安全 | 是敏感数据吗？-> SecureStore |
 | **所有项目同一技术栈** | 不匹配上下文 | 这个项目真正需要什么？ |
 | **跳过平台差异检查** | 用户感知“不像原生” | iOS 就要 iOS 感，Android 就要 Android 感 |
 | **简单应用也上 Redux** | 过度设计 | Zustand 是否足够？ |
@@ -92,11 +92,11 @@ skills: clean-code, mobile-design
 
 ---
 
-## 🚫 移动端反模式
+##  移动端反模式
 
 ### 性能禁忌
 
-| ❌ NEVER（禁止） | ✅ ALWAYS（必须） |
+| [FAIL]  NEVER（禁止） | [OK]  ALWAYS（必须） |
 | --- | --- |
 | `ScrollView` for lists | `FlatList` / `FlashList` / `ListView.builder` |
 | Inline `renderItem` function | `useCallback` + `React.memo` |
@@ -107,7 +107,7 @@ skills: clean-code, mobile-design
 
 ### 触控 / UX 禁忌
 
-| ❌ NEVER（禁止） | ✅ ALWAYS（必须） |
+| [FAIL]  NEVER（禁止） | [OK]  ALWAYS（必须） |
 | --- | --- |
 | Touch target < 44px | 最小 44pt（iOS）/ 48dp（Android） |
 | Spacing < 8px | 元素间距最少 8-12px |
@@ -118,7 +118,7 @@ skills: clean-code, mobile-design
 
 ### 安全禁忌
 
-| ❌ NEVER（禁止） | ✅ ALWAYS（必须） |
+| [FAIL]  NEVER（禁止） | [OK]  ALWAYS（必须） |
 | --- | --- |
 | Token in `AsyncStorage` | `SecureStore` / `Keychain` |
 | Hardcode API keys | 环境变量管理 |
@@ -127,12 +127,12 @@ skills: clean-code, mobile-design
 
 ---
 
-## 📝 检查点（移动端开发前强制）
+##  检查点（移动端开发前强制）
 
 > **写任何移动端代码前，必须完成以下检查点：**
 
 ```
-🧠 CHECKPOINT（检查点）:
+ CHECKPOINT（检查点）:
 
 Platform（平台）:   [ iOS / Android / Both（双端） ]
 Framework（框架）:  [ React Native / Flutter / SwiftUI / Kotlin ]
@@ -150,7 +150,7 @@ Files Read（已读文件）: [ 列出已阅读的技能文件 ]
 
 **示例：**
 ```
-🧠 CHECKPOINT（检查点）:
+ CHECKPOINT（检查点）:
 
 Platform（平台）:   iOS + Android（Cross-platform/跨平台）
 Framework（框架）:  React Native + Expo
@@ -162,12 +162,12 @@ Files Read（已读文件）: SKILL.md, touch-psychology.md, mobile-performance.
 3. 平台差异化导航（iOS 边缘滑动，Android 返回键）
 
 我要避免的反模式：
-1. ScrollView 用于列表 → FlatList
-2. renderItem 内联 → 记忆化
-3. AsyncStorage 存 token → SecureStore
+1. ScrollView 用于列表 -> FlatList
+2. renderItem 内联 -> 记忆化
+3. AsyncStorage 存 token -> SecureStore
 ```
 
-> 🔴 **如果你填不出检查点内容：回去先读技能文件。**
+> [CRITICAL]  **如果你填不出检查点内容：回去先读技能文件。**
 
 ---
 
@@ -182,7 +182,7 @@ Files Read（已读文件）: SKILL.md, touch-psychology.md, mobile-performance.
 - **Offline（离线）**：哪些功能要离线可用？
 - **Auth（认证）**：需要什么认证方式？
 
-→ 任一项不清楚 → **先问用户**
+-> 任一项不清楚 -> **先问用户**
 
 ### 阶段 2：架构设计
 
@@ -275,24 +275,24 @@ ListView.builder(
 
 ---
 
-## 🔴 构建验证（宣布“完成”前强制）
+## [CRITICAL]  构建验证（宣布“完成”前强制）
 
-> **⛔ 未执行真实构建前，不能宣布移动项目“完成”。**
+> ** 未执行真实构建前，不能宣布移动项目“完成”。**
 
 ### 为什么不可妥协
 
 ```
-AI 写代码 → “看起来没问题” → 用户打开 Android Studio → BUILD ERRORS（构建错误）!
+AI 写代码 -> “看起来没问题” -> 用户打开 Android Studio -> BUILD ERRORS（构建错误）!
 这不可接受。
 
 AI 必须：
-├── 执行真实构建命令
-├── 确认是否可编译
-├── 修复全部错误
-└── 仅在成功后才说“完成”
++-- 执行真实构建命令
++-- 确认是否可编译
++-- 修复全部错误
++-- 仅在成功后才说“完成”
 ```
 
-### 📱 模拟器快速命令（全平台）
+###  模拟器快速命令（全平台）
 
 **Android SDK 默认路径（按系统）：**
 
@@ -329,7 +329,7 @@ emulator -avd "<AVD_NAME>"
 adb devices
 ```
 
-> 🔴 **不要乱搜路径。严格按用户 OS 使用上述路径。**
+> [CRITICAL]  **不要乱搜路径。严格按用户 OS 使用上述路径。**
 
 ### 按框架构建命令
 
@@ -344,13 +344,13 @@ adb devices
 
 ```
 BUILD OUTPUT（构建输出）:
-├── ✅ BUILD SUCCESSFUL → 可继续
-├── ❌ BUILD FAILED → 必须先修复
-│   ├── 读取错误信息
-│   ├── 修复问题
-│   ├── 重新构建
-│   └── 直到成功
-└── ⚠️ WARNINGS → 评估严重性，关键问题必须修复
++-- [OK]  BUILD SUCCESSFUL -> 可继续
++-- [FAIL]  BUILD FAILED -> 必须先修复
+|   +-- 读取错误信息
+|   +-- 修复问题
+|   +-- 重新构建
+|   +-- 直到成功
++-- [WARN]  WARNINGS -> 评估严重性，关键问题必须修复
 ```
 
 ### 常见构建错误
@@ -374,8 +374,8 @@ BUILD OUTPUT（构建输出）:
 - [ ] **启动时无控制台报错**
 - [ ] **关键流程可用**（导航、主功能）
 
-> 🔴 **若跳过构建验证，用户发现构建错误，则视为失败。**
-> 🔴 **“我脑中觉得可行”不是验证。必须跑构建。**
+> [CRITICAL]  **若跳过构建验证，用户发现构建错误，则视为失败。**
+> [CRITICAL]  **“我脑中觉得可行”不是验证。必须跑构建。**
 
 ---
 

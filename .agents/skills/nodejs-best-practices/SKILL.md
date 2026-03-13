@@ -11,7 +11,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep
 
 ---
 
-## ⚠️ 本技能使用方式
+## [WARN]  本技能使用方式
 
 本技能教授的是**决策原则**，不是固定代码模板。
 
@@ -27,21 +27,21 @@ allowed-tools: Read, Write, Edit, Glob, Grep
 
 ```
 你要构建什么？
-│
-├── Edge/Serverless（边缘/无服务器，Cloudflare、Vercel）
-│   └── Hono（零依赖、冷启动极快）
-│
-├── 高性能 API
-│   └── Fastify（通常比 Express 快 2-3 倍）
-│
-├── 企业协作/团队熟悉度优先
-│   └── NestJS（结构化、DI、装饰器）
-│
-├── 传统/稳定/生态最大化
-│   └── Express（成熟、middleware 最多）
-│
-└── 前后端一体
-    └── Next.js API Routes 或 tRPC
+|
++-- Edge/Serverless（边缘/无服务器，Cloudflare、Vercel）
+|   +-- Hono（零依赖、冷启动极快）
+|
++-- 高性能 API
+|   +-- Fastify（通常比 Express 快 2-3 倍）
+|
++-- 企业协作/团队熟悉度优先
+|   +-- NestJS（结构化、DI、装饰器）
+|
++-- 传统/稳定/生态最大化
+|   +-- Express（成熟、middleware 最多）
+|
++-- 前后端一体
+    +-- Next.js API Routes 或 tRPC
 ```
 
 ### 对比原则
@@ -68,24 +68,24 @@ allowed-tools: Read, Write, Edit, Glob, Grep
 
 ```
 Node.js 22+: --experimental-strip-types
-├── 可直接运行 .ts 文件
-├── 简单项目可免构建步骤
-└── 适用：脚本、简单 API
++-- 可直接运行 .ts 文件
++-- 简单项目可免构建步骤
++-- 适用：脚本、简单 API
 ```
 
 ### 模块系统决策
 
 ```
 ESM（import/export）
-├── 现代标准
-├── 更好的 tree-shaking
-├── 异步模块加载
-└── 适用：新项目
++-- 现代标准
++-- 更好的 tree-shaking
++-- 异步模块加载
++-- 适用：新项目
 
 CommonJS（require）
-├── 遗留兼容性更好
-├── 对部分 npm 包支持更成熟
-└── 适用：既有代码库、特定边界场景
++-- 遗留兼容性更好
++-- 对部分 npm 包支持更成熟
++-- 适用：既有代码库、特定边界场景
 ```
 
 ### Runtime 选择
@@ -104,21 +104,21 @@ CommonJS（require）
 
 ```
 请求流（Request Flow）:
-│
-├── Controller/Route 层
-│   ├── 处理 HTTP 细节
-│   ├── 在边界做输入校验
-│   └── 调用 service 层
-│
-├── Service 层
-│   ├── 承载业务逻辑
-│   ├── 与框架解耦
-│   └── 调用 repository 层
-│
-└── Repository 层
-    ├── 仅处理数据访问
-    ├── 数据库查询
-    └── ORM 交互
+|
++-- Controller/Route 层
+|   +-- 处理 HTTP 细节
+|   +-- 在边界做输入校验
+|   +-- 调用 service 层
+|
++-- Service 层
+|   +-- 承载业务逻辑
+|   +-- 与框架解耦
+|   +-- 调用 repository 层
+|
++-- Repository 层
+    +-- 仅处理数据访问
+    +-- 数据库查询
+    +-- ORM 交互
 ```
 
 ### 为什么重要
@@ -127,8 +127,8 @@ CommonJS（require）
 - **清晰性（Clarity）：** 每层职责单一
 
 ### 何时简化
-- 小型脚本 → 单文件可接受
-- 原型验证 → 可降低结构复杂度
+- 小型脚本 -> 单文件可接受
+- 原型验证 -> 可降低结构复杂度
 - 始终追问：“这个项目会继续增长吗？”
 
 ---
@@ -139,26 +139,26 @@ CommonJS（require）
 
 ```
 Pattern:
-├── 定义自定义错误类
-├── 各层都可 throw
-├── 在顶层统一 catch（middleware）
-└── 输出一致的响应格式
++-- 定义自定义错误类
++-- 各层都可 throw
++-- 在顶层统一 catch（middleware）
++-- 输出一致的响应格式
 ```
 
 ### 错误响应哲学
 
 ```
 Client gets:
-├── 合理的 HTTP 状态码
-├── 可程序化处理的错误码
-├── 对用户友好的提示
-└── 不暴露内部细节（安全要求）
++-- 合理的 HTTP 状态码
++-- 可程序化处理的错误码
++-- 对用户友好的提示
++-- 不暴露内部细节（安全要求）
 
 Logs get:
-├── 完整堆栈信息
-├── 请求上下文
-├── 用户 ID（如适用）
-└── 时间戳
++-- 完整堆栈信息
++-- 请求上下文
++-- 用户 ID（如适用）
++-- 时间戳
 ```
 
 ### 状态码选择
@@ -190,16 +190,16 @@ Logs get:
 
 ```
 I/O-bound（异步有帮助）:
-├── 数据库查询
-├── HTTP 请求
-├── 文件系统
-└── 网络操作
++-- 数据库查询
++-- HTTP 请求
++-- 文件系统
++-- 网络操作
 
 CPU-bound（异步无帮助）:
-├── 加密计算
-├── 图像处理
-├── 复杂计算
-└── → 使用 worker threads 或外部任务卸载
++-- 加密计算
++-- 图像处理
++-- 复杂计算
++-- -> 使用 worker threads 或外部任务卸载
 ```
 
 ### 避免阻塞 Event Loop
@@ -216,10 +216,10 @@ CPU-bound（异步无帮助）:
 
 ```
 校验位置：
-├── API 入口（request body/params）
-├── 数据库操作之前
-├── 外部数据（API 响应、文件上传）
-└── 环境变量（启动时）
++-- API 入口（request body/params）
++-- 数据库操作之前
++-- 外部数据（API 响应、文件上传）
++-- 环境变量（启动时）
 ```
 
 ### 校验库选型
@@ -258,12 +258,12 @@ CPU-bound（异步无帮助）:
 
 ```
 Trust nothing（默认不信任）:
-├── Query params（查询参数）→ 校验
-├── Request body（请求体）→ 校验
-├── Headers（请求头）→ 校验
-├── Cookies → 校验
-├── File uploads（文件上传）→ 扫描
-└── External APIs（外部 API）→ 校验响应
++-- Query params（查询参数）-> 校验
++-- Request body（请求体）-> 校验
++-- Headers（请求头）-> 校验
++-- Cookies -> 校验
++-- File uploads（文件上传）-> 扫描
++-- External APIs（外部 API）-> 校验响应
 ```
 
 ---
@@ -289,16 +289,16 @@ Trust nothing（默认不信任）:
 
 ```
 node --test src/**/*.test.ts
-├── 无需额外依赖
-├── 覆盖率报告可用
-└── 支持 watch mode（监听模式）
++-- 无需额外依赖
++-- 覆盖率报告可用
++-- 支持 watch mode（监听模式）
 ```
 
 ---
 
 ## 10. 需要避免的反模式
 
-### ❌ 不要这样做：
+### [FAIL]  不要这样做：
 - 新 Edge 项目默认用 Express（优先考虑 Hono）
 - 在生产代码中使用同步方法
 - 在 controller 中堆业务逻辑
@@ -307,7 +307,7 @@ node --test src/**/*.test.ts
 - 不校验就信任外部数据
 - 用 CPU 重任务阻塞 event loop（事件循环）
 
-### ✅ 推荐做法：
+### [OK]  推荐做法：
 - 基于上下文选择框架
 - 需求不清晰先询问用户偏好
 - 可增长项目采用分层架构

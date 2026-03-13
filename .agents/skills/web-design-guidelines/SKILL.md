@@ -50,8 +50,8 @@ https://raw.githubusercontent.com/vercel-labs/web-interface-guidelines/main/comm
 ## 设计工作流
 
 ```
-1. DESIGN   → 阅读 frontend-design 原则
-2. CODE     → 实现设计
-3. AUDIT    → 运行 web-design-guidelines 审阅 ← 当前所处阶段
-4. FIX      → 根据审阅发现进行修复
+1. DESIGN   -> 阅读 frontend-design 原则
+2. CODE     -> 实现设计
+3. AUDIT    -> 运行 web-design-guidelines 审阅 <- 当前所处阶段
+4. FIX      -> 根据审阅发现进行修复
 ```

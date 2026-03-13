@@ -13,12 +13,12 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 ## 1. TDD 核心循环
 
 ```
-🔴 红（RED）→ 编写一个失败的测试
-    ↓
-🟢 绿（GREEN）→ 编写最少量的代码使测试通过
-    ↓
-🔵 重构（REFACTOR）→ 优化代码结构与质量
-    ↓
+[CRITICAL]  红（RED）-> 编写一个失败的测试
+    v
+[NIT]  绿（GREEN）-> 编写最少量的代码使测试通过
+    v
+ 重构（REFACTOR）-> 优化代码结构与质量
+    v
    循环往复...
 ```
 
@@ -124,7 +124,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 
 ## 9. 应避免的反模式
 
-| ❌ 禁止（Don't）        | ✅ 推荐（Do）               |
+| [FAIL]  禁止（Don't）        | [OK]  推荐（Do）               |
 | ---------------------- | -------------------------- |
 | 跳过“红”阶段直接写代码 | 亲眼见证测试失败后再写代码 |
 | 先写代码后补测试       | 先写测试作为规格说明       |

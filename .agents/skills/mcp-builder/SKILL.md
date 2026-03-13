@@ -32,10 +32,10 @@ Model Context Protocol：用于连接 AI 系统与外部工具、数据源的标
 
 ```
 my-mcp-server/
-├── src/
-│   └── index.ts      # 主入口
-├── package.json
-└── tsconfig.json
++-- src/
+|   +-- index.ts      # 主入口
++-- package.json
++-- tsconfig.json
 ```
 
 ### 传输类型

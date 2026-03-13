@@ -11,10 +11,10 @@
 
 ```
 关键属性：
-├── 半透明背景（不是纯实色）
-├── 背景模糊（backdrop blur，磨砂玻璃感）
-├── 轻边框（定义边界）
-└── 常见搭配：轻阴影增强层次
++-- 半透明背景（不是纯实色）
++-- 背景模糊（backdrop blur，磨砂玻璃感）
++-- 轻边框（定义边界）
++-- 常见搭配：轻阴影增强层次
 ```
 
 ### 模式（Pattern，可自定义参数）
@@ -39,11 +39,11 @@
 ```
 
 ### 何时使用玻璃拟态（When to Use Glassmorphism）
-- ✅ 叠在彩色/图片背景上。
-- ✅ Modal、Overlay、Card 等浮层组件。
-- ✅ 背后有滚动内容的导航条。
-- ❌ 文本密集内容区（可读性风险）。
-- ❌ 纯色简背景场景（收益很低）。
+- [OK]  叠在彩色/图片背景上。
+- [OK]  Modal、Overlay、Card 等浮层组件。
+- [OK]  背后有滚动内容的导航条。
+- [FAIL]  文本密集内容区（可读性风险）。
+- [FAIL]  纯色简背景场景（收益很低）。
 
 ### 何时不应使用（When NOT to Use）
 - 低对比度场景。
@@ -58,9 +58,9 @@
 
 ```
 核心：使用“双阴影（DUAL shadows）”制造柔和浮雕感
-├── 亮阴影（模拟光源方向）
-├── 暗阴影（反向）
-└── 背景色与父容器一致（same color）
++-- 亮阴影（模拟光源方向）
++-- 暗阴影（反向）
++-- 背景色与父容器一致（same color）
 ```
 
 ### 模式（The Pattern）
@@ -88,7 +88,7 @@
 ```
 
 ### 无障碍提醒（Accessibility Warning）
-⚠️ **对比度通常偏低**，要克制使用并确保边界清晰。
+[WARN]  **对比度通常偏低**，要克制使用并确保边界清晰。
 
 ### 适用场景（When to Use）
 - 装饰性元素。
@@ -103,11 +103,11 @@
 
 ```
 海拔越高，阴影越大
-├── Level 0：无阴影（贴在表面）
-├── Level 1：轻阴影（微抬起）
-├── Level 2：中阴影（卡片、按钮）
-├── Level 3：大阴影（弹窗、下拉）
-└── Level 4：深阴影（漂浮元素）
++-- Level 0：无阴影（贴在表面）
++-- Level 1：轻阴影（微抬起）
++-- Level 2：中阴影（卡片、按钮）
++-- Level 3：大阴影（弹窗、下拉）
++-- Level 4：深阴影（漂浮元素）
 ```
 
 ### 阴影可调参数（Shadow Properties to Adjust）
@@ -141,7 +141,7 @@ box-shadow: OFFSET-X OFFSET-Y BLUR SPREAD COLOR;
 
 | 类型（Type） | 形式（Pattern） | 场景（Use Case） |
 |--------------|-----------------|------------------|
-| **Linear** | 颜色 A → 颜色 B 线性过渡 | 背景、按钮、标题区 |
+| **Linear** | 颜色 A -> 颜色 B 线性过渡 | 背景、按钮、标题区 |
 | **Radial** | 从中心向外扩散 | 聚焦、光斑 |
 | **Conic** | 围绕中心旋转过渡 | 饼图、创意效果 |
 
@@ -149,10 +149,10 @@ box-shadow: OFFSET-X OFFSET-Y BLUR SPREAD COLOR;
 
 ```
 优质渐变规则：
-├── 优先使用相邻色（analogous）
-├── 或同色相的明度变化
-├── 避免直接互补色硬拼（容易刺眼）
-└── 增加中间停点让过渡更平滑
++-- 优先使用相邻色（analogous）
++-- 或同色相的明度变化
++-- 避免直接互补色硬拼（容易刺眼）
++-- 增加中间停点让过渡更平滑
 ```
 
 ### 渐变语法模式（Gradient Syntax Pattern）
@@ -175,10 +175,10 @@ box-shadow: OFFSET-X OFFSET-Y BLUR SPREAD COLOR;
 
 ```
 多个径向渐变叠加：
-├── 每个渐变位于不同位置
-├── 每个渐变都有透明衰减
-├── Hero 区常用于制造“Wow”感
-└── 可形成有机彩色氛围（可搜索：Aurora Gradient CSS）
++-- 每个渐变位于不同位置
++-- 每个渐变都有透明衰减
++-- Hero 区常用于制造“Wow”感
++-- 可形成有机彩色氛围（可搜索：Aurora Gradient CSS）
 ```
 
 ---
@@ -189,18 +189,18 @@ box-shadow: OFFSET-X OFFSET-Y BLUR SPREAD COLOR;
 
 ```
 技术路线：伪元素 + 渐变背景
-├── 元素 padding 作为边框厚度
-├── 伪元素铺满渐变
-└── 通过 mask/clip 实现“只显示边框”
++-- 元素 padding 作为边框厚度
++-- 伪元素铺满渐变
++-- 通过 mask/clip 实现“只显示边框”
 ```
 
 ### 动态边框（Animated Borders）
 
 ```
 技术路线：旋转渐变或锥形扫描（conic sweep）
-├── 伪元素略大于内容
-├── 动画旋转渐变
-└── 用 overflow hidden 裁切形状
++-- 伪元素略大于内容
++-- 动画旋转渐变
++-- 用 overflow hidden 裁切形状
 ```
 
 ### 发光边框（Glow Borders）
@@ -295,28 +295,28 @@ background:
 
 ```
 区别于 viewport 断点：
-├── 组件响应“自己的容器”
-├── 更模块化、可复用
-└── 语法：@container (condition) { }
++-- 组件响应“自己的容器”
++-- 更模块化、可复用
++-- 语法：@container (condition) { }
 ```
 
 ### `:has()` 选择器（Concept）
 
 ```
 基于子元素反向影响父元素样式：
-├── “包含某类子元素的父元素”
-├── 能实现以往难做的模式
-└── 建议走渐进增强（progressive enhancement）
++-- “包含某类子元素的父元素”
++-- 能实现以往难做的模式
++-- 建议走渐进增强（progressive enhancement）
 ```
 
 ### 滚动驱动动画（Scroll-Driven Animations, Concept）
 
 ```
 动画进度绑定滚动：
-├── 元素进入/退出动画
-├── 视差效果（parallax）
-├── 进度指示器
-└── 可用 view-based 或 scroll-based timeline
++-- 元素进入/退出动画
++-- 视差效果（parallax）
++-- 进度指示器
++-- 可用 view-based 或 scroll-based timeline
 ```
 
 ---
@@ -327,14 +327,14 @@ background:
 
 ```
 低成本动画（GPU）：
-├── transform（translate、scale、rotate）
-└── opacity
++-- transform（translate、scale、rotate）
++-- opacity
 
 高成本动画（CPU）：
-├── width、height
-├── top、left、right、bottom
-├── margin、padding
-└── box-shadow（需要重复计算）
++-- width、height
++-- top、left、right、bottom
++-- margin、padding
++-- box-shadow（需要重复计算）
 ```
 
 ### `will-change` 使用建议（will-change Usage）
@@ -372,11 +372,11 @@ background:
 
 ### 反模式（Anti-Patterns）
 
-- ❌ 所有元素都套 Glassmorphism（廉价感/杂乱感）。
-- ❌ 默认深色 + 霓虹（典型 AI 模板化风格）。
-- ❌ **纯静态/纯平面且缺乏层次（FAILED）**。
-- ❌ 效果损害文字可读性。
-- ❌ 无意义动画。
+- [FAIL]  所有元素都套 Glassmorphism（廉价感/杂乱感）。
+- [FAIL]  默认深色 + 霓虹（典型 AI 模板化风格）。
+- [FAIL]  **纯静态/纯平面且缺乏层次（FAILED）**。
+- [FAIL]  效果损害文字可读性。
+- [FAIL]  无意义动画。
 
 ---
 

@@ -15,10 +15,10 @@ allowed-tools: Read, Write, Edit, Glob, Grep
 ### 阶段
 
 ```
-1. Vertex Processing → Transform geometry
-2. Rasterization → Convert to pixels
-3. Fragment Processing → Color pixels
-4. Output → To screen
+1. Vertex Processing -> Transform geometry
+2. Rasterization -> Convert to pixels
+3. Fragment Processing -> Color pixels
+4. Output -> To screen
 ```
 
 ### 优化原则
@@ -123,7 +123,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep
 
 ## 7. 反模式（Anti-Patterns）
 
-| ❌ 不要 | ✅ 要做 |
+| [FAIL]  不要 | [OK]  要做 |
 |----------|-------|
 | 到处使用网格碰撞体（Mesh colliders） | 使用简单形状 |
 | 移动端全开实时阴影 | 选择烘焙或投影（Blob）阴影 |

@@ -23,7 +23,7 @@ skills: plan-writing, brainstorming, clean-code
 
 ---
 
-## 🛠️ 专业技能
+##  专业技能
 
 ### 1. Requirements Elicitation（需求启发）
 * 提出探索性问题以提取隐性需求。
@@ -50,7 +50,7 @@ skills: plan-writing, brainstorming, clean-code
 
 ---
 
-## 🤝 生态系统集成
+##  生态系统集成
 
 | 集成 | 目的 |
 | :--- | :--- |
@@ -61,7 +61,7 @@ skills: plan-writing, brainstorming, clean-code
 
 ---
 
-## 📝 结构化产物
+##  结构化产物
 
 ### 1. Product Brief / PRD
 当开始一个新功能时，生成包含以下内容的简报：
@@ -75,7 +75,7 @@ skills: plan-writing, brainstorming, clean-code
 
 ---
 
-## 💡 Implementation Recommendation（Bonus）
+## TIP:  Implementation Recommendation（Bonus）
 当建议实施计划时，应明确推荐：
 - **Best Agent（最佳 Agent）**：哪位专家最适合此任务？
 - **Best Skill（最佳技能）**：哪项共享技能对此实现最相关？
@@ -83,10 +83,10 @@ skills: plan-writing, brainstorming, clean-code
 ---
 
 ## 反模式（不要做）
-* ❌ 不要为了功能而忽略技术债务。
-* ❌ 不要让验收标准存在多种解释空间。
-* ❌ 不要在完善过程中忽视 “MVP” 目标。
-* ❌ 对于重大范围变更，不要跳过利益相关者验证。
+* [FAIL]  不要为了功能而忽略技术债务。
+* [FAIL]  不要让验收标准存在多种解释空间。
+* [FAIL]  不要在完善过程中忽视 “MVP” 目标。
+* [FAIL]  对于重大范围变更，不要跳过利益相关者验证。
 
 ## 适用场景
 * 完善模糊的功能请求。

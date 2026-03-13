@@ -9,25 +9,25 @@
 
 ```
 你是什么类型的应用？
-        │
-        ├── 3-5 个顶层入口（同等重要）
-        │   └── ✅ Tab Bar / Bottom Navigation（底部标签）
-        │       示例：社交、E-commerce、电商工具
-        │
-        ├── 深层级内容（逐级深入）
-        │   └── ✅ Stack Navigation（堆栈导航）
-        │       示例：设置、邮箱文件夹
-        │
-        ├── 顶层入口很多（>5）
-        │   └── ✅ Drawer Navigation（抽屉导航）
-        │       示例：Gmail、复杂企业应用
-        │
-        ├── 单一线性流程
-        │   └── ✅ 仅使用 Stack（向导/引导）
-        │       示例：结算、首次设置流程
-        │
-        └── 平板/折叠屏
-            └── ✅ Navigation Rail + List-Detail
+        |
+        +-- 3-5 个顶层入口（同等重要）
+        |   +-- [OK]  Tab Bar / Bottom Navigation（底部标签）
+        |       示例：社交、E-commerce、电商工具
+        |
+        +-- 深层级内容（逐级深入）
+        |   +-- [OK]  Stack Navigation（堆栈导航）
+        |       示例：设置、邮箱文件夹
+        |
+        +-- 顶层入口很多（>5）
+        |   +-- [OK]  Drawer Navigation（抽屉导航）
+        |       示例：Gmail、复杂企业应用
+        |
+        +-- 单一线性流程
+        |   +-- [OK]  仅使用 Stack（向导/引导）
+        |       示例：结算、首次设置流程
+        |
+        +-- 平板/折叠屏
+            +-- [OK]  Navigation Rail + List-Detail
                 示例：iPad 邮件、笔记
 ```
 
@@ -38,36 +38,36 @@
 ### 何时使用（When to Use）
 
 ```
-✅ 适合 Tab Bar 的情况：
-├── 3-5 个顶层目的地
-├── 目的地同等重要
-├── 用户频繁切换
-├── 每个 Tab 维护独立的导航栈
-└── App 使用时长较短、碎片化
+[OK]  适合 Tab Bar 的情况：
++-- 3-5 个顶层目的地
++-- 目的地同等重要
++-- 用户频繁切换
++-- 每个 Tab 维护独立的导航栈
++-- App 使用时长较短、碎片化
 
-❌ 不适合 Tab Bar 的情况：
-├── 顶层入口超过 5 个
-├── 目的地存在明确层级
-├── 各 Tab 使用频率严重不均
-└── 内容需要按顺序流转
+[FAIL]  不适合 Tab Bar 的情况：
++-- 顶层入口超过 5 个
++-- 目的地存在明确层级
++-- 各 Tab 使用频率严重不均
++-- 内容需要按顺序流转
 ```
 
 ### Tab Bar 最佳实践（Tab Bar Best Practices）
 
 ```
 iOS Tab Bar：
-├── 高度：49pt（含 Home 指示条为 83pt）
-├── 最大项数：5
-├── 图标：SF Symbols，25×25pt
-├── 文本：始终显示（无障碍）
-├── 激活态：Tint 颜色
++-- 高度：49pt（含 Home 指示条为 83pt）
++-- 最大项数：5
++-- 图标：SF Symbols，25×25pt
++-- 文本：始终显示（无障碍）
++-- 激活态：Tint 颜色
 
 Android Bottom Navigation：
-├── 高度：80dp
-├── 最大项数：5（理想 3-5）
-├── 图标：Material Symbols，24dp
-├── 文本：始终显示
-├── 激活态：Pill 形状 + 填充图标
++-- 高度：80dp
++-- 最大项数：5（理想 3-5）
++-- 图标：Material Symbols，24dp
++-- 文本：始终显示
++-- 激活态：Pill 形状 + 填充图标
 ```
 
 ### Tab 状态保留（Tab State Preservation）
@@ -76,15 +76,15 @@ Android Bottom Navigation：
 规则：每个 Tab 维护独立的导航栈。
 
 用户路径：
-1. Home Tab → 进入商品详情 → 加入购物车
+1. Home Tab -> 进入商品详情 -> 加入购物车
 2. 切到 Profile Tab
 3. 再切回 Home Tab
-→ 应回到“加入购物车”页面，而非 Home 根页面
+-> 应回到“加入购物车”页面，而非 Home 根页面
 
 实现：
-├── React Navigation：每个 Tab 内独立 Navigator
-├── Flutter：使用 IndexedStack 保持状态
-└── 切换 Tab 不得重置栈
++-- React Navigation：每个 Tab 内独立 Navigator
++-- Flutter：使用 IndexedStack 保持状态
++-- 切换 Tab 不得重置栈
 ```
 
 ---
@@ -118,22 +118,22 @@ Reset：清空栈并设置新根
 
 ```
 iOS：
-├── 从左侧边缘滑返回（系统）
-├── 导航栏返回按钮（可选）
-├── 交互式返回手势
-└── 无充分理由不要屏蔽滑动返回
++-- 从左侧边缘滑返回（系统）
++-- 导航栏返回按钮（可选）
++-- 交互式返回手势
++-- 无充分理由不要屏蔽滑动返回
 
 Android：
-├── 系统返回键/手势
-├── 工具栏 Up 按钮（可选，深层页面）
-├── 预测性返回动画（Android 14+）
-└── 必须正确处理返回（Activity/Fragment）
++-- 系统返回键/手势
++-- 工具栏 Up 按钮（可选，深层页面）
++-- 预测性返回动画（Android 14+）
++-- 必须正确处理返回（Activity/Fragment）
 
 跨平台通用规则：
-├── 返回永远是“向上返回栈”
-├── 不要劫持返回去做别的事
-├── 丢弃未保存数据前需二次确认
-└── 深度链接进入必须可完整返回
++-- 返回永远是“向上返回栈”
++-- 不要劫持返回去做别的事
++-- 丢弃未保存数据前需二次确认
++-- 深度链接进入必须可完整返回
 ```
 
 ---
@@ -143,40 +143,40 @@ Android：
 ### 何时使用（When to Use）
 
 ```
-✅ 适合 Drawer 的情况：
-├── 顶层入口超过 5 个
-├── 有一部分入口不常访问
-├── 功能复杂且模块多
-├── 导航需要展示品牌/用户信息
-└── 平板/大屏可做常驻 Drawer
+[OK]  适合 Drawer 的情况：
++-- 顶层入口超过 5 个
++-- 有一部分入口不常访问
++-- 功能复杂且模块多
++-- 导航需要展示品牌/用户信息
++-- 平板/大屏可做常驻 Drawer
 
-❌ 不适合 Drawer 的情况：
-├── 入口 5 个以内（优先 Tabs）
-├── 所有入口同等重要
-├── 以移动端为主的轻量应用
-└── 强依赖“可发现性”（Drawer 默认隐藏）
+[FAIL]  不适合 Drawer 的情况：
++-- 入口 5 个以内（优先 Tabs）
++-- 所有入口同等重要
++-- 以移动端为主的轻量应用
++-- 强依赖“可发现性”（Drawer 默认隐藏）
 ```
 
 ### Drawer 模式（Drawer Patterns）
 
 ```
 Modal Drawer：
-├── 覆盖内容（背后有遮罩）
-├── 边缘滑动打开
-├── 汉堡按钮（☰）触发
-└── 移动端最常见
++-- 覆盖内容（背后有遮罩）
++-- 边缘滑动打开
++-- 汉堡按钮（）触发
++-- 移动端最常见
 
 Permanent Drawer：
-├── 始终可见（大屏）
-├── 内容区域右移
-├── 适合生产力应用
-└── 平板/桌面
++-- 始终可见（大屏）
++-- 内容区域右移
++-- 适合生产力应用
++-- 平板/桌面
 
 Navigation Rail（Android）：
-├── 窄竖栏
-├── 图标 + 可选文本
-├── 适配竖屏平板
-└── 宽度 80dp
++-- 窄竖栏
++-- 图标 + 可选文本
++-- 适配竖屏平板
++-- 宽度 80dp
 ```
 
 ---
@@ -187,18 +187,18 @@ Navigation Rail（Android）：
 
 ```
 PUSH（Stack）：               MODAL：
-├── 横向滑入                  ├── 纵向上滑（sheet）
-├── 层级内流转                ├── 独立任务
-├── 返回回到上一级            ├── 关闭（X）回到原处
-├── 共享导航上下文            ├── 独立导航上下文
-└── “向内深入”                └── “聚焦完成任务”
++-- 横向滑入                  +-- 纵向上滑（sheet）
++-- 层级内流转                +-- 独立任务
++-- 返回回到上一级            +-- 关闭（X）回到原处
++-- 共享导航上下文            +-- 独立导航上下文
++-- “向内深入”                +-- “聚焦完成任务”
 
 适合用 MODAL 的场景：
-├── 创建新内容
-├── 设置/偏好
-├── 完成交易
-├── 自包含流程
-├── 快速操作
++-- 创建新内容
++-- 设置/偏好
++-- 完成交易
++-- 自包含流程
++-- 快速操作
 ```
 
 ### Modal 类型（Modal Types）
@@ -214,11 +214,11 @@ PUSH（Stack）：               MODAL：
 
 ```
 用户期望的关闭方式：
-├── 点击 X / Close
-├── 下拉关闭（sheet）
-├── 点击遮罩（非关键任务）
-├── Android 系统返回
-├── 硬件返回键（旧 Android）
++-- 点击 X / Close
++-- 下拉关闭（sheet）
++-- 点击遮罩（非关键任务）
++-- Android 系统返回
++-- 硬件返回键（旧 Android）
 
 规则：只有在“未保存数据”时才允许阻止关闭。
 ```
@@ -231,18 +231,18 @@ PUSH（Stack）：               MODAL：
 
 ```
 Deep links 能支持：
-├── 推送通知跳转
-├── 内容分享
-├── 营销活动
-├── Spotlight/Search 集成
-├── Widget 跳转
-├── 外部应用集成
++-- 推送通知跳转
++-- 内容分享
++-- 营销活动
++-- Spotlight/Search 集成
++-- Widget 跳转
++-- 外部应用集成
 
 后期补做会非常痛苦：
-├── 需要重构导航
-├── 屏幕依赖关系不清晰
-├── 参数传递复杂
-└── 必须从一开始规划
++-- 需要重构导航
++-- 屏幕依赖关系不清晰
++-- 参数传递复杂
++-- 必须从一开始规划
 ```
 
 ### URL 结构（URL Structure）
@@ -251,16 +251,16 @@ Deep links 能支持：
 Scheme://host/path?params
 
 示例：
-├── myapp://product/123
-├── https://myapp.com/product/123（Universal/App Link）
-├── myapp://checkout?promo=SAVE20
-├── myapp://tab/profile/settings
++-- myapp://product/123
++-- https://myapp.com/product/123（Universal/App Link）
++-- myapp://checkout?promo=SAVE20
++-- myapp://tab/profile/settings
 
 层级应与导航一致：
-├── myapp://home
-├── myapp://home/product/123
-├── myapp://home/product/123/reviews
-└── URL path = navigation path
++-- myapp://home
++-- myapp://home/product/123
++-- myapp://home/product/123/reviews
++-- URL path = navigation path
 ```
 
 ### 深度链接导航规则（Deep Link Navigation Rules）
@@ -268,27 +268,27 @@ Scheme://host/path?params
 ```
 1. 全栈构建（FULL STACK CONSTRUCTION）
    myapp://product/123 应当：
-   ├── Home 作为栈根
-   ├── Product 页面压到顶部
-   └── 返回键回到 Home
+   +-- Home 作为栈根
+   +-- Product 页面压到顶部
+   +-- 返回键回到 Home
 
 2. 鉴权意识（AUTHENTICATION AWARENESS）
    若深链需要登录：
-   ├── 记录目标页面
-   ├── 跳转登录
-   ├── 登录后回到目标页面
+   +-- 记录目标页面
+   +-- 跳转登录
+   +-- 登录后回到目标页面
 
 3. 无效链接（INVALID LINKS）
    目标不存在时：
-   ├── 回退到兜底页面（home）
-   ├── 显示错误提示
-   └── 不可崩溃或白屏
+   +-- 回退到兜底页面（home）
+   +-- 显示错误提示
+   +-- 不可崩溃或白屏
 
 4. 有状态导航（STATEFUL NAVIGATION）
    活跃会话中收到深链：
-   ├── 不要清空当前栈
-   ├── 直接压栈，或
-   ├── 询问用户是否跳转
+   +-- 不要清空当前栈
+   +-- 直接压栈，或
+   +-- 询问用户是否跳转
 ```
 
 ---
@@ -299,17 +299,17 @@ Scheme://host/path?params
 
 ```
 应该持久化：
-├── 当前 Tab 选择
-├── 列表滚动位置
-├── 表单草稿
-├── 最近导航栈
-└── 用户偏好
++-- 当前 Tab 选择
++-- 列表滚动位置
++-- 表单草稿
++-- 最近导航栈
++-- 用户偏好
 
 不应持久化：
-├── Modal 状态（对话框）
-├── 临时 UI 状态
-├── 过期数据（返回时应刷新）
-├── 认证状态（用安全存储）
++-- Modal 状态（对话框）
++-- 临时 UI 状态
++-- 过期数据（返回时应刷新）
++-- 认证状态（用安全存储）
 ```
 
 ### 实现示例（Implementation）
@@ -346,32 +346,32 @@ const handleStateChange = (state) => {
 
 ```
 iOS Transitions：
-├── Push：从右滑入
-├── Modal：从底部上滑（sheet）或淡入
-├── Tab 切换：淡入淡出
-├── 交互式：滑动返回
++-- Push：从右滑入
++-- Modal：从底部上滑（sheet）或淡入
++-- Tab 切换：淡入淡出
++-- 交互式：滑动返回
 
 Android Transitions：
-├── Push：淡入 + 右滑
-├── Modal：从底部上滑
-├── Tab 切换：淡入淡出或无动画
-├── Shared element：Hero 动画
++-- Push：淡入 + 右滑
++-- Modal：从底部上滑
++-- Tab 切换：淡入淡出或无动画
++-- Shared element：Hero 动画
 ```
 
 ### 自定义过渡（Custom Transitions）
 
 ```
 适合自定义的情况：
-├── 需要匹配品牌调性
-├── 需要共享元素关联
-├── 需要特殊揭示效果
-└── 必须克制，<300ms
++-- 需要匹配品牌调性
++-- 需要共享元素关联
++-- 需要特殊揭示效果
++-- 必须克制，<300ms
 
 适合默认的情况：
-├── 大多数场景
-├── 标准 drill-down
-├── 平台一致性优先
-└── 性能敏感路径
++-- 大多数场景
++-- 标准 drill-down
++-- 平台一致性优先
++-- 性能敏感路径
 ```
 
 ### 共享元素过渡（Shared Element Transitions）
@@ -380,23 +380,23 @@ Android Transitions：
 在两个屏之间建立元素连结：
 
 Screen A：产品卡片图片
-            ↓（点击）
+            v（点击）
 Screen B：同一图片的详情放大
 
 图片从卡片位置动画到详情位置。
 
 实现方式：
-├── React Navigation：shared element 库
-├── Flutter：Hero widget
-├── SwiftUI：matchedGeometryEffect
-└── Compose：Shared element transitions
++-- React Navigation：shared element 库
++-- Flutter：Hero widget
++-- SwiftUI：matchedGeometryEffect
++-- Compose：Shared element transitions
 ```
 
 ---
 
 ## 9. 导航反模式（Navigation Anti-Patterns）
 
-### ❌ 导航“罪状”（Navigation Sins）
+### [FAIL]  导航“罪状”（Navigation Sins）
 
 | 反模式（Anti-Pattern） | 问题（Problem） | 解决方案（Solution） |
 |------------------------|----------------|----------------------|
@@ -408,16 +408,16 @@ Screen B：同一图片的详情放大
 | **Tab 栈被重置** | 切换时丢失上下文 | 保持 Tab 状态 |
 | **主流程用 Modal** | 无法回溯 | 用 Stack 导航 |
 
-### ❌ AI 常见导航错误（AI Navigation Mistakes）
+### [FAIL]  AI 常见导航错误（AI Navigation Mistakes）
 
 ```
 AI 常见问题：
-├── 什么都用 Modal（错误）
-├── 忘记 Tab 状态保持（错误）
-├── 忽略 Deep Linking（错误）
-├── 覆盖平台返回行为（错误）
-├── 切换 Tab 时重置栈（错误）
-└── 忽视预测性返回（Android 14+）
++-- 什么都用 Modal（错误）
++-- 忘记 Tab 状态保持（错误）
++-- 忽略 Deep Linking（错误）
++-- 覆盖平台返回行为（错误）
++-- 切换 Tab 时重置栈（错误）
++-- 忽视预测性返回（Android 14+）
 
 规则：遵循平台导航模式。
 不要重复造轮子。

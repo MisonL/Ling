@@ -4,7 +4,7 @@
 
 ---
 
-## 📋 概览
+##  概览
 
 Antigravity Kit 是一个模块化系统，由以下部分组成：
 
@@ -14,21 +14,21 @@ Antigravity Kit 是一个模块化系统，由以下部分组成：
 
 ---
 
-## 🏗️ 目录结构
+##  目录结构
 
 ```plaintext
 .agent/
-├── ARCHITECTURE.md          # This file
-├── agents/                  # 20 Specialist Agents
-├── skills/                  # 37 Skills
-├── workflows/               # 12 Slash Commands
-├── rules/                   # Global Rules
-└── scripts/                 # Master Validation Scripts
++-- ARCHITECTURE.md          # This file
++-- agents/                  # 20 Specialist Agents
++-- skills/                  # 37 Skills
++-- workflows/               # 12 Slash Commands
++-- rules/                   # Global Rules
++-- scripts/                 # Master Validation Scripts
 ```
 
 ---
 
-## 🤖 智能体（Agents）(20)
+##  智能体（Agents）(20)
 
 面向不同领域的专家型 AI 人设。
 
@@ -57,7 +57,7 @@ Antigravity Kit 是一个模块化系统，由以下部分组成：
 
 ---
 
-## 🧩 技能（Skills）(37)
+##  技能（Skills）(37)
 
 按任务上下文按需加载的模块化知识域。
 
@@ -162,7 +162,7 @@ Antigravity Kit 是一个模块化系统，由以下部分组成：
 
 ---
 
-## 🔄 工作流（Workflows）(12)
+## [RUN]  工作流（Workflows）(12)
 
 斜杠命令（Slash command）流程，通过 `/command` 调用。
 
@@ -183,13 +183,13 @@ Antigravity Kit 是一个模块化系统，由以下部分组成：
 
 ---
 
-## 🎯 技能加载协议
+##  技能加载协议
 
 ```plaintext
-User Request → Skill Description Match → Load SKILL.md
-                                            ↓
+User Request -> Skill Description Match -> Load SKILL.md
+                                            v
                                     Read references/
-                                            ↓
+                                            v
                                     Read scripts/
 ```
 
@@ -197,10 +197,10 @@ User Request → Skill Description Match → Load SKILL.md
 
 ```plaintext
 skill-name/
-├── SKILL.md           # (Required) Metadata & instructions
-├── scripts/           # (Optional) Python/Bash scripts
-├── references/        # (Optional) Templates, docs
-└── assets/            # (Optional) Images, logos
++-- SKILL.md           # (Required) Metadata & instructions
++-- scripts/           # (Optional) Python/Bash scripts
++-- references/        # (Optional) Templates, docs
++-- assets/            # (Optional) Images, logos
 ```
 
 ### 增强型技能（含 scripts/references）
@@ -212,7 +212,7 @@ skill-name/
 
 ---
 
-## 📜 脚本（Scripts）(4)
+##  脚本（Scripts）(4)
 
 用于编排各技能脚本的主验证脚本。
 
@@ -259,7 +259,7 @@ python .agent/scripts/verify_all.py . --url http://localhost:3000
 
 ---
 
-## 📊 统计
+##  统计
 
 | 指标 | 数量 |
 | ------------------- | ----------------------------- |
@@ -271,7 +271,7 @@ python .agent/scripts/verify_all.py . --url http://localhost:3000
 
 ---
 
-## 🔗 快速索引
+##  快速索引
 
 | 需求 | 智能体 | 使用技能 |
 | -------- | --------------------- | ------------------------------------- |

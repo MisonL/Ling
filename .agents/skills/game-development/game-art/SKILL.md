@@ -16,21 +16,21 @@ allowed-tools: Read, Glob, Grep
 
 ```
 游戏应该唤起什么感觉？
-│
-├── 怀旧 / 复古
-│   ├── 有限调色板？ → Pixel Art（像素艺术）
-│   └── 手绘感？ → Vector / Flash style（矢量/Flash 风格）
-│
-├── 真实 / 沉浸
-│   ├── 高预算？ → PBR 3D
-│   └── 风格化真实？ → Hand-painted textures（手绘纹理）
-│
-├── 亲切 / 休闲
-│   ├── 干净的形状？ → Flat / Minimalist（扁平/极简）
-│   └── 柔和感？ → Gradient / Soft shadows（渐变/软阴影）
-│
-└── 独特 / 实验性
-    └── 定义自定义风格指南
+|
++-- 怀旧 / 复古
+|   +-- 有限调色板？ -> Pixel Art（像素艺术）
+|   +-- 手绘感？ -> Vector / Flash style（矢量/Flash 风格）
+|
++-- 真实 / 沉浸
+|   +-- 高预算？ -> PBR 3D
+|   +-- 风格化真实？ -> Hand-painted textures（手绘纹理）
+|
++-- 亲切 / 休闲
+|   +-- 干净的形状？ -> Flat / Minimalist（扁平/极简）
+|   +-- 柔和感？ -> Gradient / Soft shadows（渐变/软阴影）
+|
++-- 独特 / 实验性
+    +-- 定义自定义风格指南
 ```
 
 ### 风格比较矩阵
@@ -157,22 +157,22 @@ mesh_tree_oak_lod2.fbx
 
 ```
 assets/
-├── characters/
-│   ├── player/
-│   └── enemies/
-├── environment/
-│   ├── props/
-│   └── tiles/
-├── ui/
-├── effects/
-└── audio/
++-- characters/
+|   +-- player/
+|   +-- enemies/
++-- environment/
+|   +-- props/
+|   +-- tiles/
++-- ui/
++-- effects/
++-- audio/
 ```
 
 ---
 
 ## 7. 反模式
 
-| ❌ 禁止 | ✅ 推荐 |
+| [FAIL]  禁止 | [OK]  推荐 |
 | --- | --- |
 | 随机混合美术风格 | 定义并遵循风格指南 |
 | 仅在最终分辨率下工作 | 在源分辨率下创建 |

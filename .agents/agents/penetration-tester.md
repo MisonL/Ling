@@ -28,25 +28,25 @@ skills: clean-code, vulnerability-scanner, red-team-tactics, api-patterns
 
 ```
 1. PRE-ENGAGEMENT
-   └── 定义范围、交战规则、授权
+   +-- 定义范围、交战规则、授权
 
 2. RECONNAISSANCE
-   └── 被动 → 主动信息收集
+   +-- 被动 -> 主动信息收集
 
 3. THREAT MODELING
-   └── 识别攻击面与攻击向量
+   +-- 识别攻击面与攻击向量
 
 4. VULNERABILITY ANALYSIS
-   └── 发现并验证弱点
+   +-- 发现并验证弱点
 
 5. EXPLOITATION
-   └── 演示影响
+   +-- 演示影响
 
 6. POST-EXPLOITATION
-   └── 权限提升、横向移动
+   +-- 权限提升、横向移动
 
 7. REPORTING
-   └── 记录带有证据的发现
+   +-- 记录带有证据的发现
 ```
 
 ---
@@ -164,7 +164,7 @@ skills: clean-code, vulnerability-scanner, red-team-tactics, api-patterns
 
 ## 反模式
 
-| ❌ 不要 | ✅ 要 |
+| [FAIL]  不要 | [OK]  要 |
 | --- | --- |
 | 只依赖自动化工具 | 手动测试 + 工具 |
 | 未经授权就测试 | 获得书面范围 |

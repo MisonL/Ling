@@ -11,34 +11,34 @@
 
 ```
 DESKTOP：                        MOBILE：
-├── 计算资源充足                 ├── 电量是硬限制
-├── RAM 相对充裕                 ├── RAM 共享且有限
-├── 网络相对稳定                 ├── 网络不可靠
-├── CPU 持续可用                 ├── 高温降频
-└── 用户仍期望快                 └── 用户期待“即时响应”
++-- 计算资源充足                 +-- 电量是硬限制
++-- RAM 相对充裕                 +-- RAM 共享且有限
++-- 网络相对稳定                 +-- 网络不可靠
++-- CPU 持续可用                 +-- 高温降频
++-- 用户仍期望快                 +-- 用户期待“即时响应”
 ```
 
 ### 性能预算概念（Performance Budget Concept）
 
 ```
 每一帧必须在以下时间内完成：
-├── 60fps → 16.67ms/帧
-├── 120fps（ProMotion）→ 8.33ms/帧
++-- 60fps -> 16.67ms/帧
++-- 120fps（ProMotion）-> 8.33ms/帧
 
 如果代码超时：
-├── 掉帧 → 滚动/动画卡顿
-├── 用户感知为“慢/坏”
-└── 他们会卸载 App
++-- 掉帧 -> 滚动/动画卡顿
++-- 用户感知为“慢/坏”
++-- 他们会卸载 App
 ```
 
 ---
 
 ## 2. React Native 性能（React Native Performance）
 
-### 🚫 AI 最大错误：用 ScrollView 渲染列表
+###  AI 最大错误：用 ScrollView 渲染列表
 
 ```javascript
-// ❌ 千万别这样做（AI 最常犯错）
+// [FAIL]  千万别这样做（AI 最常犯错）
 <ScrollView>
   {items.map(item => (
     <ItemComponent key={item.id} item={item} />
@@ -46,12 +46,12 @@ DESKTOP：                        MOBILE：
 </ScrollView>
 
 // 为什么灾难性：
-// ├── 一次性渲染所有项目（1000 条 = 1000 次渲染）
-// ├── 内存暴涨
-// ├── 首屏渲染要等很久
-// └── 滚动严重卡顿
+// +-- 一次性渲染所有项目（1000 条 = 1000 次渲染）
+// +-- 内存暴涨
+// +-- 首屏渲染要等很久
+// +-- 滚动严重卡顿
 
-// ✅ 必须使用 FlatList
+// [OK]  必须使用 FlatList
 <FlatList
   data={items}
   renderItem={renderItem}
@@ -62,7 +62,7 @@ DESKTOP：                        MOBILE：
 ### FlatList 优化清单（FlatList Optimization Checklist）
 
 ```javascript
-// ✅ 正确示例：关键优化全部启用
+// [OK]  正确示例：关键优化全部启用
 
 // 1. 列表项组件 memo 化
 const ListItem = React.memo(({ item }: { item: Item }) => {
@@ -111,13 +111,13 @@ const getItemLayout = useCallback(
 
 | 优化项（Optimization） | 防止的问题（What It Prevents） | 影响（Impact） |
 |------------------------|---------------------------------|----------------|
-| `React.memo` | 父组件变化导致重复渲染 | 🔴 Critical |
-| `useCallback renderItem` | 每次 render 生成新函数 | 🔴 Critical |
-| 稳定 `keyExtractor` | 列表复用错位 | 🔴 Critical |
-| `getItemLayout` | 异步布局计算 | 🟡 High |
-| `removeClippedSubviews` | 屏外内存堆积 | 🟡 High |
-| `maxToRenderPerBatch` | 主线程阻塞 | 🟢 Medium |
-| `windowSize` | 过高内存占用 | 🟢 Medium |
+| `React.memo` | 父组件变化导致重复渲染 | [CRITICAL]  Critical |
+| `useCallback renderItem` | 每次 render 生成新函数 | [CRITICAL]  Critical |
+| 稳定 `keyExtractor` | 列表复用错位 | [CRITICAL]  Critical |
+| `getItemLayout` | 异步布局计算 | [SUGGESTION]  High |
+| `removeClippedSubviews` | 屏外内存堆积 | [SUGGESTION]  High |
+| `maxToRenderPerBatch` | 主线程阻塞 | [NIT]  Medium |
+| `windowSize` | 过高内存占用 | [NIT]  Medium |
 
 ### FlashList：更好的选择
 
@@ -133,23 +133,23 @@ import { FlashList } from "@shopify/flash-list";
 />
 
 // 相对 FlatList 的优势：
-// ├── 复用更高效
-// ├── 内存管理更好
-// ├── API 更简洁
-// └── 需要的优化参数更少
+// +-- 复用更高效
+// +-- 内存管理更好
+// +-- API 更简洁
+// +-- 需要的优化参数更少
 ```
 
 ### 动画性能（Animation Performance）
 
 ```javascript
-// ❌ JS 线程驱动动画（会阻塞）
+// [FAIL]  JS 线程驱动动画（会阻塞）
 Animated.timing(value, {
   toValue: 1,
   duration: 300,
   useNativeDriver: false, // BAD!
 }).start();
 
-// ✅ Native driver 动画（UI 线程）
+// [OK]  Native driver 动画（UI 线程）
 Animated.timing(value, {
   toValue: 1,
   duration: 300,
@@ -157,14 +157,14 @@ Animated.timing(value, {
 }).start();
 
 // Native driver 只支持：
-// ├── transform（translate、scale、rotate）
-// └── opacity
+// +-- transform（translate、scale、rotate）
+// +-- opacity
 //
 // 不支持：
-// ├── width、height
-// ├── backgroundColor
-// ├── borderRadius 变化
-// └── margin、padding
+// +-- width、height
+// +-- backgroundColor
+// +-- borderRadius 变化
+// +-- margin、padding
 ```
 
 ### 复杂动画用 Reanimated
@@ -189,16 +189,16 @@ const Component = () => {
 };
 
 // 优势：
-// ├── UI 线程运行（60fps）
-// ├── 几乎所有属性可动画化
-// ├── 手势驱动动画
-// └── Worklets 支持复杂逻辑
+// +-- UI 线程运行（60fps）
+// +-- 几乎所有属性可动画化
+// +-- 手势驱动动画
+// +-- Worklets 支持复杂逻辑
 ```
 
 ### 内存泄漏预防（Memory Leak Prevention）
 
 ```javascript
-// ❌ 内存泄漏：未清理 interval
+// [FAIL]  内存泄漏：未清理 interval
 useEffect(() => {
   const interval = setInterval(() => {
     fetchData();
@@ -206,7 +206,7 @@ useEffect(() => {
   // 缺少 cleanup！
 }, []);
 
-// ✅ 正确清理
+// [OK]  正确清理
 useEffect(() => {
   const interval = setInterval(() => {
     fetchData();
@@ -216,11 +216,11 @@ useEffect(() => {
 }, []);
 
 // 常见泄漏来源：
-// ├── Timers（setInterval、setTimeout）
-// ├── Event listeners
-// ├── Subscriptions（WebSocket、PubSub）
-// ├── 卸载后仍更新状态的异步操作
-// └── 不受限的图片缓存
+// +-- Timers（setInterval、setTimeout）
+// +-- Event listeners
+// +-- Subscriptions（WebSocket、PubSub）
+// +-- 卸载后仍更新状态的异步操作
+// +-- 不受限的图片缓存
 ```
 
 ### React Native 性能检查清单
@@ -250,10 +250,10 @@ useEffect(() => {
 
 ## 3. Flutter 性能（Flutter Performance）
 
-### 🚫 AI 最大错误：滥用 setState
+###  AI 最大错误：滥用 setState
 
 ```dart
-// ❌ 错误：setState 会重建整棵 widget 树
+// [FAIL]  错误：setState 会重建整棵 widget 树
 class BadCounter extends StatefulWidget {
   @override
   State<BadCounter> createState() => _BadCounterState();
@@ -284,7 +284,7 @@ class _BadCounterState extends State<BadCounter> {
 ### `const` 构造器革命（The `const` Constructor Revolution）
 
 ```dart
-// ✅ 正确：const 可避免重建
+// [OK]  正确：const 可避免重建
 
 class GoodCounter extends StatefulWidget {
   const GoodCounter({super.key}); // CONST 构造器！
@@ -314,10 +314,10 @@ class _GoodCounterState extends State<GoodCounter> {
 ### 精准状态管理（Targeted State Management）
 
 ```dart
-// ❌ setState 重建全树
+// [FAIL]  setState 重建全树
 setState(() => _value = newValue);
 
-// ✅ ValueListenableBuilder：局部重建
+// [OK]  ValueListenableBuilder：局部重建
 class TargetedState extends StatelessWidget {
   final ValueNotifier<int> counter = ValueNotifier(0);
 
@@ -341,13 +341,13 @@ class TargetedState extends StatelessWidget {
 ### Riverpod/Provider 最佳实践（Riverpod/Provider Best Practices）
 
 ```dart
-// ❌ 错误：在 build 中读取整个 provider
+// [FAIL]  错误：在 build 中读取整个 provider
 Widget build(BuildContext context) {
   final state = ref.watch(myProvider); // 任意变化都会重建
   return Text(state.name);
 }
 
-// ✅ 正确：只选择需要的字段
+// [OK]  正确：只选择需要的字段
 Widget build(BuildContext context) {
   final name = ref.watch(myProvider.select((s) => s.name));
   return Text(name); // 仅 name 变化才重建
@@ -357,12 +357,12 @@ Widget build(BuildContext context) {
 ### ListView 优化（ListView Optimization）
 
 ```dart
-// ❌ 错误：ListView 无 builder（一次性渲染）
+// [FAIL]  错误：ListView 无 builder（一次性渲染）
 ListView(
   children: items.map((item) => ItemWidget(item)).toList(),
 )
 
-// ✅ 正确：ListView.builder（懒加载）
+// [OK]  正确：ListView.builder（懒加载）
 ListView.builder(
   itemCount: items.length,
   itemBuilder: (context, index) => ItemWidget(items[index]),
@@ -371,7 +371,7 @@ ListView.builder(
   cacheExtent: 100, // 预渲染距离
 )
 
-// ✅ 更好：ListView.separated 适合分隔线
+// [OK]  更好：ListView.separated 适合分隔线
 ListView.separated(
   itemCount: items.length,
   itemBuilder: (context, index) => ItemWidget(items[index]),
@@ -382,10 +382,10 @@ ListView.separated(
 ### 图片优化（Image Optimization）
 
 ```dart
-// ❌ 错误：不缓存 + 原尺寸
+// [FAIL]  错误：不缓存 + 原尺寸
 Image.network(url)
 
-// ✅ 正确：缓存 + 限尺寸
+// [OK]  正确：缓存 + 限尺寸
 CachedNetworkImage(
   imageUrl: url,
   width: 100,
@@ -467,12 +467,12 @@ class _MyWidgetState extends State<MyWidget> {
 
 ```
 人眼感知：
-├── < 24 fps → 像幻灯片（坏）
-├── 24-30 fps → 明显卡顿
-├── 30-45 fps → 不够顺滑
-├── 45-60 fps → 可接受
-├── 60 fps → 丝滑（目标）
-└── 120 fps → 高端（ProMotion）
++-- < 24 fps -> 像幻灯片（坏）
++-- 24-30 fps -> 明显卡顿
++-- 30-45 fps -> 不够顺滑
++-- 45-60 fps -> 可接受
++-- 60 fps -> 丝滑（目标）
++-- 120 fps -> 高端（ProMotion）
 
 不要发布 < 60fps 的动画。
 ```
@@ -481,11 +481,11 @@ class _MyWidgetState extends State<MyWidget> {
 
 ```
 GPU 加速（快）：              CPU 计算（慢）：
-├── transform: translate       ├── width, height
-├── transform: scale           ├── top, left, right, bottom
-├── transform: rotate          ├── margin, padding
-├── opacity                    ├── border-radius（动画）
-└──（合成层，离开主线程）      └── box-shadow（动画）
++-- transform: translate       +-- width, height
++-- transform: scale           +-- top, left, right, bottom
++-- transform: rotate          +-- margin, padding
++-- opacity                    +-- border-radius（动画）
++--（合成层，离开主线程）      +-- box-shadow（动画）
 
 规则：只动画 transform 与 opacity，
 否则会触发 layout 重新计算。
@@ -552,7 +552,7 @@ SpringSimulation(
 1080p 图片 = 1920 × 1080 × 4 = 8.3 MB
 4K 图片 = 3840 × 2160 × 4 = 33.2 MB
 
-10 张 4K = 332 MB → 直接崩溃
+10 张 4K = 332 MB -> 直接崩溃
 
 规则：必须按显示尺寸加载（或 2-3x retina）。
 ```
@@ -561,14 +561,14 @@ SpringSimulation(
 
 ```
 React Native：
-├── Flipper → Memory tab
-├── Xcode Instruments（iOS）
-└── Android Studio Profiler
++-- Flipper -> Memory tab
++-- Xcode Instruments（iOS）
++-- Android Studio Profiler
 
 Flutter：
-├── DevTools → Memory tab
-├── Observatory
-└── flutter run --profile
++-- DevTools -> Memory tab
++-- Observatory
++-- flutter run --profile
 ```
 
 ---
@@ -579,12 +579,12 @@ Flutter：
 
 | 来源（Source） | 影响（Impact） | 缓解（Mitigation） |
 |----------------|----------------|--------------------|
-| **屏幕常亮** | 🔴 Highest | OLED 下优先暗色 |
-| **持续 GPS** | 🔴 Very high | 用 significant change 模式 |
-| **网络请求** | 🟡 High | 批量请求 + 强缓存 |
-| **动画** | 🟡 Medium | 低电量时降级 |
-| **后台任务** | 🟡 Medium | 非关键延后处理 |
-| **CPU 计算** | 🟢 Lower | 转到后端处理 |
+| **屏幕常亮** | [CRITICAL]  Highest | OLED 下优先暗色 |
+| **持续 GPS** | [CRITICAL]  Very high | 用 significant change 模式 |
+| **网络请求** | [SUGGESTION]  High | 批量请求 + 强缓存 |
+| **动画** | [SUGGESTION]  Medium | 低电量时降级 |
+| **后台任务** | [SUGGESTION]  Medium | 非关键延后处理 |
+| **CPU 计算** | [NIT]  Lower | 转到后端处理 |
 
 ### OLED 省电原则（OLED Battery Saving）
 
@@ -592,10 +592,10 @@ Flutter：
 OLED：黑色像素 = 不发光 = 0 功耗
 
 暗色模式节能：
-├── 纯黑（#000000）→ 最大节能
-├── 深灰（#1a1a1a）→ 少量节能
-├── 彩色 → 一定功耗
-└── 白色（#FFFFFF）→ 最大耗电
++-- 纯黑（#000000）-> 最大节能
++-- 深灰（#1a1a1a）-> 少量节能
++-- 彩色 -> 一定功耗
++-- 白色（#FFFFFF）-> 最大耗电
 
 规则：暗色模式背景尽量用纯黑。
 ```
@@ -604,16 +604,16 @@ OLED：黑色像素 = 不发光 = 0 功耗
 
 ```
 iOS：
-├── Background refresh：系统调度，频次受限
-├── Push notifications：重要更新才用
-├── Background modes：仅 Location/Audio/VoIP
-└── Background tasks：最大约 30 秒
++-- Background refresh：系统调度，频次受限
++-- Push notifications：重要更新才用
++-- Background modes：仅 Location/Audio/VoIP
++-- Background tasks：最大约 30 秒
 
 Android：
-├── WorkManager：系统调度、节能优先
-├── Foreground service：前台可见、持续运行
-├── JobScheduler：批量网络任务
-└── Doze mode：必须遵守并批处理
++-- WorkManager：系统调度、节能优先
++-- Foreground service：前台可见、持续运行
++-- JobScheduler：批量网络任务
++-- Doze mode：必须遵守并批处理
 ```
 
 ---
@@ -623,42 +623,42 @@ Android：
 ### 离线优先架构（Offline-First Architecture）
 
 ```
-                    ┌──────────────┐
-                    │     UI       │
-                    └──────┬───────┘
-                           │
-                    ┌──────▼───────┐
-                    │   Cache      │ ← 先读缓存
-                    └──────┬───────┘
-                           │
-                    ┌──────▼───────┐
-                    │   Network    │ ← 网络更新缓存
-                    └──────────────┘
+                    +--------------+
+                    |     UI       |
+                    +------+-------+
+                           |
+                    +------v-------+
+                    |   Cache      | <- 先读缓存
+                    +------+-------+
+                           |
+                    +------v-------+
+                    |   Network    | <- 网络更新缓存
+                    +--------------+
 
 收益：
-├── UI 秒开（缓存无需 loading）
-├── 支持离线
-├── 降低流量消耗
-└── 慢网体验更好
++-- UI 秒开（缓存无需 loading）
++-- 支持离线
++-- 降低流量消耗
++-- 慢网体验更好
 ```
 
 ### 请求优化（Request Optimization）
 
 ```
 BATCH：多请求合并
-├── 10 个小请求 → 1 个批量请求
-├── 降低连接开销
-└── 电量更友好（无线模块只唤醒一次）
++-- 10 个小请求 -> 1 个批量请求
++-- 降低连接开销
++-- 电量更友好（无线模块只唤醒一次）
 
 CACHE：不重复拉取无变化数据
-├── ETag/If-None-Match 头
-├── Cache-Control 头
-└── Stale-while-revalidate 模式
++-- ETag/If-None-Match 头
++-- Cache-Control 头
++-- Stale-while-revalidate 模式
 
 COMPRESS：减少体积
-├── gzip/brotli
-├── 只请求必要字段（GraphQL）
-└── 大列表必须分页
++-- gzip/brotli
++-- 只请求必要字段（GraphQL）
++-- 大列表必须分页
 ```
 
 ---
@@ -679,16 +679,16 @@ COMPRESS：减少体积
 ### 真实设备测试（Test on Real Devices）
 
 ```
-⚠️ 永远不要只信：
-├── 模拟器/模拟机（远快于真机）
-├── Dev 模式（比 Release 慢）
-├── 只有高端设备
+[WARN]  永远不要只信：
++-- 模拟器/模拟机（远快于真机）
++-- Dev 模式（比 Release 慢）
++-- 只有高端设备
 
-✅ 必须覆盖：
-├── 低端 Android（<$200）
-├── 老 iOS 设备（iPhone 8 / SE）
-├── Release/Profile 构建
-└── 真实数据（不是 10 条假数据）
+[OK]  必须覆盖：
++-- 低端 Android（<$200）
++-- 老 iOS 设备（iPhone 8 / SE）
++-- Release/Profile 构建
++-- 真实数据（不是 10 条假数据）
 ```
 
 ### 性能监控清单（Performance Monitoring Checklist）
@@ -756,10 +756,10 @@ void dispose() {
 ### 动画目标（Animation Targets）
 
 ```
-Transform/Opacity only ← 可动画属性
-16.67ms per frame ← 时间预算
-60fps minimum ← 最低目标
-Low-end Android ← 必测设备
+Transform/Opacity only <- 可动画属性
+16.67ms per frame <- 时间预算
+60fps minimum <- 最低目标
+Low-end Android <- 必测设备
 ```
 
 ---

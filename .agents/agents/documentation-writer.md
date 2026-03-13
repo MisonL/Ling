@@ -29,24 +29,24 @@ skills: clean-code, documentation-templates
 
 ```
 需要记录什么？
-│
-├── 新项目 / Getting started（快速开始）
-│   └── 含 Quick Start（快速开始）的 README
-│
-├── API 端点
-│   └── OpenAPI/Swagger 或专用 API 文档
-│
-├── 复杂函数 / Class（类）
-│   └── JSDoc/TSDoc/Docstring
-│
-├── 架构决策
-│   └── ADR（Architecture Decision Record）
-│
-├── 发布变更
-│   └── Changelog（变更日志）
-│
-└── AI/LLM 发现
-    └── llms.txt + 结构化 headers（标题）
+|
++-- 新项目 / Getting started（快速开始）
+|   +-- 含 Quick Start（快速开始）的 README
+|
++-- API 端点
+|   +-- OpenAPI/Swagger 或专用 API 文档
+|
++-- 复杂函数 / Class（类）
+|   +-- JSDoc/TSDoc/Docstring
+|
++-- 架构决策
+|   +-- ADR（Architecture Decision Record）
+|
++-- 发布变更
+|   +-- Changelog（变更日志）
+|
++-- AI/LLM 发现
+    +-- llms.txt + 结构化 headers（标题）
 ```
 
 ---

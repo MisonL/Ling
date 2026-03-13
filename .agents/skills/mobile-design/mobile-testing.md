@@ -6,24 +6,24 @@
 
 ---
 
-## 🧠 移动端测试思维（MOBILE TESTING MINDSET）
+##  移动端测试思维（MOBILE TESTING MINDSET）
 
 ```
 移动端测试与 Web 不同：
-├── 真机很关键（模拟器会隐藏问题）
-├── 平台差异（iOS vs Android）
-├── 网络条件剧烈变化
-├── 需考虑电量/性能
-├── App 生命周期（后台、被杀、恢复）
-├── 权限与系统对话框
-└── 触控交互 vs 点击
++-- 真机很关键（模拟器会隐藏问题）
++-- 平台差异（iOS vs Android）
++-- 网络条件剧烈变化
++-- 需考虑电量/性能
++-- App 生命周期（后台、被杀、恢复）
++-- 权限与系统对话框
++-- 触控交互 vs 点击
 ```
 
 ---
 
-## 🚫 AI 移动端测试反模式（ANTI-PATTERNS）
+##  AI 移动端测试反模式（ANTI-PATTERNS）
 
-| ❌ AI 默认 | 为什么错 | ✅ 移动端正确做法 |
+| [FAIL]  AI 默认 | 为什么错 | [OK]  移动端正确做法 |
 |-----------|----------|------------------|
 | 只用 Jest | 覆盖不到原生层 | Jest + 真机 E2E |
 | Enzyme 模式 | 过时且偏 Web | React Native Testing Library |
@@ -43,59 +43,59 @@
 
 ```
 你在测什么？
-        │
-        ├── 纯函数/工具/助手
-        │   └── Jest（单元测试）
-        │       └── 无需特殊移动端配置
-        │
-        ├── 独立组件（隔离）
-        │   ├── React Native → React Native Testing Library
-        │   └── Flutter → flutter_test（Widget tests）
-        │
-        ├── 带 hooks/context/navigation 的组件
-        │   ├── React Native → RNTL + mocked providers
-        │   └── Flutter → integration_test
-        │
-        ├── 完整用户流程（登录、结账等）
-        │   ├── Detox（RN，快且可靠）
-        │   ├── Maestro（跨平台，YAML）
-        │   └── Appium（老方案，慢，兜底）
-        │
-        └── 性能/内存/电量
-            ├── Flashlight（RN 性能）
-            ├── Flutter DevTools
-            └── 真机 Profiling（Xcode/Android Studio）
+        |
+        +-- 纯函数/工具/助手
+        |   +-- Jest（单元测试）
+        |       +-- 无需特殊移动端配置
+        |
+        +-- 独立组件（隔离）
+        |   +-- React Native -> React Native Testing Library
+        |   +-- Flutter -> flutter_test（Widget tests）
+        |
+        +-- 带 hooks/context/navigation 的组件
+        |   +-- React Native -> RNTL + mocked providers
+        |   +-- Flutter -> integration_test
+        |
+        +-- 完整用户流程（登录、结账等）
+        |   +-- Detox（RN，快且可靠）
+        |   +-- Maestro（跨平台，YAML）
+        |   +-- Appium（老方案，慢，兜底）
+        |
+        +-- 性能/内存/电量
+            +-- Flashlight（RN 性能）
+            +-- Flutter DevTools
+            +-- 真机 Profiling（Xcode/Android Studio）
 ```
 
 ### 工具对比（Tool Comparison）
 
 | 工具（Tool） | 平台 | 速度 | 可靠性 | 适用场景 |
 |-------------|------|------|--------|---------|
-| **Jest** | RN | ⚡⚡⚡ | ⚡⚡⚡ | 单元测试/逻辑 |
-| **RNTL** | RN | ⚡⚡⚡ | ⚡⚡ | 组件测试 |
-| **flutter_test** | Flutter | ⚡⚡⚡ | ⚡⚡⚡ | Widget tests |
-| **Detox** | RN | ⚡⚡ | ⚡⚡⚡ | 关键 E2E |
-| **Maestro** | Both | ⚡⚡ | ⚡⚡ | 跨平台 E2E |
-| **Appium** | Both | ⚡ | ⚡ | 兜底/Legacy |
+| **Jest** | RN |  |  | 单元测试/逻辑 |
+| **RNTL** | RN |  |  | 组件测试 |
+| **flutter_test** | Flutter |  |  | Widget tests |
+| **Detox** | RN |  |  | 关键 E2E |
+| **Maestro** | Both |  |  | 跨平台 E2E |
+| **Appium** | Both |  |  | 兜底/Legacy |
 
 ---
 
 ## 2. 移动端测试金字塔（Testing Pyramid for Mobile）
 
 ```
-                    ┌───────────────┐
-                    │    E2E Tests  │  10%
-                    │  (Real device) │  慢、贵，但关键
-                    ├───────────────┤
-                    │  Integration  │  20%
-                    │    Tests      │  组件+上下文
-                    ├───────────────┤
-                    │  Component    │  30%
-                    │    Tests      │  UI 级别
-                    ├───────────────┤
-                    │   Unit Tests  │  40%
-                    │    (Jest)     │  纯逻辑
-                    └───────────────┘
+                    +---------------+
+                    |    E2E Tests  |  10%
+                    |  (Real device) |  慢、贵，但关键
+                    +---------------+
+                    |  Integration  |  20%
+                    |    Tests      |  组件+上下文
+                    +---------------+
+                    |  Component    |  30%
+                    |    Tests      |  UI 级别
+                    +---------------+
+                    |   Unit Tests  |  40%
+                    |    (Jest)     |  纯逻辑
+                    +---------------+
 ```
 
 ### 为什么是这个比例（Why This Distribution）
@@ -107,7 +107,7 @@
 | **Component 30%** | UI 变化反馈快 |
 | **Unit 40%** | 最快且最稳定，覆盖逻辑 |
 
-> 🔴 **如果 90% 是单测而 0% E2E，你测错了重点。**
+> [CRITICAL]  **如果 90% 是单测而 0% E2E，你测错了重点。**
 
 ---
 
@@ -116,69 +116,69 @@
 ### 单元测试（Unit Tests, Jest）
 
 ```
-✅ 测：
-├── 工具函数（formatDate、calculatePrice）
-├── 状态 reducer（Redux/Zustand）
-├── API 响应转换
-├── 校验逻辑
-└── 业务规则
+[OK]  测：
++-- 工具函数（formatDate、calculatePrice）
++-- 状态 reducer（Redux/Zustand）
++-- API 响应转换
++-- 校验逻辑
++-- 业务规则
 
-❌ 不测：
-├── 组件渲染（去组件测试）
-├── 导航（去集成测试）
-├── 原生模块（mock）
-└── 第三方库
+[FAIL]  不测：
++-- 组件渲染（去组件测试）
++-- 导航（去集成测试）
++-- 原生模块（mock）
++-- 第三方库
 ```
 
 ### 组件测试（RNTL / flutter_test）
 
 ```
-✅ 测：
-├── 组件正确渲染
-├── 用户交互（tap、type、swipe）
-├── loading/error/empty 状态
-├── 无障碍 label 是否存在
-└── props 改变行为
+[OK]  测：
++-- 组件正确渲染
++-- 用户交互（tap、type、swipe）
++-- loading/error/empty 状态
++-- 无障碍 label 是否存在
++-- props 改变行为
 
-❌ 不测：
-├── 内部实现细节
-├── 全量 snapshot（只对关键组件）
-├── 过细样式细节（脆弱）
-└── 第三方组件内部
+[FAIL]  不测：
++-- 内部实现细节
++-- 全量 snapshot（只对关键组件）
++-- 过细样式细节（脆弱）
++-- 第三方组件内部
 ```
 
 ### 集成测试（Integration Tests）
 
 ```
-✅ 测：
-├── 表单提交流程
-├── 页面间导航
-├── 跨页面状态保持
-├── API 集成（配合 mock server）
-└── Context/provider 交互
+[OK]  测：
++-- 表单提交流程
++-- 页面间导航
++-- 跨页面状态保持
++-- API 集成（配合 mock server）
++-- Context/provider 交互
 
-❌ 不测：
-├── 每条路径都测（太慢）
-├── 第三方服务（mock）
-└── 后端逻辑（后端测试）
+[FAIL]  不测：
++-- 每条路径都测（太慢）
++-- 第三方服务（mock）
++-- 后端逻辑（后端测试）
 ```
 
 ### E2E 测试（End-to-End）
 
 ```
-✅ 测：
-├── 关键用户路径（登录、购买、注册）
-├── 离线 → 在线切换
-├── Deep link 处理
-├── 推送通知跳转
-├── 权限流程
-└── 支付流程
+[OK]  测：
++-- 关键用户路径（登录、购买、注册）
++-- 离线 -> 在线切换
++-- Deep link 处理
++-- 推送通知跳转
++-- 权限流程
++-- 支付流程
 
-❌ 不测：
-├── 所有边界（太慢）
-├── 视觉回归（用 snapshot）
-├── 非关键功能
-└── 纯后端逻辑
+[FAIL]  不测：
++-- 所有边界（太慢）
++-- 视觉回归（用 snapshot）
++-- 非关键功能
++-- 纯后端逻辑
 ```
 
 ---
@@ -189,24 +189,24 @@
 
 | 区域 | iOS 行为 | Android 行为 | 两端都测？ |
 |------|----------|--------------|------------|
-| **返回导航** | 边缘滑动 | 系统返回键 | ✅ YES |
-| **权限** | 仅一次，需设置开启 | 每次询问，带 rationale | ✅ YES |
-| **键盘** | 外观与行为不同 | 外观与行为不同 | ✅ YES |
-| **日期选择器** | 轮盘/Modal | Material dialog | ⚠️ 自定义 UI 时 |
-| **推送格式** | APNs payload | FCM payload | ✅ YES |
-| **Deep links** | Universal Links | App Links | ✅ YES |
-| **手势** | 部分特有 | Material 手势 | ⚠️ 自定义交互时 |
+| **返回导航** | 边缘滑动 | 系统返回键 | [OK]  YES |
+| **权限** | 仅一次，需设置开启 | 每次询问，带 rationale | [OK]  YES |
+| **键盘** | 外观与行为不同 | 外观与行为不同 | [OK]  YES |
+| **日期选择器** | 轮盘/Modal | Material dialog | [WARN]  自定义 UI 时 |
+| **推送格式** | APNs payload | FCM payload | [OK]  YES |
+| **Deep links** | Universal Links | App Links | [OK]  YES |
+| **手势** | 部分特有 | Material 手势 | [WARN]  自定义交互时 |
 
 ### 平台测试策略（Platform Testing Strategy）
 
 ```
 每个平台：
-├── 跑单测（同一套）
-├── 跑组件测试（同一套）
-├── 真机 E2E
-│   ├── iOS：真机（不只模拟器）
-│   └── Android：中端机（不只旗舰）
-└── 平台特有功能单独验证
++-- 跑单测（同一套）
++-- 跑组件测试（同一套）
++-- 真机 E2E
+|   +-- iOS：真机（不只模拟器）
+|   +-- Android：中端机（不只旗舰）
++-- 平台特有功能单独验证
 ```
 
 ---
@@ -227,11 +227,11 @@
 
 ```
 方法：
-├── 单元测试：mock NetInfo，测逻辑
-├── 集成测试：mock API 响应，测 UI
-├── E2E（Detox）：device.setURLBlacklist()
-├── E2E（Maestro）：设置 network conditions
-└── 手动：Charles Proxy / Network Link Conditioner
++-- 单元测试：mock NetInfo，测逻辑
++-- 集成测试：mock API 响应，测 UI
++-- E2E（Detox）：device.setURLBlacklist()
++-- E2E（Maestro）：设置 network conditions
++-- 手动：Charles Proxy / Network Link Conditioner
 ```
 
 ---
@@ -252,17 +252,17 @@
 
 ```
 必须测试：
-├── 发布前（必做）
-├── 大功能上线后
-├── 依赖升级后
-├── 用户反馈变慢时
-└── CI（可选基准）
++-- 发布前（必做）
++-- 大功能上线后
++-- 依赖升级后
++-- 用户反馈变慢时
++-- CI（可选基准）
 
 测试地点：
-├── 真机（必须）
-├── 低端机（如 Galaxy A / 旧 iPhone）
-├── 不在模拟器（性能不可信）
-└── 用真实数据（不是 3 条）
++-- 真机（必须）
++-- 低端机（如 Galaxy A / 旧 iPhone）
++-- 不在模拟器（性能不可信）
++-- 用真实数据（不是 3 条）
 ```
 
 ---
@@ -284,15 +284,15 @@
 
 ```
 自动化：
-├── React Native：jest-axe
-├── Flutter：测试中的 Accessibility checker
-└── Lint 规则补充缺失 label
++-- React Native：jest-axe
++-- Flutter：测试中的 Accessibility checker
++-- Lint 规则补充缺失 label
 
 手动：
-├── 开启 VoiceOver（iOS）/ TalkBack（Android）
-├── 全流程用读屏操作
-├── 增大字体测试
-└── 减少动态（reduced motion）测试
++-- 开启 VoiceOver（iOS）/ TalkBack（Android）
++-- 全流程用读屏操作
++-- 增大字体测试
++-- 减少动态（reduced motion）测试
 ```
 
 ---
@@ -319,7 +319,7 @@
 
 ---
 
-## 📝 移动端测试清单（MOBILE TESTING CHECKLIST）
+##  移动端测试清单（MOBILE TESTING CHECKLIST）
 
 ### PR 前
 - [ ] 新逻辑有单测
@@ -343,14 +343,14 @@
 
 ---
 
-## 🎯 测试前必问（Testing Questions to Ask）
+##  测试前必问（Testing Questions to Ask）
 
 在写测试前先回答：
 
-1. **什么最可能出错？** → 测它
-2. **用户最在意什么？** → E2E 测它
-3. **哪里逻辑复杂？** → 单测覆盖
-4. **哪些平台差异大？** → 双端测试
-5. **离线会发生什么？** → 覆盖该场景
+1. **什么最可能出错？** -> 测它
+2. **用户最在意什么？** -> E2E 测它
+3. **哪里逻辑复杂？** -> 单测覆盖
+4. **哪些平台差异大？** -> 双端测试
+5. **离线会发生什么？** -> 覆盖该场景
 
 > **记住（Remember）**：好的移动端测试，是测“对的东西”，不是测“所有东西”。不稳定的 E2E 比不测更糟糕；能抓 bug 的单测，价值远高于 100 个无意义通过的测试。

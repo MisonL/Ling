@@ -6,16 +6,16 @@
 
 ---
 
-## 🧠 移动端调试思维（Mobile Debugging Mindset）
+##  移动端调试思维（Mobile Debugging Mindset）
 
 ```
 Web 调试（Web Debugging）:      移动端调试（Mobile Debugging）:
-┌──────────────┐    ┌──────────────┐
-│  浏览器（Browser） │    │  JS Bridge（JS 桥） │
-│  DevTools（开发者工具） │    │  原生 UI（Native UI） │
-│  Network（网络）  │    │  GPU/内存（GPU/Memory） │
-└──────────────┘    │  线程（Threads） │
-                    └──────────────┘
++--------------+    +--------------+
+|  浏览器（Browser） |    |  JS Bridge（JS 桥） |
+|  DevTools（开发者工具） |    |  原生 UI（Native UI） |
+|  Network（网络）  |    |  GPU/内存（GPU/Memory） |
++--------------+    |  线程（Threads） |
+                    +--------------+
 ```
 
 **关键差异：**
@@ -26,9 +26,9 @@ Web 调试（Web Debugging）:      移动端调试（Mobile Debugging）:
 
 ---
 
-## 🚫 AI 调试反模式（AI Debugging Anti-Patterns）
+##  AI 调试反模式（AI Debugging Anti-Patterns）
 
-| ❌ 默认做法（Default） | ✅ 移动端正确做法（Mobile-Correct） |
+| [FAIL]  默认做法（Default） | [OK]  移动端正确做法（Mobile-Correct） |
 |-----------------------|-----------------------------------|
 | 只会加 console.log（Add console.logs） | 使用 Flipper / Reactotron |
 | 只看 Network Tab（Check network tab） | 使用 Charles Proxy / Proxyman |
@@ -40,7 +40,7 @@ Web 调试（Web Debugging）:      移动端调试（Mobile Debugging）:
 
 ## 1. 工具集（The Toolset）
 
-### ⚡ React Native & Expo
+###  React Native & Expo
 
 | 工具（Tool） | 用途（Purpose） | 适用场景（Best For） |
 |-------------|---------------|---------------------|
@@ -48,7 +48,7 @@ Web 调试（Web Debugging）:      移动端调试（Mobile Debugging）:
 | **Flipper** | 布局/网络/数据库 | 原生 + JS Bridge 调试 |
 | **Expo Tools** | 元素检查器 | 快速 UI 核查 |
 
-### 🛠️ 原生层（深度排查）
+###  原生层（深度排查）
 
 | 工具（Tool） | 平台（Platform） | 命令（Command） | 用途（Why Use?） |
 |-------------|-----------------|----------------|----------------|
@@ -61,7 +61,7 @@ Web 调试（Web Debugging）:      移动端调试（Mobile Debugging）:
 
 ## 2. 常见调试工作流（Common Debugging Workflows）
 
-### 🕵️ “应用崩了”（Red Screen vs Crash to Home）
+###  “应用崩了”（Red Screen vs Crash to Home）
 
 **场景 A：红屏（Red Screen，JS 错误）**
 - **原因：** `undefined is not an object`、导入错误等。
@@ -71,13 +71,13 @@ Web 调试（Web Debugging）:      移动端调试（Mobile Debugging）:
 - **原因：** 原生模块失败、内存 OOM、权限声明缺失等。
 - **工具：**
     - **Android：** `adb logcat *:E`（只看 Error（错误））
-    - **iOS：** Xcode → Window → Devices → View Device Logs（设备日志）
+    - **iOS：** Xcode -> Window -> Devices -> View Device Logs（设备日志）
 
-> **💡 提示：** 应用启动即崩，通常 100% 与原生配置有关（Info.plist、AndroidManifest.xml）。
+> **TIP:  提示：** 应用启动即崩，通常 100% 与原生配置有关（Info.plist、AndroidManifest.xml）。
 
-### 🌐 “API 请求失败”（Network）
+###  “API 请求失败”（Network）
 
-**Web（网页端）：** 打开 Chrome DevTools（开发者工具）→ Network（网络）。  
+**Web（网页端）：** 打开 Chrome DevTools（开发者工具）-> Network（网络）。  
 **移动端：** 通常没这么直接。
 
 **方案 1：Reactotron / Flipper**
@@ -87,7 +87,7 @@ Web 调试（Web Debugging）:      移动端调试（Mobile Debugging）:
 - **复杂但强大。** 可观察原生 SDK 流量。
 - 需要在设备安装 SSL 证书。
 
-### 🐢 “UI 很卡”（Performance）
+###  “UI 很卡”（Performance）
 
 **不要猜，要测。**
 - **React Native：** Performance Monitor（性能监视器，摇一摇菜单）。
@@ -108,11 +108,11 @@ Web 调试（Web Debugging）:      移动端调试（Mobile Debugging）:
 ### iOS
 - **Pod 问题：** `pod deintegrate && pod install`。
 - **签名错误：** 检查 Team ID 与 Bundle Identifier。
-- **缓存清理：** Xcode → Product → Clean Build Folder。
+- **缓存清理：** Xcode -> Product -> Clean Build Folder。
 
 ---
 
-## 📝 调试检查清单（Debugging Checklist）
+##  调试检查清单（Debugging Checklist）
 
 - [ ] **这是 JS（JavaScript）崩溃还是原生崩溃？**（红屏还是退桌面）
 - [ ] **你清理过构建缓存吗？**（原生缓存很“顽固”）

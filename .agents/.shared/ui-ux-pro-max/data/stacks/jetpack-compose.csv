@@ -10,7 +10,7 @@ No,Category,Guideline,Description,Do,Don't,Code Good,Code Bad,Severity,Docs URL
 9,SideEffect,LaunchedEffect keys,Use correct keys,LaunchedEffect(id),LaunchedEffect(Unit),Scoped effect,Infinite loop,High,https://developer.android.com/jetpack/compose/side-effects
 10,SideEffect,rememberUpdatedState,Avoid stale lambdas,rememberUpdatedState,Capture directly,Safe callback,Stale state,Medium,https://developer.android.com/jetpack/compose/side-effects
 11,SideEffect,DisposableEffect,Clean up resources,onDispose,No cleanup,No leak,Memory leak,High,
-12,Architecture,Unidirectional data flow,UI → VM → State,onEvent,Two-way binding,Predictable flow,Hard debug,High,https://developer.android.com/topic/architecture
+12,Architecture,Unidirectional data flow,UI -> VM -> State,onEvent,Two-way binding,Predictable flow,Hard debug,High,https://developer.android.com/topic/architecture
 13,Architecture,No business logic in UI,Logic belongs to VM,Collect state,Call repo,Clean UI,Fat UI,High,
 14,Architecture,Expose immutable state,Expose StateFlow,asStateFlow,Mutable exposed,Safe API,State mutation,High,
 15,Lifecycle,Lifecycle-aware collect,Use collectAsStateWithLifecycle,Lifecycle aware,collectAsState,No leak,Leak,High,https://developer.android.com/jetpack/compose/lifecycle

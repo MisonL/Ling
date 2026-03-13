@@ -63,12 +63,12 @@ allowed-tools: Read, Glob, Grep
 ### 提示词工程审查
 
 ```markdown
-// ❌ 代码中存在模糊的提示词
+// [FAIL]  代码中存在模糊的提示词
 const response = await ai.generate(userInput);
 
-// ✅ 结构化且安全的提示词
+// [OK]  结构化且安全的提示词
 const response = await ai.generate({
-  system: "您是一个专业的解析器……",
+  system: "您是一个专业的解析器......",
   input: sanitize(userInput),
   schema: ResponseSchema
 });
@@ -79,28 +79,28 @@ const response = await ai.generate({
 ## 应标识的反模式
 
 ```typescript
-// ❌ 魔术数字
+// [FAIL]  魔术数字
 if (status === 3) { ... }
 
-// ✅ 具名常量
+// [OK]  具名常量
 if (status === Status.ACTIVE) { ... }
 
-// ❌ 深度嵌套
+// [FAIL]  深度嵌套
 if (a) { if (b) { if (c) { ... } } }
 
-// ✅ 卫语句/早期返回
+// [OK]  卫语句/早期返回
 if (!a) return;
 if (!b) return;
 if (!c) return;
 // 处理核心逻辑
 
-// ❌ 长函数 (超过 100 行)
-// ✅ 短小且专注的函数
+// [FAIL]  长函数 (超过 100 行)
+// [OK]  短小且专注的函数
 
-// ❌ 使用 any 类型
+// [FAIL]  使用 any 类型
 const data: any = ...
 
-// ✅ 使用正确的类型
+// [OK]  使用正确的类型
 const data: UserData = ...
 ```
 
@@ -109,17 +109,17 @@ const data: UserData = ...
 ## 审查评注指南
 
 ```
-// 🔴 阻塞性问题：关键路径中存在 SQL 注入漏洞
-🔴 BLOCKING（阻塞）: 此处存在 SQL 注入风险
+// [CRITICAL]  阻塞性问题：关键路径中存在 SQL 注入漏洞
+[CRITICAL]  BLOCKING（阻塞）: 此处存在 SQL 注入风险
 
-// 🟡 重要建议：考虑使用 useMemo 优化性能
-🟡 SUGGESTION（建议）: 考虑此处使用 useMemo 进行性能优化
+// [SUGGESTION]  重要建议：考虑使用 useMemo 优化性能
+[SUGGESTION]  SUGGESTION（建议）: 考虑此处使用 useMemo 进行性能优化
 
-// 🟢 细节修饰 (Nits)：对于不可变变量，优先使用 const
-🟢 NIT（细节）: 对于不可变变量，建议优先使用 const 而非 let
+// [NIT]  细节修饰 (Nits)：对于不可变变量，优先使用 const
+[NIT]  NIT（细节）: 对于不可变变量，建议优先使用 const 而非 let
 
-// ❓ 疑问确认：如果此处用户（User）为空会怎样？
-❓ QUESTION（疑问）: 如果此处 User（用户）为 null 会发生什么情况？
+//  疑问确认：如果此处用户（User）为空会怎样？
+ QUESTION（疑问）: 如果此处 User（用户）为 null 会发生什么情况？
 ```
 
 ---

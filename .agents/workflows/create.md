@@ -27,9 +27,9 @@ $ARGUMENTS
 3. **应用构建（审批后）**
    - 调度 `app-builder` 技能
    - 协调专家 Agent（智能体）：
-     - `database-architect` → Schema（架构）
-     - `backend-specialist` → API（接口）
-     - `frontend-specialist` → UI（界面）
+     - `database-architect` -> Schema（架构）
+     - `backend-specialist` -> API（接口）
+     - `frontend-specialist` -> UI（界面）
 
 4. **预览**
    - 完成后使用 `auto_preview.py` 启动预览

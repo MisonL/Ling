@@ -16,17 +16,17 @@ allowed-tools: Read, Write, Edit, Glob, Grep
 
 ```
 什么类型的游戏？
-│
-├── 2D 游戏
-│   ├── 完整的游戏引擎功能？ → Phaser
-│   └── 原始渲染能力？ → PixiJS
-│
-├── 3D 游戏
-│   ├── 完整引擎（物理、XR）？ → Babylon.js
-│   └── 渲染聚焦？ → Three.js
-│
-└── 混合 / Canvas
-    └── 自定义 → Raw Canvas/WebGL
+|
++-- 2D 游戏
+|   +-- 完整的游戏引擎功能？ -> Phaser
+|   +-- 原始渲染能力？ -> PixiJS
+|
++-- 3D 游戏
+|   +-- 完整引擎（物理、XR）？ -> Babylon.js
+|   +-- 渲染聚焦？ -> Three.js
+|
++-- 混合 / Canvas
+    +-- 自定义 -> Raw Canvas/WebGL
 ```
 
 ### 对比（2025）
@@ -46,10 +46,10 @@ allowed-tools: Read, Write, Edit, Glob, Grep
 
 | 浏览器 | 支持 |
 | --- | --- |
-| Chrome | ✅ 自 v113 起 |
-| Edge | ✅ 自 v113 起 |
-| Firefox | ✅ 自 v131 起 |
-| Safari | ✅ 自 18.0 起 |
+| Chrome | [OK]  自 v113 起 |
+| Edge | [OK]  自 v113 起 |
+| Firefox | [OK]  自 v131 起 |
+| Safari | [OK]  自 18.0 起 |
 | **总计** | **~73%** 全球 |
 
 ### 决策
@@ -137,7 +137,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep
 
 ## 7. 反模式
 
-| ❌ 禁止 | ✅ 推荐 |
+| [FAIL]  禁止 | [OK]  推荐 |
 | --- | --- |
 | 一次性加载所有资产 | 渐进式加载 |
 | 忽略标签页可见性 | 隐藏时暂停 |

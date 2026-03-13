@@ -6,18 +6,18 @@
 
 ```
 零停机变更建议：
-│
-├── 新增列（adding column）
-│   └── 先设为 nullable（可为空） → 回填数据 → 再加 NOT NULL
-│
-├── 删除列（removing column）
-│   └── 先停止使用 → 部署过渡版本 → 再删除列
-│
-├── 新增索引（adding index）
-│   └── `CREATE INDEX CONCURRENTLY`（非阻塞）
-│
-└── 重命名列（renaming column）
-    └── 新增新列 → 迁移数据 → 部署 → 删除旧列
+|
++-- 新增列（adding column）
+|   +-- 先设为 nullable（可为空） -> 回填数据 -> 再加 NOT NULL
+|
++-- 删除列（removing column）
+|   +-- 先停止使用 -> 部署过渡版本 -> 再删除列
+|
++-- 新增索引（adding index）
+|   +-- `CREATE INDEX CONCURRENTLY`（非阻塞）
+|
++-- 重命名列（renaming column）
+    +-- 新增新列 -> 迁移数据 -> 部署 -> 删除旧列
 ```
 
 ## 迁移哲学

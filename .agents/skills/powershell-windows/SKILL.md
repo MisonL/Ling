@@ -14,7 +14,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 
 ### 关键：必须使用圆括号（Parentheses）
 
-| ❌ 错误做法                            | ✅ 正确做法                                |
+| [FAIL]  错误做法                            | [OK]  正确做法                                |
 | -------------------------------------- | ------------------------------------------ |
 | `if (Test-Path "a" -or Test-Path "b")` | `if ((Test-Path "a") -or (Test-Path "b"))` |
 | `if (Get-Item $x -and $y -eq 5)`       | `if ((Get-Item $x) -and ($y -eq 5))`       |
@@ -27,12 +27,12 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 
 ### 关键：脚本中严禁使用 Unicode
 
-| 用途 | ❌ 禁止使用 | ✅ 推荐使用 |
+| 用途 | [FAIL]  禁止使用 | [OK]  推荐使用 |
 | ---- | ----------- | ----------- |
-| 成功 | ✅ ✓        | [OK] [+]    |
-| 错误 | ❌ ✗ 🔴     | [!] [X]     |
-| 警告 | ⚠️ 🟡       | [*] [WARN]  |
-| 信息 | ℹ️ 🔵       | [i] [INFO]  |
+| 成功 | [OK]  OK        | [OK] [+]    |
+| 错误 | [FAIL]  X [CRITICAL]      | [!] [X]     |
+| 警告 | [WARN]  [SUGGESTION]        | [*] [WARN]  |
+| 信息 | ℹ        | [i] [INFO]  |
 | 进度 | ⏳          | [...]       |
 
 **准则：** 在 PowerShell 脚本中仅使用 ASCII（ASCII 码）字符。
@@ -43,7 +43,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 
 ### 在访问前始终检查
 
-| ❌ 错误做法          | ✅ 正确做法                      |
+| [FAIL]  错误做法          | [OK]  正确做法                      |
 | -------------------- | -------------------------------- |
 | `$array.Count -gt 0` | `$array -and $array.Count -gt 0` |
 | `$text.Length`       | `if ($text) { $text.Length }`    |
@@ -111,7 +111,7 @@ Write-Output "Value: $value"
 
 ### 关键：深度参数（Depth Parameter）
 
-| ❌ 错误做法      | ✅ 正确做法                |
+| [FAIL]  错误做法      | [OK]  正确做法                |
 | ---------------- | -------------------------- |
 | `ConvertTo-Json` | `ConvertTo-Json -Depth 10` |
 

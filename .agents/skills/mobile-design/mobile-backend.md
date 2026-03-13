@@ -6,27 +6,27 @@
 
 ---
 
-## 🧠 移动端后端思维（MOBILE BACKEND MINDSET）
+##  移动端后端思维（MOBILE BACKEND MINDSET）
 
 ```
 移动端客户端与 Web 完全不同：
-├── 网络不稳定（2G/地铁/电梯）
-├── 电量敏感（减少唤醒）
-├── 存储有限（不能全量缓存）
-├── 会话频繁中断（电话/通知）
-├── 设备差异极大（老机到旗舰）
-└── 二进制更新很慢（App Store 审核）
++-- 网络不稳定（2G/地铁/电梯）
++-- 电量敏感（减少唤醒）
++-- 存储有限（不能全量缓存）
++-- 会话频繁中断（电话/通知）
++-- 设备差异极大（老机到旗舰）
++-- 二进制更新很慢（App Store 审核）
 ```
 
 **后端必须补偿以上全部问题。**
 
 ---
 
-## 🚫 AI 移动端后端反模式（ANTI-PATTERNS）
+##  AI 移动端后端反模式（ANTI-PATTERNS）
 
 ### AI 常见移动端后端错误
 
-| ❌ AI 默认 | 为什么错 | ✅ 移动端正确做法 |
+| [FAIL]  AI 默认 | 为什么错 | [OK]  移动端正确做法 |
 |-----------|----------|------------------|
 | Web 与移动共用同一 API | 移动端需要更紧凑响应 | 独立移动端接口或字段选择 |
 | 全对象返回 | 浪费带宽与电量 | 部分字段 + 分页 |
@@ -44,22 +44,22 @@
 ### 平台架构（Platform Architecture）
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                    YOUR BACKEND                                  │
-├─────────────────────────────────────────────────────────────────┤
-│                         │                                        │
-│              ┌──────────┴──────────┐                            │
-│              ▼                     ▼                            │
-│    ┌─────────────────┐   ┌─────────────────┐                    │
-│    │   FCM (Google)  │   │  APNs (Apple)   │                    │
-│    │   Firebase      │   │  Direct or FCM  │                    │
-│    └────────┬────────┘   └────────┬────────┘                    │
-│             │                     │                              │
-│             ▼                     ▼                              │
-│    ┌─────────────────┐   ┌─────────────────┐                    │
-│    │ Android Device  │   │   iOS Device    │                    │
-│    └─────────────────┘   └─────────────────┘                    │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|                    YOUR BACKEND                                  |
++-----------------------------------------------------------------+
+|                         |                                        |
+|              +----------+----------+                            |
+|              v                     v                            |
+|    +-----------------+   +-----------------+                    |
+|    |   FCM (Google)  |   |  APNs (Apple)   |                    |
+|    |   Firebase      |   |  Direct or FCM  |                    |
+|    +--------+--------+   +--------+--------+                    |
+|             |                     |                              |
+|             v                     v                              |
+|    +-----------------+   +-----------------+                    |
+|    | Android Device  |   |   iOS Device    |                    |
+|    +-----------------+   +-----------------+                    |
++-----------------------------------------------------------------+
 ```
 
 ### Push 类型（Push Types）
@@ -72,7 +72,7 @@
 
 ### 反模式（Anti-Patterns）
 
-| ❌ NEVER | ✅ ALWAYS |
+| [FAIL]  NEVER | [OK]  ALWAYS |
 |----------|----------|
 | 推送中携带敏感数据 | Push 只提示“新消息”，内容由 App 拉取 |
 | 高强度推送轰炸 | 合并、去重、尊重静默时段 |
@@ -84,11 +84,11 @@
 
 ```
 TOKEN 生命周期：
-├── App 注册 → 获取 token → 回传后端
-├── Token 可能变化 → App 启动需重新注册
-├── Token 过期 → 从数据库清理
-├── 用户卸载 → token 失效（靠错误反馈识别）
-└── 多设备登录 → 同一用户多 token
++-- App 注册 -> 获取 token -> 回传后端
++-- Token 可能变化 -> App 启动需重新注册
++-- Token 过期 -> 从数据库清理
++-- 用户卸载 -> token 失效（靠错误反馈识别）
++-- 多设备登录 -> 同一用户多 token
 ```
 
 ---
@@ -99,22 +99,22 @@ TOKEN 生命周期：
 
 ```
 数据类型是什么？
-        │
-        ├── 只读（新闻、目录）
-        │   └── 简单缓存 + TTL
-        │       └── ETag/Last-Modified 做失效
-        │
-        ├── 用户私有（笔记、待办）
-        │   └── Last-write-wins（简单）
-        │       └── 或时间戳合并
-        │
-        ├── 协作（共享文档）
-        │   └── 必须 CRDT 或 OT
-        │       └── 可考虑 Firebase/Supabase
-        │
-        └── 关键交易（支付、库存）
-            └── 服务器为事实源
-                └── Optimistic UI + 服务端确认
+        |
+        +-- 只读（新闻、目录）
+        |   +-- 简单缓存 + TTL
+        |       +-- ETag/Last-Modified 做失效
+        |
+        +-- 用户私有（笔记、待办）
+        |   +-- Last-write-wins（简单）
+        |       +-- 或时间戳合并
+        |
+        +-- 协作（共享文档）
+        |   +-- 必须 CRDT 或 OT
+        |       +-- 可考虑 Firebase/Supabase
+        |
+        +-- 关键交易（支付、库存）
+            +-- 服务器为事实源
+                +-- Optimistic UI + 服务端确认
 ```
 
 ### 冲突处理策略（Conflict Resolution Strategies）
@@ -131,19 +131,19 @@ TOKEN 生命周期：
 
 ```
 客户端：
-├── 用户操作 → 写本地 DB
-├── 入同步队列 → { action, data, timestamp, retries }
-├── 网络可用 → FIFO 处理队列
-├── 成功 → 移除队列
-├── 失败 → 退避重试（最多 5 次）
-└── 冲突 → 应用冲突策略
++-- 用户操作 -> 写本地 DB
++-- 入同步队列 -> { action, data, timestamp, retries }
++-- 网络可用 -> FIFO 处理队列
++-- 成功 -> 移除队列
++-- 失败 -> 退避重试（最多 5 次）
++-- 冲突 -> 应用冲突策略
 
 服务端：
-├── 接收带客户端时间戳的数据
-├── 与服务端版本比较
-├── 应用冲突策略
-├── 返回合并结果
-└── 客户端以服务端结果更新本地
++-- 接收带客户端时间戳的数据
++-- 与服务端版本比较
++-- 应用冲突策略
++-- 返回合并结果
++-- 客户端以服务端结果更新本地
 ```
 
 ---
@@ -164,17 +164,17 @@ TOKEN 生命周期：
 
 ```
 OFFSET（移动端不友好）：
-├── Page 1: OFFSET 0 LIMIT 20
-├── Page 2: OFFSET 20 LIMIT 20
-├── 问题：新增数据会重复/错位
-└── 问题：offset 越大越慢
++-- Page 1: OFFSET 0 LIMIT 20
++-- Page 2: OFFSET 20 LIMIT 20
++-- 问题：新增数据会重复/错位
++-- 问题：offset 越大越慢
 
 CURSOR（移动端友好）：
-├── First: ?limit=20
-├── Next: ?limit=20&after=cursor_abc123
-├── Cursor = 编码后的 id + sort
-├── 数据变化不重复
-└── 性能稳定
++-- First: ?limit=20
++-- Next: ?limit=20&after=cursor_abc123
++-- Cursor = 编码后的 id + sort
++-- 数据变化不重复
++-- 性能稳定
 ```
 
 ### 批量请求（Batch Requests）
@@ -228,15 +228,15 @@ Response:
 
 ```
 CLIENT VERSION vs MINIMUM VERSION:
-├── client >= minimum → 正常继续
-├── client < minimum → 强制更新页
-│   └── 未更新不可用
-└── client < latest → 弹出可选升级提示
++-- client >= minimum -> 正常继续
++-- client < minimum -> 强制更新页
+|   +-- 未更新不可用
++-- client < latest -> 弹出可选升级提示
 
 FEATURE FLAGS：
-├── 不用发版就能开关功能
-├── 按版本/设备做 A/B
-└── 灰度发布（10% → 50% → 100%）
++-- 不用发版就能开关功能
++-- 按版本/设备做 A/B
++-- 灰度发布（10% -> 50% -> 100%）
 ```
 
 ---
@@ -247,38 +247,38 @@ FEATURE FLAGS：
 
 ```
 ACCESS TOKEN：
-├── 短期（15 分钟 - 1 小时）
-├── 存内存（非持久化）
-├── API 请求使用
-└── 过期自动刷新
++-- 短期（15 分钟 - 1 小时）
++-- 存内存（非持久化）
++-- API 请求使用
++-- 过期自动刷新
 
 REFRESH TOKEN：
-├── 长期（30-90 天）
-├── 存 SecureStore/Keychain
-├── 仅用于换新 access token
-└── 每次使用轮换（安全）
++-- 长期（30-90 天）
++-- 存 SecureStore/Keychain
++-- 仅用于换新 access token
++-- 每次使用轮换（安全）
 
 DEVICE TOKEN：
-├── 标识设备
-├── 支持“一键登出所有设备”
-├── 与 refresh token 绑定
-└── 服务端追踪设备列表
++-- 标识设备
++-- 支持“一键登出所有设备”
++-- 与 refresh token 绑定
++-- 服务端追踪设备列表
 ```
 
 ### 静默续期（Silent Re-authentication）
 
 ```
 请求流程：
-├── 带 access token 请求
-├── 401 Unauthorized？
-│   ├── 有 refresh token？
-│   │   ├── Yes → 调 /auth/refresh
-│   │   │   ├── 成功 → 重试原请求
-│   │   │   └── 失败 → 强制登出
-│   │   └── No → 强制登出
-│   └── 仅过期（非失效）
-│       └── 静默刷新，用户无感
-└── 成功 → 继续
++-- 带 access token 请求
++-- 401 Unauthorized？
+|   +-- 有 refresh token？
+|   |   +-- Yes -> 调 /auth/refresh
+|   |   |   +-- 成功 -> 重试原请求
+|   |   |   +-- 失败 -> 强制登出
+|   |   +-- No -> 强制登出
+|   +-- 仅过期（非失效）
+|       +-- 静默刷新，用户无感
++-- 成功 -> 继续
 ```
 
 ---
@@ -329,11 +329,11 @@ CLIENT REQUEST:
 GET /images/{id}?w=400&h=300&q=80&format=webp
 
 SERVER RESPONSE:
-├── 动态裁剪或 CDN 变体
-├── Android 用 WebP（更小）
-├── iOS 14+ 可用 HEIC（支持时）
-├── JPEG 兜底
-└── Cache-Control: max-age=31536000
++-- 动态裁剪或 CDN 变体
++-- Android 用 WebP（更小）
++-- iOS 14+ 可用 HEIC（支持时）
++-- JPEG 兜底
++-- Cache-Control: max-age=31536000
 ```
 
 ### 分片上传（Chunked Upload, 大文件）
@@ -342,31 +342,31 @@ SERVER RESPONSE:
 UPLOAD FLOW:
 1. POST /uploads/init
    { filename, size, mime_type }
-   → { upload_id, chunk_size }
+   -> { upload_id, chunk_size }
 
 2. PUT /uploads/{upload_id}/chunks/{n}
-   → 上传每个分片（1-5 MB）
-   → 可断点续传
+   -> 上传每个分片（1-5 MB）
+   -> 可断点续传
 
 3. POST /uploads/{upload_id}/complete
-   → 服务端拼装分片
-   → 返回最终文件 URL
+   -> 服务端拼装分片
+   -> 返回最终文件 URL
 ```
 
 ### 音视频流媒体（Streaming Audio/Video）
 
 ```
 要求：
-├── iOS 使用 HLS
-├── Android 用 DASH 或 HLS
-├── 多码率自适应
-├── 支持 Range 请求（seek）
-└── 支持离线下载分片
++-- iOS 使用 HLS
++-- Android 用 DASH 或 HLS
++-- 多码率自适应
++-- 支持 Range 请求（seek）
++-- 支持离线下载分片
 
 接口：
-GET /media/{id}/manifest.m3u8  → HLS manifest
-GET /media/{id}/segment_{n}.ts → 视频分片
-GET /media/{id}/download       → 离线完整文件
+GET /media/{id}/manifest.m3u8  -> HLS manifest
+GET /media/{id}/segment_{n}.ts -> 视频分片
+GET /media/{id}/download       -> 离线完整文件
 ```
 
 ---
@@ -377,37 +377,37 @@ GET /media/{id}/download       → 离线完整文件
 
 ```
 验证真机（非模拟器/机器人）：
-├── iOS：DeviceCheck API
-│   └── 服务端向 Apple 验证
-├── Android：Play Integrity API（替代 SafetyNet）
-│   └── 服务端向 Google 验证
-└── 失败即拒绝（Fail closed）
++-- iOS：DeviceCheck API
+|   +-- 服务端向 Apple 验证
++-- Android：Play Integrity API（替代 SafetyNet）
+|   +-- 服务端向 Google 验证
++-- 失败即拒绝（Fail closed）
 ```
 
 ### 请求签名（Request Signing）
 
 ```
 CLIENT：
-├── signature = HMAC(timestamp + path + body, secret)
-├── 发送：X-Signature: {signature}
-├── 发送：X-Timestamp: {timestamp}
-└── 发送：X-Device-ID: {device_id}
++-- signature = HMAC(timestamp + path + body, secret)
++-- 发送：X-Signature: {signature}
++-- 发送：X-Timestamp: {timestamp}
++-- 发送：X-Device-ID: {device_id}
 
 SERVER：
-├── 校验时间戳（5 分钟内）
-├── 用同样规则生成签名
-├── 比对签名
-└── 不匹配则拒绝（篡改）
++-- 校验时间戳（5 分钟内）
++-- 用同样规则生成签名
++-- 比对签名
++-- 不匹配则拒绝（篡改）
 ```
 
 ### 限流（Rate Limiting）
 
 ```
 移动端建议限流维度：
-├── 每设备（X-Device-ID）
-├── 每用户（鉴权后）
-├── 每接口（敏感接口更严）
-└── 推荐滑动窗口
++-- 每设备（X-Device-ID）
++-- 每用户（鉴权后）
++-- 每接口（敏感接口更严）
++-- 推荐滑动窗口
 
 返回 Header：
 X-RateLimit-Limit: 100
@@ -424,37 +424,37 @@ Retry-After: 60（当 429）
 
 ```
 每个移动请求必须包含：
-├── X-App-Version: 2.1.0
-├── X-Platform: ios | android
-├── X-OS-Version: 17.0
-├── X-Device-Model: iPhone15,2
-├── X-Device-ID: uuid（持久）
-├── X-Request-ID: uuid（单次请求追踪）
-├── Accept-Language: tr-TR
-└── X-Timezone: Europe/Istanbul
++-- X-App-Version: 2.1.0
++-- X-Platform: ios | android
++-- X-OS-Version: 17.0
++-- X-Device-Model: iPhone15,2
++-- X-Device-ID: uuid（持久）
++-- X-Request-ID: uuid（单次请求追踪）
++-- Accept-Language: tr-TR
++-- X-Timezone: Europe/Istanbul
 ```
 
 ### 需要记录的内容（What to Log）
 
 ```
 每个请求：
-├── 上述 Header
-├── Endpoint / method / status
-├── 响应时间
-├── 错误细节（如有）
-└── User ID（已登录）
++-- 上述 Header
++-- Endpoint / method / status
++-- 响应时间
++-- 错误细节（如有）
++-- User ID（已登录）
 
 告警：
-├── 版本级错误率 > 5%
-├── P95 延迟 > 2s
-├── 某版本崩溃突增
-├── 认证失败异常（可能攻击）
-└── Push 投递失败激增
++-- 版本级错误率 > 5%
++-- P95 延迟 > 2s
++-- 某版本崩溃突增
++-- 认证失败异常（可能攻击）
++-- Push 投递失败激增
 ```
 
 ---
 
-## 📝 移动端后端清单（MOBILE BACKEND CHECKLIST）
+##  移动端后端清单（MOBILE BACKEND CHECKLIST）
 
 ### API 设计前
 - [ ] 已识别移动端特有需求？

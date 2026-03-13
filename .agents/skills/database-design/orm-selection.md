@@ -6,18 +6,18 @@
 
 ```
 开发背景是什么？
-│
-├── 边缘部署（edge）/ 关注包体积
-│   └── Drizzle（体积最小，贴近 SQL 语法）
-│
-├── 最佳开发体验（DX）/ schema（模式）优先
-│   └── Prisma（自带迁移工具和可视化 Studio（控制台））
-│
-├── 追求最大控制权
-│   └── 原始 SQL 配合查询构造器（query builder）
-│
-└── Python 生态
-    └── SQLAlchemy 2.0（支持异步）
+|
++-- 边缘部署（edge）/ 关注包体积
+|   +-- Drizzle（体积最小，贴近 SQL 语法）
+|
++-- 最佳开发体验（DX）/ schema（模式）优先
+|   +-- Prisma（自带迁移工具和可视化 Studio（控制台））
+|
++-- 追求最大控制权
+|   +-- 原始 SQL 配合查询构造器（query builder）
+|
++-- Python 生态
+    +-- SQLAlchemy 2.0（支持异步）
 ```
 
 ## 各 ORM 对比

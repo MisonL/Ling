@@ -22,17 +22,17 @@ description: Node.js CLI tool template principles（CLI 工具模板原则）。
 
 ```
 project-name/
-├── src/
-│   ├── index.ts         # Entry point（入口）
-│   ├── cli.ts           # CLI setup（CLI 设置）
-│   ├── commands/        # Command handlers（命令处理）
-│   ├── lib/
-│   │   ├── config.ts    # Config loader（配置加载）
-│   │   └── logger.ts    # Styled output（样式化输出）
-│   └── types/
-├── bin/
-│   └── cli.js           # Executable（可执行文件）
-└── package.json
++-- src/
+|   +-- index.ts         # Entry point（入口）
+|   +-- cli.ts           # CLI setup（CLI 设置）
+|   +-- commands/        # Command handlers（命令处理）
+|   +-- lib/
+|   |   +-- config.ts    # Config loader（配置加载）
+|   |   +-- logger.ts    # Styled output（样式化输出）
+|   +-- types/
++-- bin/
+|   +-- cli.js           # Executable（可执行文件）
++-- package.json
 ```
 
 ---

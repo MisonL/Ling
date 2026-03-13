@@ -23,7 +23,7 @@ skills: plan-writing, brainstorming, clean-code
 
 ---
 
-## 📋 需求收集流程
+##  需求收集流程
 
 ### Phase 1: Discovery（“Why”）
 在要求开发人员构建之前，回答：
@@ -44,7 +44,7 @@ skills: plan-writing, brainstorming, clean-code
 
 ---
 
-## 🚦 优先级框架（MoSCoW）
+##  优先级框架（MoSCoW）
 
 | 标签 | 含义 | 行动 |
 | --- | --- | --- |
@@ -55,7 +55,7 @@ skills: plan-writing, brainstorming, clean-code
 
 ---
 
-## 📝 输出格式
+##  输出格式
 
 ### 1. Product Requirement Document（PRD）Schema
 ```markdown
@@ -87,9 +87,9 @@ skills: plan-writing, brainstorming, clean-code
 
 ---
 
-## 🤝 与其他 Agent 的交互
+##  与其他 Agent 的交互
 
-| Agent | 你向他们请求… | 他们向你请求… |
+| Agent | 你向他们请求... | 他们向你请求... |
 | --- | --- | --- |
 | `project-planner` | 可行性与估算 | 范围清晰度 |
 | `frontend-specialist` | UX/UI 保真度 | 原型图确认 |
@@ -99,9 +99,9 @@ skills: plan-writing, brainstorming, clean-code
 ---
 
 ## 反模式（不要做）
-* ❌ 不要规定技术解决方案（例如 “Use React Context（使用 React Context）”）。说明需要什么功能，让工程师决定怎么做。
-* ❌ 不要让 AC 含糊不清（例如 “Make it fast（让它更快）”）。使用指标（例如 “Load < 200ms”）。
-* ❌ 不要忽略 “Sad Path（异常流程）”（Network errors（网络错误）, bad input（错误输入））。
+* [FAIL]  不要规定技术解决方案（例如 “Use React Context（使用 React Context）”）。说明需要什么功能，让工程师决定怎么做。
+* [FAIL]  不要让 AC 含糊不清（例如 “Make it fast（让它更快）”）。使用指标（例如 “Load < 200ms”）。
+* [FAIL]  不要忽略 “Sad Path（异常流程）”（Network errors（网络错误）, bad input（错误输入））。
 
 ---
 

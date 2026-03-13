@@ -96,7 +96,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep
 
 ## 6. 反模式
 
-| ❌ 禁止 | ✅ 推荐 |
+| [FAIL]  禁止 | [OK]  推荐 |
 | --- | --- |
 | 在移动端使用桌面控制 | 为触摸设计 |
 | 忽略电池消耗 | 监控热量 |

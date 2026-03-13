@@ -25,23 +25,23 @@ Streamlined structure thanks to Tailwind v4（主题配置位于 CSS 内）。
 
 ```
 project-name/
-├── src/
-│   ├── app/
-│   │   ├── layout.tsx    # Contains root SEO Metadata（根级 SEO 元数据）
-│   │   ├── page.tsx      # Landing Page（落地页）
-│   │   ├── globals.css   # Import Tailwind v4 & @theme config（导入 Tailwind v4 与 @theme 配置）
-│   │   ├── not-found.tsx # Custom 404 page（自定义 404 页面）
-│   │   └── (routes)/     # Route groups（路由组，about, contact...）
-│   ├── components/
-│   │   ├── layout/       # Header, Footer（页头、页脚）
-│   │   ├── sections/     # Hero, Features, Pricing, CTA（主视觉、功能亮点、价格方案、CTA）
-│   │   └── ui/           # Atomic components（Button, Card）
-│   └── lib/
-│       └── utils.ts      # Helper functions（cn, formatters）
-├── content/              # Markdown/MDX content（内容）
-├── public/               # Static assets（images, fonts）
-├── next.config.ts        # Next.js Config（TypeScript）
-└── package.json
++-- src/
+|   +-- app/
+|   |   +-- layout.tsx    # Contains root SEO Metadata（根级 SEO 元数据）
+|   |   +-- page.tsx      # Landing Page（落地页）
+|   |   +-- globals.css   # Import Tailwind v4 & @theme config（导入 Tailwind v4 与 @theme 配置）
+|   |   +-- not-found.tsx # Custom 404 page（自定义 404 页面）
+|   |   +-- (routes)/     # Route groups（路由组，about, contact...）
+|   +-- components/
+|   |   +-- layout/       # Header, Footer（页头、页脚）
+|   |   +-- sections/     # Hero, Features, Pricing, CTA（主视觉、功能亮点、价格方案、CTA）
+|   |   +-- ui/           # Atomic components（Button, Card）
+|   +-- lib/
+|       +-- utils.ts      # Helper functions（cn, formatters）
++-- content/              # Markdown/MDX content（内容）
++-- public/               # Static assets（images, fonts）
++-- next.config.ts        # Next.js Config（TypeScript）
++-- package.json
 ```
 
 ---

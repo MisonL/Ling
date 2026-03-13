@@ -28,25 +28,25 @@ Nuxt 4 的现代全栈模板，使用 Vapor Mode（蒸汽模式）与 Tailwind v
 
 ```
 project-name/
-├── app/                  # Application Source（应用源码）
-│   ├── assets/
-│   │   └── css/
-│   │       └── main.css  # Tailwind v4 导入
-│   ├── components/       # Auto-imported components（自动导入组件）
-│   ├── composables/      # Auto-imported logic（自动导入逻辑）
-│   ├── layouts/
-│   ├── pages/            # File-based routing（基于文件路由）
-│   ├── app.vue           # Root component（根组件）
-│   └── router.options.ts
-├── server/               # Nitro Server Engine（服务端引擎）
-│   ├── api/              # API Routes（接口路由，例如 /api/users）
-│   ├── routes/           # Server Routes（服务端路由）
-│   └── utils/            # Server-only helpers（仅服务端辅助，Prisma）
-├── prisma/
-│   └── schema.prisma
-├── public/
-├── nuxt.config.ts        # Main Config（主配置）
-└── package.json
++-- app/                  # Application Source（应用源码）
+|   +-- assets/
+|   |   +-- css/
+|   |       +-- main.css  # Tailwind v4 导入
+|   +-- components/       # Auto-imported components（自动导入组件）
+|   +-- composables/      # Auto-imported logic（自动导入逻辑）
+|   +-- layouts/
+|   +-- pages/            # File-based routing（基于文件路由）
+|   +-- app.vue           # Root component（根组件）
+|   +-- router.options.ts
++-- server/               # Nitro Server Engine（服务端引擎）
+|   +-- api/              # API Routes（接口路由，例如 /api/users）
+|   +-- routes/           # Server Routes（服务端路由）
+|   +-- utils/            # Server-only helpers（仅服务端辅助，Prisma）
++-- prisma/
+|   +-- schema.prisma
++-- public/
++-- nuxt.config.ts        # Main Config（主配置）
++-- package.json
 ```
 
 ---

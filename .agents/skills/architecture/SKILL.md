@@ -8,7 +8,7 @@ allowed-tools: Read, Glob, Grep
 
 > "Requirements drive architecture. Trade-offs inform decisions. ADRs capture rationale."（需求驱动架构，权衡决定结论，ADR 记录依据。）
 
-## 🎯 Selective Reading Rule（选择性阅读规则）
+##  Selective Reading Rule（选择性阅读规则）
 
 **Read ONLY files relevant to the request（仅阅读与请求相关的文档）！** Check the content map, find what you need（查阅内容地图，找到所需信息）。
 
@@ -22,7 +22,7 @@ allowed-tools: Read, Glob, Grep
 
 ---
 
-## 🔗 Related Skills（相关技能）
+##  Related Skills（相关技能）
 
 | Skill（技能） | Use For（用途） |
 | ------------ | ---- |

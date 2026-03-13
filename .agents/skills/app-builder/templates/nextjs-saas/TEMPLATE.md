@@ -23,30 +23,30 @@ description: Next.js SaaS template（SaaS 模板）原则（2026 Standards，202
 
 ```
 project-name/
-├── prisma/
-│   └── schema.prisma    # Database Schema（数据库 Schema）
-├── src/
-│   ├── actions/         # NEW: Server Actions（用于数据变更，替代 API Routes（API 路由））
-│   │   ├── auth-actions.ts
-│   │   ├── billing-actions.ts
-│   │   └── user-actions.ts
-│   ├── app/
-│   │   ├── (auth)/      # Route Group（路由组）：登录、注册
-│   │   ├── (dashboard)/ # Route Group（路由组）：受保护路由（应用布局）
-│   │   ├── (marketing)/ # Route Group（路由组）：落地页、价格（营销布局）
-│   │   └── api/         # 仅用于 Webhooks（回调）或 Edge cases（边缘场景）
-│   │       └── webhooks/stripe/
-│   ├── components/
-│   │   ├── emails/      # React Email templates（邮件模板）
-│   │   ├── forms/       # 使用 useActionState 的 Client components（客户端组件）（React 19）
-│   │   └── ui/          # Shadcn UI（组件库）
-│   ├── lib/
-│   │   ├── auth.ts      # Auth.js v6 config（配置）
-│   │   ├── db.ts        # Prisma Singleton（单例）
-│   │   └── stripe.ts    # Stripe Singleton（单例）
-│   └── styles/
-│       └── globals.css  # Tailwind v4 导入（仅 CSS）
-└── package.json
++-- prisma/
+|   +-- schema.prisma    # Database Schema（数据库 Schema）
++-- src/
+|   +-- actions/         # NEW: Server Actions（用于数据变更，替代 API Routes（API 路由））
+|   |   +-- auth-actions.ts
+|   |   +-- billing-actions.ts
+|   |   +-- user-actions.ts
+|   +-- app/
+|   |   +-- (auth)/      # Route Group（路由组）：登录、注册
+|   |   +-- (dashboard)/ # Route Group（路由组）：受保护路由（应用布局）
+|   |   +-- (marketing)/ # Route Group（路由组）：落地页、价格（营销布局）
+|   |   +-- api/         # 仅用于 Webhooks（回调）或 Edge cases（边缘场景）
+|   |       +-- webhooks/stripe/
+|   +-- components/
+|   |   +-- emails/      # React Email templates（邮件模板）
+|   |   +-- forms/       # 使用 useActionState 的 Client components（客户端组件）（React 19）
+|   |   +-- ui/          # Shadcn UI（组件库）
+|   +-- lib/
+|   |   +-- auth.ts      # Auth.js v6 config（配置）
+|   |   +-- db.ts        # Prisma Singleton（单例）
+|   |   +-- stripe.ts    # Stripe Singleton（单例）
+|   +-- styles/
+|       +-- globals.css  # Tailwind v4 导入（仅 CSS）
++-- package.json
 ```
 
 ---

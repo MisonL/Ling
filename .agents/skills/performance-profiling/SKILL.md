@@ -10,7 +10,7 @@ allowed-tools: Read, Glob, Grep, Bash
 
 ---
 
-## 🔧 运行脚本
+##  运行脚本
 
 **执行以下脚本进行自动化性能分析：**
 
@@ -47,10 +47,10 @@ allowed-tools: Read, Glob, Grep, Bash
 ### 四步走流程
 
 ```
-1. 建立基准（Baseline）→ 测量当前状态
-2. 识别瓶颈（Identify）→ 找出性能卡点
-3. 实施修复（Fix）     → 进行针对性改动
-4. 验证改进（Validate）→ 确认性能提升
+1. 建立基准（Baseline）-> 测量当前状态
+2. 识别瓶颈（Identify）-> 找出性能卡点
+3. 实施修复（Fix）     -> 进行针对性改动
+4. 验证改进（Validate）-> 确认性能提升
 ```
 
 ### 分析工具选择建议
@@ -135,7 +135,7 @@ allowed-tools: Read, Glob, Grep, Bash
 
 ## 7. 应避免的反模式
 
-| ❌ 禁止（Don't）                 | ✅ 推荐（Do）                     |
+| [FAIL]  禁止（Don't）                 | [OK]  推荐（Do）                     |
 | ------------------------------- | -------------------------------- |
 | 凭空猜测性能问题                | 优先进行性能分析（Profile first，先分析） |
 | 进行微比例优化（Micro-optimize） | 优先修复最大的性能卡点            |

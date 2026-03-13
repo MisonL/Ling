@@ -11,11 +11,11 @@
 
 ```
 基于 JSON 的矢量动画：
-├── 由 After Effects 通过 Bodymovin 导出
-├── 体积轻量（通常比 GIF/视频更小）
-├── 可缩放（矢量渲染，不会像素化）
-├── 可交互（可控制播放、分段）
-└── 跨平台（Web、iOS、Android、React Native）
++-- 由 After Effects 通过 Bodymovin 导出
++-- 体积轻量（通常比 GIF/视频更小）
++-- 可缩放（矢量渲染，不会像素化）
++-- 可交互（可控制播放、分段）
++-- 跨平台（Web、iOS、Android、React Native）
 ```
 
 ### 何时使用 Lottie
@@ -49,30 +49,30 @@
 
 ```
 专业级时间线动画系统：
-├── 可精确控制动效序列
-├── ScrollTrigger 支持滚动驱动动画
-├── MorphSVG 支持图形形态过渡
-├── 物理风格缓动（physics-based easing）
-└── 可作用于任意 DOM 元素
++-- 可精确控制动效序列
++-- ScrollTrigger 支持滚动驱动动画
++-- MorphSVG 支持图形形态过渡
++-- 物理风格缓动（physics-based easing）
++-- 可作用于任意 DOM 元素
 ```
 
 ### 核心概念（Core Concepts）
 
 | 概念（Concept） | 作用（Purpose） |
 |-----------------|-----------------|
-| **Tween** | 单次 A→B 动画 |
+| **Tween** | 单次 A->B 动画 |
 | **Timeline** | 可编排/重叠的动画序列 |
 | **ScrollTrigger** | 由滚动位置控制播放 |
 | **Stagger** | 元素级联（错峰）出现效果 |
 
 ### 何时使用 GSAP
 
-- ✅ 复杂的序列化动效。
-- ✅ 需要滚动触发（scroll-triggered）的揭示动画。
-- ✅ 对时间控制精度要求高。
-- ✅ 需要 SVG 形态变换（morphing）。
-- ❌ 仅简单 hover/focus 动效（优先 CSS）。
-- ❌ 极致性能受限的移动端场景（库体积与运行开销更高）。
+- [OK]  复杂的序列化动效。
+- [OK]  需要滚动触发（scroll-triggered）的揭示动画。
+- [OK]  对时间控制精度要求高。
+- [OK]  需要 SVG 形态变换（morphing）。
+- [FAIL]  仅简单 hover/focus 动效（优先 CSS）。
+- [FAIL]  极致性能受限的移动端场景（库体积与运行开销更高）。
 
 ### 设计原则（Principles）
 
@@ -98,20 +98,20 @@
 
 ```
 stroke-dashoffset 绘制机制：
-├── 将 dasharray 设为路径长度
-├── 将 dashoffset 设为与 dasharray 相等（初始隐藏）
-├── 动画将 dashoffset 过渡到 0（路径显现）
-└── 形成“手绘出现”效果
++-- 将 dasharray 设为路径长度
++-- 将 dashoffset 设为与 dasharray 相等（初始隐藏）
++-- 动画将 dashoffset 过渡到 0（路径显现）
++-- 形成“手绘出现”效果
 ```
 
 ### 何时使用 SVG 动画
 
-- ✅ Logo 展示、品牌记忆点。
-- ✅ 图标状态过渡（如 hamburger ↔ X）。
-- ✅ 信息图、数据可视化。
-- ✅ 可交互插画。
-- ❌ 写实照片类内容（更适合视频）。
-- ❌ 极复杂场景（性能成本高）。
+- [OK]  Logo 展示、品牌记忆点。
+- [OK]  图标状态过渡（如 hamburger <-> X）。
+- [OK]  信息图、数据可视化。
+- [OK]  可交互插画。
+- [FAIL]  写实照片类内容（更适合视频）。
+- [FAIL]  极复杂场景（性能成本高）。
 
 ### 设计原则（Principles）
 
@@ -128,11 +128,11 @@ stroke-dashoffset 绘制机制：
 
 ```
 CSS 3D 空间：
-├── perspective：3D 景深（常见 500-1500px）
-├── transform-style: preserve-3d（启用子元素 3D）
-├── rotateX/Y/Z：按轴旋转
-├── translateZ：沿 Z 轴远近位移
-└── backface-visibility：控制背面是否可见
++-- perspective：3D 景深（常见 500-1500px）
++-- transform-style: preserve-3d（启用子元素 3D）
++-- rotateX/Y/Z：按轴旋转
++-- translateZ：沿 Z 轴远近位移
++-- backface-visibility：控制背面是否可见
 ```
 
 ### 常见 3D 模式（Common 3D Patterns）
@@ -180,15 +180,15 @@ CSS 3D 空间：
 - 速度建议 0.5-2，保持缓慢有机。
 - 透明度建议 0.3-0.6，不喧宾夺主。
 - “网络连线”应使用弱线条，避免视觉噪声。
-- ⚠️ 移动端应关闭或降级粒子效果。
+- [WARN]  移动端应关闭或降级粒子效果。
 
 ### 何时使用（When to Use）
 
-- ✅ Hero 背景氛围增强。
-- ✅ 成功庆祝（如彩带爆发）。
-- ✅ 科技可视化（节点连接）。
-- ❌ 内容密集页面（干扰阅读）。
-- ❌ 低性能设备（耗电与掉帧风险）。
+- [OK]  Hero 背景氛围增强。
+- [OK]  成功庆祝（如彩带爆发）。
+- [OK]  科技可视化（节点连接）。
+- [FAIL]  内容密集页面（干扰阅读）。
+- [FAIL]  低性能设备（耗电与掉帧风险）。
 
 ---
 
@@ -198,10 +198,10 @@ CSS 3D 空间：
 
 ```
 CSS Scroll Timelines：
-├── animation-timeline: scroll() - 绑定文档滚动
-├── animation-timeline: view() - 绑定元素进入视口
-├── animation-range: entry/exit 设定区间
-└── 无需 JavaScript
++-- animation-timeline: scroll() - 绑定文档滚动
++-- animation-timeline: view() - 绑定元素进入视口
++-- animation-range: entry/exit 设定区间
++-- 无需 JavaScript
 ```
 
 ### 设计原则（Principles）
@@ -228,15 +228,15 @@ CSS Scroll Timelines：
 
 ```
 低成本（GPU 加速）：
-├── transform（translate、scale、rotate）
-├── opacity
-└── filter（谨慎使用）
++-- transform（translate、scale、rotate）
++-- opacity
++-- filter（谨慎使用）
 
 高成本（会触发布局/重排）：
-├── width、height
-├── top、left、right、bottom
-├── padding、margin
-└── 复杂 box-shadow
++-- width、height
++-- top、left、right、bottom
++-- padding、margin
++-- 复杂 box-shadow
 ```
 
 ### 优化清单（Optimization Checklist）
@@ -254,31 +254,31 @@ CSS Scroll Timelines：
 
 ```
 你需要哪类动画？
-│
-├── 品牌级复杂动画？
-│   └── Lottie（After Effects 导出）
-│
-├── 序列化 + 滚动触发？
-│   └── GSAP + ScrollTrigger
-│
-├── Logo/图标动画？
-│   └── SVG 动画（stroke 或 morph）
-│
-├── 可交互 3D 效果？
-│   └── CSS 3D Transforms（简单）或 Three.js（复杂）
-│
-├── 氛围型背景？
-│   └── tsParticles 或 Canvas
-│
-└── 简单入场/悬停？
-    └── CSS @keyframes 或 Framer Motion
+|
++-- 品牌级复杂动画？
+|   +-- Lottie（After Effects 导出）
+|
++-- 序列化 + 滚动触发？
+|   +-- GSAP + ScrollTrigger
+|
++-- Logo/图标动画？
+|   +-- SVG 动画（stroke 或 morph）
+|
++-- 可交互 3D 效果？
+|   +-- CSS 3D Transforms（简单）或 Three.js（复杂）
+|
++-- 氛围型背景？
+|   +-- tsParticles 或 Canvas
+|
++-- 简单入场/悬停？
+    +-- CSS @keyframes 或 Framer Motion
 ```
 
 ---
 
 ## 9. 反模式（Anti-Patterns）
 
-| ❌ 不要这样做（Don't） | ✅ 推荐这样做（Do） |
+| [FAIL]  不要这样做（Don't） | [OK]  推荐这样做（Do） |
 |------------------------|--------------------|
 | 所有元素同时动起来 | 用 Stagger 与序列化控制节奏 |
 | 简单效果也上重库 | 先用 CSS 起步 |

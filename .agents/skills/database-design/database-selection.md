@@ -6,22 +6,22 @@
 
 ```
 您的需求是什么？
-│
-├── 需要完整的关系型功能
-│   ├── 自托管（Self-hosted） → PostgreSQL
-│   └── 无服务器（Serverless） → Neon, Supabase
-│
-├── 边缘部署（edge）/ 超低延迟
-│   └── Turso（边缘级 SQLite）
-│
-├── AI / 向量搜索（vector search）
-│   └── PostgreSQL + pgvector
-│
-├── 简单 / 嵌入式 / 本地存储
-│   └── SQLite
-│
-└── 全球分布式挂载
-    └── PlanetScale, CockroachDB, Turso
+|
++-- 需要完整的关系型功能
+|   +-- 自托管（Self-hosted） -> PostgreSQL
+|   +-- 无服务器（Serverless） -> Neon, Supabase
+|
++-- 边缘部署（edge）/ 超低延迟
+|   +-- Turso（边缘级 SQLite）
+|
++-- AI / 向量搜索（vector search）
+|   +-- PostgreSQL + pgvector
+|
++-- 简单 / 嵌入式 / 本地存储
+|   +-- SQLite
+|
++-- 全球分布式挂载
+    +-- PlanetScale, CockroachDB, Turso
 ```
 
 ## 各数据库对比

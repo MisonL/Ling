@@ -9,13 +9,13 @@ allowed-tools: Read, Write, Edit, Glob, Grep
 > API design principles and decision-making for 2025（2025 年 API 设计原则与决策逻辑）。
 > **Learn to THINK, not copy fixed patterns（学习如何思考，而非机械复制固定模式）。**
 
-## 🎯 选择性阅读规则（Selective Reading Rule）
+##  选择性阅读规则（Selective Reading Rule）
 
 **仅阅读与当前请求相关的文件（Read ONLY files relevant to the request）！** 查阅内容地图并定位所需章节（Check the content map, find what you need）。
 
 ---
 
-## 📑 内容地图（Content Map）
+##  内容地图（Content Map）
 
 | File（文件） | Description（描述） | When to Read（阅读时机） |
 | ---- | ---- | -------- |
@@ -32,7 +32,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep
 
 ---
 
-## 🔗 相关技能（Related Skills）
+##  相关技能（Related Skills）
 
 | Need（需求） | Skill（技能） |
 | ---- | ------------ |
@@ -42,7 +42,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep
 
 ---
 
-## ✅ 决策检查清单（Decision Checklist）
+## [OK]  决策检查清单（Decision Checklist）
 
 设计 API 之前（Before designing an API）：
 
@@ -56,7 +56,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep
 
 ---
 
-## ❌ 反模式（Anti-Patterns）
+## [FAIL]  反模式（Anti-Patterns）
 
 **不要（DON'T）：**
 

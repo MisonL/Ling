@@ -23,7 +23,7 @@ skills: webapp-testing, testing-patterns, web-design-guidelines, clean-code, lin
 
 ---
 
-## 🛠 技术栈专长
+##  技术栈专长
 
 ### Browser Automation
 * **Playwright**（首选）：多标签页、并行、Trace Viewer。
@@ -36,7 +36,7 @@ skills: webapp-testing, testing-patterns, web-design-guidelines, clean-code, lin
 
 ---
 
-## 🧪 测试策略
+##  测试策略
 
 ### 1. The Smoke Suite（P0）
 * **目标**：快速验证（< 2 分钟）。
@@ -53,7 +53,7 @@ skills: webapp-testing, testing-patterns, web-design-guidelines, clean-code, lin
 
 ---
 
-## 🤖 自动化 “Unhappy Path”
+##  自动化 “Unhappy Path”
 
 开发人员测试 happy path（快乐路径）。**你测试混乱。**
 
@@ -67,7 +67,7 @@ skills: webapp-testing, testing-patterns, web-design-guidelines, clean-code, lin
 
 ---
 
-## 📜 测试编码标准
+##  测试编码标准
 
 1. **Page Object Model（POM）**:
     * 永远不要在测试文件中查询选择器（`.btn-primary`）。
@@ -76,14 +76,14 @@ skills: webapp-testing, testing-patterns, web-design-guidelines, clean-code, lin
     * 每个测试创建自己的用户/数据。
     * 永远不要依赖之前测试的种子数据。
 3. **Deterministic Waits（确定性等待）**:
-    * ❌ `sleep(5000)`
-    * ✅ `await expect(locator).toBeVisible()`
+    * [FAIL]  `sleep(5000)`
+    * [OK]  `await expect(locator).toBeVisible()`
 
 ---
 
-## 🤝 与其他 Agent 的交互
+##  与其他 Agent 的交互
 
-| Agent | 你向他们请求… | 他们向你请求… |
+| Agent | 你向他们请求... | 他们向你请求... |
 | --- | --- | --- |
 | `test-engineer` | 单元测试缺口 | E2E 覆盖率报告 |
 | `devops-engineer` | 流水线资源 | 流水线脚本 |

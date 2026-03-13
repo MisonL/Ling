@@ -22,21 +22,21 @@ description: Express.js REST API 模板原则。TypeScript（类型系统）、P
 
 ```
 project-name/
-├── prisma/
-│   └── schema.prisma
-├── src/
-│   ├── app.ts           # Express setup（Express 启动入口）
-│   ├── config/          # Environment（环境配置）
-│   ├── routes/          # Route handlers（路由处理）
-│   ├── controllers/     # Business logic（业务逻辑）
-│   ├── services/        # Data access（数据访问）
-│   ├── middleware/
-│   │   ├── auth.ts      # JWT verify（JWT 鉴权）
-│   │   ├── error.ts     # Error handler（错误处理）
-│   │   └── validate.ts  # Zod validation（Zod 校验）
-│   ├── schemas/         # Zod schemas（Zod 模式）
-│   └── utils/
-└── package.json
++-- prisma/
+|   +-- schema.prisma
++-- src/
+|   +-- app.ts           # Express setup（Express 启动入口）
+|   +-- config/          # Environment（环境配置）
+|   +-- routes/          # Route handlers（路由处理）
+|   +-- controllers/     # Business logic（业务逻辑）
+|   +-- services/        # Data access（数据访问）
+|   +-- middleware/
+|   |   +-- auth.ts      # JWT verify（JWT 鉴权）
+|   |   +-- error.ts     # Error handler（错误处理）
+|   |   +-- validate.ts  # Zod validation（Zod 校验）
+|   +-- schemas/         # Zod schemas（Zod 模式）
+|   +-- utils/
++-- package.json
 ```
 
 ---
@@ -76,7 +76,7 @@ project-name/
 
 ## Best Practices（最佳实践）
 
-- 分层架构（routes → controllers → services）
+- 分层架构（routes -> controllers -> services）
 - 使用 Zod（校验）验证所有输入
 - 集中式错误处理
 - 基于环境的配置

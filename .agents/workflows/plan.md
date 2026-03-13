@@ -8,7 +8,7 @@ $ARGUMENTS
 
 ---
 
-## 🔴 关键规则
+## [CRITICAL]  关键规则
 
 1. **绝对禁止编写代码** —— 此命令仅用于创建计划文件
 2. **使用 project-planner Agent** —— 不使用 Antigravity Agent 的原生 Plan 模式
@@ -31,7 +31,7 @@ NAMING RULES（命名规则）：
 1. 从请求中提取 2-3 个关键词
 2. 全小写，使用连字符（-）分隔
 3. 长度上限 30 个字符
-4. 示例：“e-commerce cart” → PLAN-ecommerce-cart.md
+4. 示例：“e-commerce cart” -> PLAN-ecommerce-cart.md
 
 RULES（执行准则）：
 1. 遵循 project-planner.md 的 Phase -1（Context Check）

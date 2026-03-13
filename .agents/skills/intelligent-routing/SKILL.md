@@ -37,19 +37,19 @@ graph TD
 
 | 用户意图 | 关键词 | 选中的 Agent | 自动调用？ |
 | ------------------- | ------------------------------------------ | ------------------------------------------- | ------------ |
-| **身份认证** | "login", "auth", "signup", "password" | `security-auditor` + `backend-specialist` | ✅ YES |
-| **UI 组件** | "button", "card", "layout", "style" | `frontend-specialist` | ✅ YES |
-| **移动端 UI** | "screen", "navigation", "touch", "gesture" | `mobile-developer` | ✅ YES |
-| **API 端点** | "endpoint", "route", "API", "POST", "GET" | `backend-specialist` | ✅ YES |
-| **数据库** | "schema", "migration", "query", "table" | `database-architect` + `backend-specialist` | ✅ YES |
-| **缺陷修复** | "error", "bug", "not working", "broken" | `debugger` | ✅ YES |
-| **测试** | "test", "coverage", "unit", "e2e" | `test-engineer` | ✅ YES |
-| **部署** | "deploy", "production", "CI/CD", "docker" | `devops-engineer` | ✅ YES |
-| **安全评审** | "security", "vulnerability", "exploit" | `security-auditor` + `penetration-tester` | ✅ YES |
-| **性能** | "slow", "optimize", "performance", "speed" | `performance-optimizer` | ✅ YES |
-| **产品定义** | "requirements", "user story", "backlog", "MVP" | `product-owner` | ✅ YES |
-| **新功能** | "build", "create", "implement", "new app" | `orchestrator` → multi-agent | ⚠️ ASK FIRST |
-| **复杂任务** | 检测到多个领域 | `orchestrator` → multi-agent | ⚠️ ASK FIRST |
+| **身份认证** | "login", "auth", "signup", "password" | `security-auditor` + `backend-specialist` | [OK]  YES |
+| **UI 组件** | "button", "card", "layout", "style" | `frontend-specialist` | [OK]  YES |
+| **移动端 UI** | "screen", "navigation", "touch", "gesture" | `mobile-developer` | [OK]  YES |
+| **API 端点** | "endpoint", "route", "API", "POST", "GET" | `backend-specialist` | [OK]  YES |
+| **数据库** | "schema", "migration", "query", "table" | `database-architect` + `backend-specialist` | [OK]  YES |
+| **缺陷修复** | "error", "bug", "not working", "broken" | `debugger` | [OK]  YES |
+| **测试** | "test", "coverage", "unit", "e2e" | `test-engineer` | [OK]  YES |
+| **部署** | "deploy", "production", "CI/CD", "docker" | `devops-engineer` | [OK]  YES |
+| **安全评审** | "security", "vulnerability", "exploit" | `security-auditor` + `penetration-tester` | [OK]  YES |
+| **性能** | "slow", "optimize", "performance", "speed" | `performance-optimizer` | [OK]  YES |
+| **产品定义** | "requirements", "user story", "backlog", "MVP" | `product-owner` | [OK]  YES |
+| **新功能** | "build", "create", "implement", "new app" | `orchestrator` -> multi-agent | [WARN]  ASK FIRST |
+| **复杂任务** | 检测到多个领域 | `orchestrator` -> multi-agent | [WARN]  ASK FIRST |
 
 ### 3. 自动路由协议
 
@@ -85,16 +85,16 @@ function analyzeRequest(userMessage) {
 **自动选择 Agent 时，需简洁告知用户：**
 
 ```markdown
-🤖 **正在应用 `@security-auditor` + `@backend-specialist` 的知识...**
+ **正在应用 `@security-auditor` + `@backend-specialist` 的知识...**
 
 [继续提供专业化回复]
 ```
 
 **收益：**
 
-- ✅ 用户能看到当前应用的专业能力
-- ✅ 决策过程透明
-- ✅ 仍然是自动化流程（不需要 /commands）
+- [OK]  用户能看到当前应用的专业能力
+- [OK]  决策过程透明
+- [OK]  仍然是自动化流程（不需要 /commands）
 
 ## 领域识别规则
 
@@ -120,9 +120,9 @@ function analyzeRequest(userMessage) {
 
 ```text
 示例："创建一个带深色模式 UI 的安全登录系统"
-→ 检测到：Security + Frontend
-→ 自动调用：orchestrator
-→ orchestrator 将协调：security-auditor、frontend-specialist、test-engineer
+-> 检测到：Security + Frontend
+-> 自动调用：orchestrator
+-> orchestrator 将协调：security-auditor、frontend-specialist、test-engineer
 ```
 
 ## 复杂度评估
@@ -152,7 +152,7 @@ function analyzeRequest(userMessage) {
 - 需求不清晰
 - 示例："构建一个社交媒体应用"
 
-**动作**：自动调用 `orchestrator` → 将先提出苏格拉底式问题
+**动作**：自动调用 `orchestrator` -> 将先提出苏格拉底式问题
 
 ## 实施规则
 
@@ -160,16 +160,16 @@ function analyzeRequest(userMessage) {
 
 #### 不要宣布“我正在分析你的请求...”
 
-- ✅ 静默完成分析
-- ✅ 告知正在应用哪个 Agent
-- ❌ 避免冗长的元叙事
+- [OK]  静默完成分析
+- [OK]  告知正在应用哪个 Agent
+- [FAIL]  避免冗长的元叙事
 
 ### 规则 2：告知 Agent 选择
 
 **必须告知正在应用的专家能力：**
 
 ```markdown
-🤖 **正在应用 `@frontend-specialist` 的知识...**
+ **正在应用 `@frontend-specialist` 的知识...**
 
 我将按以下特征创建该组件：
 [继续提供专业化回复]
@@ -185,8 +185,8 @@ function analyzeRequest(userMessage) {
 
 ```text
 用户："使用 @backend-specialist 来审查这段代码"
-→ 覆盖自动选择
-→ 使用用户显式指定的 Agent
+-> 覆盖自动选择
+-> 使用用户显式指定的 Agent
 ```
 
 ## 边界场景
@@ -195,27 +195,27 @@ function analyzeRequest(userMessage) {
 
 ```text
 用户："React 是如何工作的？"
-→ 类型：QUESTION
-→ 不需要调用 Agent
-→ 直接给出解释
+-> 类型：QUESTION
+-> 不需要调用 Agent
+-> 直接给出解释
 ```
 
 ### 场景 2：极度模糊的请求
 
 ```text
 用户："把它做得更好"
-→ 复杂度：UNCLEAR
-→ 动作：先提澄清问题
-→ 然后路由到合适 Agent
+-> 复杂度：UNCLEAR
+-> 动作：先提澄清问题
+-> 然后路由到合适 Agent
 ```
 
 ### 场景 3：模式冲突
 
 ```text
 用户："给 Web 应用加上移动端支持"
-→ 冲突：mobile vs web
-→ 动作：先问“你要的是响应式 Web，还是原生移动 App？”
-→ 再按结论路由
+-> 冲突：mobile vs web
+-> 动作：先问“你要的是响应式 Web，还是原生移动 App？”
+-> 再按结论路由
 ```
 
 ## 与现有工作流集成
@@ -296,7 +296,7 @@ function analyzeRequest(userMessage) {
 如果是项目中的首次交互，可使用：
 
 ```markdown
-💡 **提示**：我已配置自动专家 Agent 选择机制。
+TIP:  **提示**：我已配置自动专家 Agent 选择机制。
 我会始终为你的任务选择最合适的专家。如果你更偏好手动指定，
 也可以使用 `@agent-name` 显式点名。
 ```
@@ -321,12 +321,12 @@ function analyzeRequest(userMessage) {
 
 **intelligent-routing 技能可实现：**
 
-✅ 零命令操作（无需 `/orchestrate`）  
-✅ 基于请求分析自动选择专家  
-✅ 透明告知当前应用的专家能力  
-✅ 与现有工作流无缝集成  
-✅ 支持用户显式点名覆盖  
-✅ 复杂任务自动回退到 orchestrator
+[OK]  零命令操作（无需 `/orchestrate`）  
+[OK]  基于请求分析自动选择专家  
+[OK]  透明告知当前应用的专家能力  
+[OK]  与现有工作流无缝集成  
+[OK]  支持用户显式点名覆盖  
+[OK]  复杂任务自动回退到 orchestrator
 
 **结果**：用户无需理解底层系统架构，也能获得专家级响应。
 

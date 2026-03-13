@@ -18,14 +18,14 @@ allowed-tools: Read, Glob, Grep
 
 ## 何时使用编排
 
-✅ **适用场景：**
+[OK]  **适用场景：**
 
 - 需要跨多个专业领域的复杂任务。
 - 从安全、性能和代码质量等多维度进行代码分析。
 - 综合评审（架构 + 安全 + 测试）。
 - 需要后端 + 前端 + 数据库协同工作的需求实现。
 
-❌ **不适用场景：**
+[FAIL]  **不适用场景：**
 
 - 简单的、仅涉及单一领域的任务。
 - 快速修复或细微变动。
@@ -69,7 +69,7 @@ allowed-tools: Read, Glob, Grep
 ### 模式 1：全面分析
 
 ```
-智能体流：explorer-agent → [领域专家级 Agents] → 综合汇总（Synthesis）
+智能体流：explorer-agent -> [领域专家级 Agents] -> 综合汇总（Synthesis）
 
 1. explorer-agent：绘制代码库结构图。
 2. security-auditor：评估安全态势。
@@ -82,7 +82,7 @@ allowed-tools: Read, Glob, Grep
 ### 模式 2：功能评审
 
 ```
-智能体流：[受影响领域的 Agents] → test-engineer
+智能体流：[受影响领域的 Agents] -> test-engineer
 
 1. 识别受影响的领域（后端？前端？还是二者兼有？）。
 2. 调用相关的领域 Agent。
@@ -93,7 +93,7 @@ allowed-tools: Read, Glob, Grep
 ### 模式 3：安全审计
 
 ```
-智能体流：security-auditor → penetration-tester → 综合汇总
+智能体流：security-auditor -> penetration-tester -> 综合汇总
 
 1. security-auditor：进行配置与代码审计。
 2. penetration-tester：执行主动漏洞测试。
@@ -175,7 +175,7 @@ allowed-tools: Read, Glob, Grep
 ## 最佳实践
 
 1. **Agent 多样性** —— 共有 17 个专业 Agent 可供编排调用。
-2. **逻辑顺序** —— 遵循“探索 → 分析 → 实现 → 测试”的链路。
+2. **逻辑顺序** —— 遵循“探索 -> 分析 -> 实现 -> 测试”的链路。
 3. **共享上下文** —— 将关键发现传递给后续的 Agent。
 4. **统一汇总** —— 输出一份完整的综合报告，而非零散的结果。
 5. **验证变更** —— 凡涉及代码修改，务必由 `test-engineer` 介入。
@@ -184,10 +184,10 @@ allowed-tools: Read, Glob, Grep
 
 ## 核心优势
 
-- ✅ **单次会话** —— 所有 Agent 共享上下文。
-- ✅ **AI 自控** —— Claude 自主进行编排协调。
-- ✅ **原生集成** —— 与内置的 Explore 和 Plan 智能体无缝配合。
-- ✅ **支持恢复** —— 可继续先前 Agent 未完成的工作。
-- ✅ **上下文流转** —— 发现结果在 Agent 之间顺畅传递。
+- [OK]  **单次会话** —— 所有 Agent 共享上下文。
+- [OK]  **AI 自控** —— Claude 自主进行编排协调。
+- [OK]  **原生集成** —— 与内置的 Explore 和 Plan 智能体无缝配合。
+- [OK]  **支持恢复** —— 可继续先前 Agent 未完成的工作。
+- [OK]  **上下文流转** —— 发现结果在 Agent 之间顺畅传递。
 
 ---

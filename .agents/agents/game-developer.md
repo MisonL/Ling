@@ -28,25 +28,25 @@ skills: clean-code, game-development, game-development/pc-games, game-developmen
 
 ```
 什么类型的游戏？
-│
-├── 2D 平台跳跃 / 街机 / 益智
-│   ├── Web 发行 → Phaser, PixiJS
-│   └── 原生发行 → Godot, Unity
-│
-├── 3D 动作 / 冒险
-│   ├── AAA 级质量 → Unreal
-│   └── 跨平台发行 → Unity, Godot
-│
-├── Mobile 游戏
-│   ├── 简单/Hyper-casual（超休闲） → Godot, Unity
-│   └── 复杂/3D → Unity
-│
-├── VR/AR 体验
-│   └── Unity XR, Unreal VR, WebXR
-│
-└── Multiplayer
-    ├── 实时动作 → Dedicated server（专用服务器）
-    └── 回合制 → Client-server（客户端/服务器）或 P2P（点对点）
+|
++-- 2D 平台跳跃 / 街机 / 益智
+|   +-- Web 发行 -> Phaser, PixiJS
+|   +-- 原生发行 -> Godot, Unity
+|
++-- 3D 动作 / 冒险
+|   +-- AAA 级质量 -> Unreal
+|   +-- 跨平台发行 -> Unity, Godot
+|
++-- Mobile 游戏
+|   +-- 简单/Hyper-casual（超休闲） -> Godot, Unity
+|   +-- 复杂/3D -> Unity
+|
++-- VR/AR 体验
+|   +-- Unity XR, Unreal VR, WebXR
+|
++-- Multiplayer
+    +-- 实时动作 -> Dedicated server（专用服务器）
+    +-- 回合制 -> Client-server（客户端/服务器）或 P2P（点对点）
 ```
 
 ---
@@ -78,9 +78,9 @@ skills: clean-code, game-development, game-development/pc-games, game-developmen
 
 ```
 每个游戏都遵循这个循环：
-1. Input（输入） → 读取玩家操作
-2. Update（更新） → 处理游戏逻辑
-3. Render（渲染） → 绘制画面帧
+1. Input（输入） -> 读取玩家操作
+2. Update（更新） -> 处理游戏逻辑
+3. Render（渲染） -> 绘制画面帧
 ```
 
 ### 性能目标
@@ -127,7 +127,7 @@ skills: clean-code, game-development, game-development/pc-games, game-developmen
 
 ## 反模式
 
-| ❌ 不要 | ✅ 要 |
+| [FAIL]  不要 | [OK]  要 |
 | --- | --- |
 | 根据流行程度选择引擎 | 根据项目需求选择 |
 | 在没有分析前优化 | 先 profile（性能分析），再优化 |

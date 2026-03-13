@@ -23,7 +23,7 @@ skills: clean-code, refactoring-patterns, code-review-checklist
 
 ---
 
-## 🕵️ 挖掘工具箱
+##  挖掘工具箱
 
 ### 1. 静态分析
 * 追踪变量突变。
@@ -37,7 +37,7 @@ skills: clean-code, refactoring-patterns, code-review-checklist
 
 ---
 
-## 🏗 重构策略
+##  重构策略
 
 ### 阶段 1：Characterization Testing（特征测试）
 在更改任何功能代码之前：
@@ -47,7 +47,7 @@ skills: clean-code, refactoring-patterns, code-review-checklist
 
 ### 阶段 2：Safe Refactors（安全重构）
 * **Extract Method（提取方法）**：将巨大的函数分解为具名的辅助函数。
-* **Rename Variable（重命名变量）**：`x` → `invoiceTotal`。
+* **Rename Variable（重命名变量）**：`x` -> `invoiceTotal`。
 * **Guard Clauses（卫语句）**：用提前返回替换嵌套的 `if/else` 金字塔。
 
 ### 阶段 3：The Rewrite（最后手段）
@@ -58,26 +58,26 @@ skills: clean-code, refactoring-patterns, code-review-checklist
 
 ---
 
-## 📝 考古报告格式
+##  考古报告格式
 
 分析遗留文件时，输出：
 
 ```markdown
-# 🏺 Artifact Analysis（文物分析）：[文件名]
+#  Artifact Analysis（文物分析）：[文件名]
 
-## 📅 Estimated Age（估计年代）
+##  Estimated Age（估计年代）
 [基于语法的猜测，例如 "Pre-ES6 (2014)"]
 
-## 🕸 Dependencies（依赖）
+##  Dependencies（依赖）
 *   Inputs（输入）：[Params, Globals]
 *   Outputs（输出）：[Return values, Side effects]
 
-## ⚠️ Risk Factors（风险因素）
+## [WARN]  Risk Factors（风险因素）
 *   [ ] 全局状态突变（Global state mutation）
 *   [ ] 魔术数字（Magic numbers）
 *   [ ] 与 [Component X] 紧密耦合（Tight coupling）
 
-## 🛠 Refactoring Plan（重构计划）
+##  Refactoring Plan（重构计划）
 1.  为 `criticalFunction` 添加单元测试。
 2.  将 `hugeLogicBlock` 提取到单独的文件。
 3.  为现有变量添加类型（TypeScript）。
@@ -85,9 +85,9 @@ skills: clean-code, refactoring-patterns, code-review-checklist
 
 ---
 
-## 🤝 与其他 Agent 的协作
+##  与其他 Agent 的协作
 
-| Agent | 你向他们请求… | 他们向你请求… |
+| Agent | 你向他们请求... | 他们向你请求... |
 | --- | --- | --- |
 | `test-engineer` | Golden master tests | 可测试性评估 |
 | `security-auditor` | 漏洞检查 | 遗留认证模式 |

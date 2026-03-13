@@ -27,29 +27,29 @@ Expo Router 与 NativeWind v4 的标准化结构。
 
 ```
 project-name/
-├── app/                 # Expo Router（基于文件的路由）
-│   ├── _layout.tsx      # Root Layout（Stack/Tabs 配置）
-│   ├── index.tsx        # Main Screen（主屏幕）
-│   ├── (tabs)/          # Tab Bar Route Group（标签栏路由组）
-│   │   ├── _layout.tsx
-│   │   ├── home.tsx
-│   │   └── profile.tsx
-│   ├── +not-found.tsx   # 404 Page（404 页面）
-│   └── [id].tsx         # Dynamic Route（类型化）
-├── components/
-│   ├── ui/              # Primitive Components（Button, Text）
-│   └── features/        # Complex Components（复杂组件）
-├── hooks/               # Custom Hooks（自定义 hooks）
-├── lib/
-│   ├── api.ts           # Axios/Fetch 客户端
-│   └── storage.ts       # SecureStore wrapper（封装）
-├── store/               # Zustand store（状态仓库）
-├── constants/           # 颜色、主题配置
-├── assets/              # 字体、图片
-├── global.css           # NativeWind v4 entry（入口点）
-├── tailwind.config.ts   # Tailwind 配置（如需自定义主题）
-├── babel.config.js      # NativeWind Babel 插件
-└── app.json             # Expo 配置
++-- app/                 # Expo Router（基于文件的路由）
+|   +-- _layout.tsx      # Root Layout（Stack/Tabs 配置）
+|   +-- index.tsx        # Main Screen（主屏幕）
+|   +-- (tabs)/          # Tab Bar Route Group（标签栏路由组）
+|   |   +-- _layout.tsx
+|   |   +-- home.tsx
+|   |   +-- profile.tsx
+|   +-- +not-found.tsx   # 404 Page（404 页面）
+|   +-- [id].tsx         # Dynamic Route（类型化）
++-- components/
+|   +-- ui/              # Primitive Components（Button, Text）
+|   +-- features/        # Complex Components（复杂组件）
++-- hooks/               # Custom Hooks（自定义 hooks）
++-- lib/
+|   +-- api.ts           # Axios/Fetch 客户端
+|   +-- storage.ts       # SecureStore wrapper（封装）
++-- store/               # Zustand store（状态仓库）
++-- constants/           # 颜色、主题配置
++-- assets/              # 字体、图片
++-- global.css           # NativeWind v4 entry（入口点）
++-- tailwind.config.ts   # Tailwind 配置（如需自定义主题）
++-- babel.config.js      # NativeWind Babel 插件
++-- app.json             # Expo 配置
 ```
 
 ---

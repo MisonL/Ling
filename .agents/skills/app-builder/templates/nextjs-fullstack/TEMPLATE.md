@@ -23,28 +23,28 @@ description: Next.js Full-Stack template（全栈模板）原则。App Router、
 
 ```
 project-name/
-├── prisma/
-│   └── schema.prisma       # Database schema（数据库结构）
-├── src/
-│   ├── app/
-│   │   ├── (auth)/         # 登录/注册路由组
-│   │   ├── (dashboard)/    # 受保护路由
-│   │   ├── api/            # Route Handlers（仅用于 Webhooks/外部集成）
-│   │   ├── layout.tsx      # Root Layout（Metadata, Providers）
-│   │   ├── page.tsx        # Landing Page（落地页）
-│   │   └── globals.css     # Tailwind v4 配置（@theme 在此）
-│   ├── components/
-│   │   ├── ui/             # 可复用 UI（Button, Input）
-│   │   └── forms/          # Client forms（useActionState）
-│   ├── lib/
-│   │   ├── db.ts           # Prisma singleton client（单例客户端）
-│   │   ├── utils.ts        # Helper functions（辅助函数）
-│   │   └── dal.ts          # Data Access Layer（仅服务端）
-│   ├── actions/            # Server Actions（变更）
-│   └── types/              # Global TS Types（类型）
-├── public/
-├── next.config.ts          # TypeScript Config（配置）
-└── package.json
++-- prisma/
+|   +-- schema.prisma       # Database schema（数据库结构）
++-- src/
+|   +-- app/
+|   |   +-- (auth)/         # 登录/注册路由组
+|   |   +-- (dashboard)/    # 受保护路由
+|   |   +-- api/            # Route Handlers（仅用于 Webhooks/外部集成）
+|   |   +-- layout.tsx      # Root Layout（Metadata, Providers）
+|   |   +-- page.tsx        # Landing Page（落地页）
+|   |   +-- globals.css     # Tailwind v4 配置（@theme 在此）
+|   +-- components/
+|   |   +-- ui/             # 可复用 UI（Button, Input）
+|   |   +-- forms/          # Client forms（useActionState）
+|   +-- lib/
+|   |   +-- db.ts           # Prisma singleton client（单例客户端）
+|   |   +-- utils.ts        # Helper functions（辅助函数）
+|   |   +-- dal.ts          # Data Access Layer（仅服务端）
+|   +-- actions/            # Server Actions（变更）
+|   +-- types/              # Global TS Types（类型）
++-- public/
++-- next.config.ts          # TypeScript Config（配置）
++-- package.json
 ```
 
 ---

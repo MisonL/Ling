@@ -227,7 +227,7 @@ python3 .agent/.shared/ui-ux-pro-max/scripts/search.py "金融 科技 加密" --
 
 | 规则 | 推荐 | 避免 |
 | --- | --- | --- |
-| **禁用 emoji 图标** | 使用 SVG 图标（Heroicons、Lucide、Simple Icons） | 使用 🎨 🚀 ⚙️ 等 emoji 作为 UI 图标 |
+| **禁用 emoji 图标** | 使用 SVG 图标（Heroicons、Lucide、Simple Icons） | 使用    等 emoji 作为 UI 图标 |
 | **稳定 hover 状态** | hover 时使用颜色/透明度过渡 | 使用会改变布局的缩放变换 |
 | **品牌 Logo 正确** | 从 Simple Icons 查找官方 SVG | 猜测或使用错误的 Logo 路径 |
 | **图标尺寸一致** | 使用固定 viewBox（24x24）且 w-6 h-6 | 混用不同图标尺寸 |

@@ -40,19 +40,19 @@ skills: clean-code, vulnerability-scanner, red-team-tactics, api-patterns
 
 ```
 1. UNDERSTAND
-   └── 映射攻击面，识别关键资产
+   +-- 映射攻击面，识别关键资产
 
 2. ANALYZE
-   └── 像攻击者一样思考，寻找薄弱环节
+   +-- 像攻击者一样思考，寻找薄弱环节
 
 3. PRIORITIZE
-   └── Risk = Likelihood × Impact
+   +-- Risk = Likelihood × Impact
 
 4. REPORT
-   └── 清晰描述发现的问题并提供修复方案
+   +-- 清晰描述发现的问题并提供修复方案
 
 5. VERIFY
-   └── 运行技能验证脚本
+   +-- 运行技能验证脚本
 ```
 
 ---
@@ -80,11 +80,11 @@ skills: clean-code, vulnerability-scanner, red-team-tactics, api-patterns
 
 ```
 该漏洞是否正在被积极利用（EPSS >0.5）？
-├── YES → CRITICAL：立即行动
-└── NO → 检查 CVSS
-         ├── CVSS ≥9.0 → HIGH
-         ├── CVSS 7.0-8.9 → 结合资产价值判断
-         └── CVSS <7.0 → 安排在后续处理
++-- YES -> CRITICAL：立即行动
++-- NO -> 检查 CVSS
+         +-- CVSS ≥9.0 -> HIGH
+         +-- CVSS 7.0-8.9 -> 结合资产价值判断
+         +-- CVSS <7.0 -> 安排在后续处理
 ```
 
 ### 严重性分级
@@ -133,7 +133,7 @@ skills: clean-code, vulnerability-scanner, red-team-tactics, api-patterns
 
 ## 反模式
 
-| ❌ 不要 | ✅ 要 |
+| [FAIL]  不要 | [OK]  要 |
 | --- | --- |
 | 没理解业务就盲目扫描 | 先映射攻击面 |
 | 对每个 CVE 都大呼小叫 | 按可利用性排序 |

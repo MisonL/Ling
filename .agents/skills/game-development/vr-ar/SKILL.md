@@ -111,7 +111,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep
 
 ## 6. 反模式
 
-| ❌ 禁止 | ✅ 推荐 |
+| [FAIL]  禁止 | [OK]  推荐 |
 | --- | --- |
 | 移动相机而不移动玩家 | 玩家控制相机 |
 | 低于 90 FPS | 维持帧率 |

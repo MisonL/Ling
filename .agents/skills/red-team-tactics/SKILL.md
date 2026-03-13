@@ -15,11 +15,11 @@ allowed-tools: Read, Glob, Grep
 ### 攻击生命周期
 
 ```
-侦察（Reconnaissance）→ 初始访问（Initial Access）→ 执行（Execution）→ 持久化（Persistence）
-        ↓                    ↓                    ↓                  ↓
-    权限提升（Priv Esc）→ 防御规避（Defense Evasion）→ 凭据访问（Credential Access）→ 发现（Discovery）
-        ↓                    ↓                    ↓                  ↓
-    横向移动（Lateral Movement）→ 数据收集（Collection）→ 指挥控制（C2）→ 数据泄露（Exfiltration）→ 影响力（Impact）
+侦察（Reconnaissance）-> 初始访问（Initial Access）-> 执行（Execution）-> 持久化（Persistence）
+        v                    v                    v                  v
+    权限提升（Priv Esc）-> 防御规避（Defense Evasion）-> 凭据访问（Credential Access）-> 发现（Discovery）
+        v                    v                    v                  v
+    横向移动（Lateral Movement）-> 数据收集（Collection）-> 指挥控制（C2）-> 数据泄露（Exfiltration）-> 影响力（Impact）
 ```
 
 ### 各阶段目标
@@ -189,7 +189,7 @@ allowed-tools: Read, Glob, Grep
 
 ## 10. 应避免的反模式
 
-| ❌ 禁止（Don't）  | ✅ 推荐（Do）     |
+| [FAIL]  禁止（Don't）  | [OK]  推荐（Do）     |
 | ---------------- | ---------------- |
 | 仓促进行漏洞利用 | 遵循科学的方法论 |
 | 造成破坏性的损失 | 尽量减小影响范围 |

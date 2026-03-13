@@ -31,11 +31,11 @@ $ARGUMENTS
 /preview start
 
 响应：
-🚀 正在启动预览……
+ 正在启动预览......
    端口：3000
    类型：Next.js
 
-✅ 预览已就绪！
+[OK]  预览已就绪！
    URL：http://localhost:3000
 ```
 
@@ -46,10 +46,10 @@ $ARGUMENTS
 响应：
 === 预览状态 ===
 
-🌐 URL：http://localhost:3000
-📁 项目：C:/projects/my-app
-🏷️ 类型：nextjs
-💚 健康状态：OK
+ URL：http://localhost:3000
+ 项目：C:/projects/my-app
+ 类型：nextjs
+ 健康状态：OK
 ```
 
 ### 端口冲突
@@ -57,7 +57,7 @@ $ARGUMENTS
 /preview start
 
 响应：
-⚠️ 端口 3000 已被占用。
+[WARN]  端口 3000 已被占用。
 
 可选项：
 1. 在端口 3001 启动

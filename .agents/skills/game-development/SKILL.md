@@ -52,9 +52,9 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 不论平台，所有游戏都遵循这一模式：
 
 ```
-INPUT  → 读取玩家操作
-UPDATE → 处理游戏逻辑（固定步长）
-RENDER → 绘制帧（插值）
+INPUT  -> 读取玩家操作
+UPDATE -> 处理游戏逻辑（固定步长）
+RENDER -> 绘制帧（插值）
 ```
 
 **固定步长规则：**
@@ -68,9 +68,9 @@ RENDER → 绘制帧（插值）
 
 | 模式 | 使用场景 | 示例 |
 | --- | --- | --- |
-| **状态机（State Machine）** | 3-5 个离散状态 | 玩家：Idle（待机）→Walk（行走）→Jump（跳跃） |
+| **状态机（State Machine）** | 3-5 个离散状态 | 玩家：Idle（待机）->Walk（行走）->Jump（跳跃） |
 | **对象池（Object Pooling）** | 频繁生成/销毁 | 子弹、粒子 |
-| **观察者/事件（Observer/Events）** | 跨系统通信 | 生命值→UI（界面）更新 |
+| **观察者/事件（Observer/Events）** | 跨系统通信 | 生命值->UI（界面）更新 |
 | **ECS（实体组件系统）** | 大量相似实体 | RTS（即时战略）单位、粒子 |
 | **命令（Command）** | 撤销、回放、联网同步 | 输入记录 |
 | **行为树（Behavior Tree）** | 复杂 AI（人工智能）决策 | 敌人 AI |
@@ -84,8 +84,8 @@ RENDER → 绘制帧（插值）
 将输入抽象为动作（Actions），而不是原始按键：
 
 ```
-"jump"  → Space、手柄 A、触摸点击
-"move"  → WASD、左摇杆、虚拟摇杆
+"jump"  -> Space、手柄 A、触摸点击
+"move"  -> WASD、左摇杆、虚拟摇杆
 ```
 
 **原因：** 便于多平台支持与可重绑控制。
@@ -104,7 +104,7 @@ RENDER → 绘制帧（插值）
 | 缓冲 | 1.67ms |
 
 **优化优先级：**
-1. 算法（O(n²) → O(n log n)）
+1. 算法（O(n²) -> O(n log n)）
 2. 批处理（减少 draw calls（绘制调用））
 3. 对象池（避免 GC（垃圾回收）峰值）
 4. LOD（细节层级，按距离调整细节）
@@ -149,18 +149,18 @@ RENDER → 绘制帧（插值）
 ## 路由示例
 
 ### 示例 1：“我想做一个基于浏览器的 2D 平台游戏”
-→ 先用 `game-development/web-games` 选择框架  
-→ 再用 `game-development/2d-games` 学习精灵/瓦片地图模式  
-→ 参考 `game-development/game-design` 进行关卡设计
+-> 先用 `game-development/web-games` 选择框架  
+-> 再用 `game-development/2d-games` 学习精灵/瓦片地图模式  
+-> 参考 `game-development/game-design` 进行关卡设计
 
 ### 示例 2：“适用于 iOS 和 Android 的移动端益智游戏”
-→ 先用 `game-development/mobile-games` 处理触控与商店发布  
-→ 使用 `game-development/game-design` 做谜题平衡
+-> 先用 `game-development/mobile-games` 处理触控与商店发布  
+-> 使用 `game-development/game-design` 做谜题平衡
 
 ### 示例 3：“多人 VR 射击游戏”
-→ `game-development/vr-ar` 处理舒适性与沉浸感  
-→ `game-development/3d-games` 处理渲染  
-→ `game-development/multiplayer` 处理联网同步
+-> `game-development/vr-ar` 处理舒适性与沉浸感  
+-> `game-development/3d-games` 处理渲染  
+-> `game-development/multiplayer` 处理联网同步
 
 ---
 

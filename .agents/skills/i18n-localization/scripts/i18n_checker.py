@@ -190,7 +190,7 @@ def check_hardcoded_strings(project_path: Path) -> dict:
     if files_with_hardcoded > 0:
         issues.append(f"[X] {files_with_hardcoded} files may have hardcoded strings")
         for ex in hardcoded_examples:
-            issues.append(f"   → {ex}")
+            issues.append(f"   -> {ex}")
     else:
         passed.append("[OK] No obvious hardcoded strings detected")
     

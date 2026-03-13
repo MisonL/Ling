@@ -14,7 +14,7 @@ trigger: always_on
 
 ### 1. 模块化技能加载协议
 
-智能体激活 → 检查 frontmatter `skills:` → 阅读 `SKILL.md`（INDEX）→ 阅读对应章节。
+智能体激活 -> 检查 frontmatter `skills:` -> 阅读 `SKILL.md`（INDEX）-> 阅读对应章节。
 
 - **选择性阅读：** 不要阅读某个技能目录下的全部文件。先读 `SKILL.md`，再仅阅读与用户请求匹配的章节。
 - **规则优先级：** P0（GEMINI.md）> P1（Agent .md）> P2（SKILL.md）。所有规则均为强制。
@@ -22,12 +22,12 @@ trigger: always_on
 ### 2. 执行协议
 
 1. **智能体激活时：**
-    - ✅ 执行流程：Read Rules → Check Frontmatter → Load SKILL.md → Apply All.
-2. **禁止：** 不得跳过智能体规则或技能说明。“Read → Understand → Apply”为强制流程。
+    - [OK]  执行流程：Read Rules -> Check Frontmatter -> Load SKILL.md -> Apply All.
+2. **禁止：** 不得跳过智能体规则或技能说明。“Read -> Understand -> Apply”为强制流程。
 
 ---
 
-## 📥 请求分类器（第 1 步）
+##  请求分类器（第 1 步）
 
 **在执行任何动作前，先对请求分类：**
 
@@ -42,11 +42,11 @@ trigger: always_on
 
 ---
 
-## 🤖 智能体路由（第 2 步 - 自动）
+##  智能体路由（第 2 步 - 自动）
 
 **始终启用：在回应任何请求前，自动分析并选择最佳智能体。**
 
-> 🔴 **强制：** 必须遵循 `@[skills/intelligent-routing]` 中定义的流程。
+> [CRITICAL]  **强制：** 必须遵循 `@[skills/intelligent-routing]` 中定义的流程。
 
 ### 自动选择流程
 
@@ -60,7 +60,7 @@ trigger: always_on
 自动应用智能体时，必须告知用户：
 
 ```markdown
-🤖 **Applying knowledge of `@[agent-name]`...**
+ **Applying knowledge of `@[agent-name]`...**
 
 [Continue with specialized response]
 ```
@@ -71,31 +71,31 @@ trigger: always_on
 2. **尊重覆盖：** 若用户指定 `@agent`，必须使用。
 3. **复杂任务：** 多领域请求使用 `orchestrator`，先提出苏格拉底式问题。
 
-### ⚠️ 智能体路由检查清单（每次代码/设计前强制）
+### [WARN]  智能体路由检查清单（每次代码/设计前强制）
 
 **在进行任何代码或设计工作前，必须完成以下检查：**
 
 | 步骤 | 检查项 | 若未完成 |
 |------|-------|--------------|
-| 1 | 是否识别出正确的领域智能体？ | → 停止。先分析领域。 |
-| 2 | 是否已阅读智能体 `.md` 文件（或确认规则）？ | → 停止。打开 `.agent/agents/{agent}.md` |
-| 3 | 是否已声明 `🤖 Applying knowledge of @[agent]...`？ | → 停止。先加声明。 |
-| 4 | 是否加载了 frontmatter 中必需的 skills？ | → 停止。检查 `skills:` 并读取。 |
+| 1 | 是否识别出正确的领域智能体？ | -> 停止。先分析领域。 |
+| 2 | 是否已阅读智能体 `.md` 文件（或确认规则）？ | -> 停止。打开 `.agent/agents/{agent}.md` |
+| 3 | 是否已声明 ` Applying knowledge of @[agent]...`？ | -> 停止。先加声明。 |
+| 4 | 是否加载了 frontmatter 中必需的 skills？ | -> 停止。检查 `skills:` 并读取。 |
 
 **失败条件：**
 
-- ❌ 未识别智能体直接写代码 = **协议违规**
-- ❌ 未做声明 = **用户无法确认使用了智能体**
-- ❌ 忽略智能体规则（如 Purple 禁令）= **质量失败**
+- [FAIL]  未识别智能体直接写代码 = **协议违规**
+- [FAIL]  未做声明 = **用户无法确认使用了智能体**
+- [FAIL]  忽略智能体规则（如 Purple 禁令）= **质量失败**
 
-> 🔴 **自检触发：** 每次准备写代码或做 UI 前，先问自己：
-> “我是否完成了智能体路由检查清单？”若否 → 先完成。
+> [CRITICAL]  **自检触发：** 每次准备写代码或做 UI 前，先问自己：
+> “我是否完成了智能体路由检查清单？”若否 -> 先完成。
 
 ---
 
 ## TIER 0：通用规则（始终启用）
 
-### 🌐 语言处理
+###  语言处理
 
 当用户提示非英语时：
 
@@ -103,7 +103,7 @@ trigger: always_on
 2. **使用用户语言回复**，保持一致
 3. **代码注释/变量**保持英文
 
-### 🧹 Clean Code（全局强制）
+###  Clean Code（全局强制）
 
 **所有代码必须遵循 `@[skills/clean-code]`。无例外。**
 
@@ -112,17 +112,17 @@ trigger: always_on
 - **性能：** 先测量再优化。遵循 2025 标准（Core Web Vitals）。
 - **基础设施/安全：** 5 阶段部署。核验凭据安全。
 
-### 📁 文件依赖意识
+###  文件依赖意识
 
 **修改任何文件之前：**
 
-1. 查看 `CODEBASE.md` → File Dependencies
+1. 查看 `CODEBASE.md` -> File Dependencies
 2. 识别依赖文件
 3. 同步更新所有受影响的文件
 
-### 🗺️ 系统地图阅读
+###  系统地图阅读
 
-> 🔴 **强制：** 会话开始时必须阅读 `ARCHITECTURE.md` 以了解智能体、技能与脚本。
+> [CRITICAL]  **强制：** 会话开始时必须阅读 `ARCHITECTURE.md` 以了解智能体、技能与脚本。
 
 **路径说明：**
 
@@ -130,11 +130,11 @@ trigger: always_on
 - Skills：`.agent/skills/`（项目级）
 - Runtime Scripts：`.agent/skills/<skill>/scripts/`
 
-### 🧠 阅读 → 理解 → 应用
+###  阅读 -> 理解 -> 应用
 
 ```
-❌ WRONG: Read agent file → Start coding
-✅ CORRECT: Read → Understand WHY → Apply PRINCIPLES → Code
+[FAIL]  WRONG: Read agent file -> Start coding
+[OK]  CORRECT: Read -> Understand WHY -> Apply PRINCIPLES -> Code
 ```
 
 **编码前需回答：**
@@ -147,7 +147,7 @@ trigger: always_on
 
 ## TIER 1：代码规则（编写代码时启用）
 
-### 📱 项目类型路由
+###  项目类型路由
 
 | 项目类型 | 主智能体 | 技能 |
 | -------------------------------------- | --------------------- | ----------------------------- |
@@ -155,13 +155,13 @@ trigger: always_on
 | **WEB（Web）**           | `frontend-specialist` | frontend-design               |
 | **BACKEND（后端）**     | `backend-specialist`  | api-patterns, database-design |
 
-> 🔴 **Mobile + frontend-specialist = WRONG。** Mobile 只能用 `mobile-developer`。
+> [CRITICAL]  **Mobile + frontend-specialist = WRONG。** Mobile 只能用 `mobile-developer`。
 
-### 🛑 苏格拉底闸门（Socratic Gate）
+###  苏格拉底闸门（Socratic Gate）
 
 **复杂请求必须先停下提问：**
 
-### 🛑 全局苏格拉底闸门（TIER 0）
+###  全局苏格拉底闸门（TIER 0）
 
 **强制：任何用户请求在使用工具或实现前必须通过闸门。**
 
@@ -180,7 +180,7 @@ trigger: always_on
 3. **等待：** 未通过闸门前，不得调用子智能体或写代码。
 4. **参考：** 完整协议见 `@[skills/brainstorming]`。
 
-### 🏁 最终检查协议
+###  最终检查协议
 
 **触发条件：** 当用户说 “son kontrolleri yap”、“final checks”、“çalıştır tüm testleri” 等类似语句。
 
@@ -191,7 +191,7 @@ trigger: always_on
 
 **执行优先级：**
 
-1. **安全** → 2. **Lint** → 3. **模式** → 4. **测试** → 5. **UX** → 6. **SEO** → 7. **Lighthouse/E2E**
+1. **安全** -> 2. **Lint** -> 3. **模式** -> 4. **测试** -> 5. **UX** -> 6. **SEO** -> 7. **Lighthouse/E2E**
 
 **规则：**
 
@@ -215,9 +215,9 @@ trigger: always_on
 | `lighthouse_audit.py` | performance-profiling | 部署前 |
 | `playwright_runner.py` | webapp-testing | 部署前 |
 
-> 🔴 **Agents 与 Skills 可调用任意脚本：** `python .agent/skills/<skill>/scripts/<script>.py`
+> [CRITICAL]  **Agents 与 Skills 可调用任意脚本：** `python .agent/skills/<skill>/scripts/<script>.py`
 
-### 🎭 Gemini 模式映射
+###  Gemini 模式映射
 
 | Mode | Agent | 行为 |
 | -------- | ----------------- | -------------------------------------------- |
@@ -227,12 +227,12 @@ trigger: always_on
 
 **Plan Mode（4 阶段）**
 
-1. ANALYSIS → 研究与提问
-2. PLANNING → 生成 `{task-slug}.md` 与任务拆解
-3. SOLUTIONING → 架构与设计（禁止写代码）
-4. IMPLEMENTATION → 编码与测试
+1. ANALYSIS -> 研究与提问
+2. PLANNING -> 生成 `{task-slug}.md` 与任务拆解
+3. SOLUTIONING -> 架构与设计（禁止写代码）
+4. IMPLEMENTATION -> 编码与测试
 
-> 🔴 **Edit 模式规则：** 多文件或结构性变更先建议创建 `{task-slug}.md`；单文件修复可直接执行。
+> [CRITICAL]  **Edit 模式规则：** 多文件或结构性变更先建议创建 `{task-slug}.md`；单文件修复可直接执行。
 
 ---
 
@@ -252,11 +252,11 @@ trigger: always_on
 - Anti-cliché 规则（反陈词滥调）
 - Deep Design Thinking 协议（深度设计思考）
 
-> 🔴 **设计任务必须执行：** 打开并阅读对应智能体文件，按规则落地。
+> [CRITICAL]  **设计任务必须执行：** 打开并阅读对应智能体文件，按规则落地。
 
 ---
 
-## 📁 快速参考
+##  快速参考
 
 ### Agents 与 Skills
 

@@ -8,56 +8,56 @@
 
 ```
 project-name/
-├── src/
-│   ├── app/                        # 路由层（仅路由，薄层）
-│   │   ├── layout.tsx
-│   │   ├── page.tsx
-│   │   ├── globals.css
-│   │   ├── (auth)/                 # 路由分组 - 认证页面
-│   │   │   ├── login/page.tsx
-│   │   │   └── register/page.tsx
-│   │   ├── (dashboard)/            # 路由分组 - 仪表盘布局
-│   │   │   ├── layout.tsx
-│   │   │   └── page.tsx
-│   │   └── api/
-│   │       └── [resource]/route.ts
-│   │
-│   ├── features/                   # Feature-based（功能模块）
-│   │   ├── auth/
-│   │   │   ├── components/
-│   │   │   ├── hooks/
-│   │   │   ├── actions.ts          # Server Actions（服务端动作）
-│   │   │   ├── queries.ts          # Data fetching（数据获取）
-│   │   │   └── types.ts
-│   │   ├── products/
-│   │   │   ├── components/
-│   │   │   ├── actions.ts
-│   │   │   └── queries.ts
-│   │   └── cart/
-│   │       └── ...
-│   │
-│   ├── shared/                     # Shared utilities（共享工具）
-│   │   ├── components/ui/          # 可复用 UI（用户界面）组件
-│   │   ├── lib/                    # 工具/辅助
-│   │   └── hooks/                  # hooks（钩子）
-│   │
-│   └── server/                     # 仅服务端代码
-│       ├── db/                     # Prisma（ORM）数据库客户端
-│       ├── auth/                   # 认证配置
-│       └── services/               # 外部 API（应用程序接口）集成
-│
-├── prisma/
-│   ├── schema.prisma
-│   ├── migrations/
-│   └── seed.ts
-│
-├── public/
-├── .env.example
-├── .env.local
-├── package.json
-├── tailwind.config.ts
-├── tsconfig.json
-└── README.md
++-- src/
+|   +-- app/                        # 路由层（仅路由，薄层）
+|   |   +-- layout.tsx
+|   |   +-- page.tsx
+|   |   +-- globals.css
+|   |   +-- (auth)/                 # 路由分组 - 认证页面
+|   |   |   +-- login/page.tsx
+|   |   |   +-- register/page.tsx
+|   |   +-- (dashboard)/            # 路由分组 - 仪表盘布局
+|   |   |   +-- layout.tsx
+|   |   |   +-- page.tsx
+|   |   +-- api/
+|   |       +-- [resource]/route.ts
+|   |
+|   +-- features/                   # Feature-based（功能模块）
+|   |   +-- auth/
+|   |   |   +-- components/
+|   |   |   +-- hooks/
+|   |   |   +-- actions.ts          # Server Actions（服务端动作）
+|   |   |   +-- queries.ts          # Data fetching（数据获取）
+|   |   |   +-- types.ts
+|   |   +-- products/
+|   |   |   +-- components/
+|   |   |   +-- actions.ts
+|   |   |   +-- queries.ts
+|   |   +-- cart/
+|   |       +-- ...
+|   |
+|   +-- shared/                     # Shared utilities（共享工具）
+|   |   +-- components/ui/          # 可复用 UI（用户界面）组件
+|   |   +-- lib/                    # 工具/辅助
+|   |   +-- hooks/                  # hooks（钩子）
+|   |
+|   +-- server/                     # 仅服务端代码
+|       +-- db/                     # Prisma（ORM）数据库客户端
+|       +-- auth/                   # 认证配置
+|       +-- services/               # 外部 API（应用程序接口）集成
+|
++-- prisma/
+|   +-- schema.prisma
+|   +-- migrations/
+|   +-- seed.ts
+|
++-- public/
++-- .env.example
++-- .env.local
++-- package.json
++-- tailwind.config.ts
++-- tsconfig.json
++-- README.md
 ```
 
 ---

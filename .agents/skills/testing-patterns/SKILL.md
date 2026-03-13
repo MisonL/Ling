@@ -165,7 +165,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 
 ## 10. 反模式
 
-| ❌ 禁止（Don't） | ✅ 推荐（Do） |
+| [FAIL]  禁止（Don't） | [OK]  推荐（Do） |
 |-----------------|-------------|
 | 测实现细节 | 测可观察行为 |
 | 重复测试代码 | 使用 factories（工厂）复用 |

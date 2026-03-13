@@ -72,7 +72,7 @@ priority: CRITICAL
 
 ## 反模式（Anti-Patterns）
 
-| ❌ 错误模式 | ✅ 推荐修复 |
+| [FAIL]  错误模式 | [OK]  推荐修复 |
 |-----------|-------|
 | 每一行都写注释 | 删除显而易见的注释 |
 | 为单行逻辑封装 helper | 直接内联 |
@@ -85,7 +85,7 @@ priority: CRITICAL
 
 ---
 
-## 🔴 编辑任何文件前（先思考）
+## [CRITICAL]  编辑任何文件前（先思考）
 
 **修改文件前先问自己：**
 
@@ -99,12 +99,12 @@ priority: CRITICAL
 **快速检查：**
 ```
 File to edit: UserService.ts
-└── Who imports this? → UserController.ts, AuthController.ts
-└── Do they need changes too? → Check function signatures
++-- Who imports this? -> UserController.ts, AuthController.ts
++-- Do they need changes too? -> Check function signatures
 ```
 
-> 🔴 **准则：** 同一任务内同时编辑该文件与所有受影响的依赖文件。
-> 🔴 **禁止：** 遗留断裂引用或缺失更新。
+> [CRITICAL]  **准则：** 同一任务内同时编辑该文件与所有受影响的依赖文件。
+> [CRITICAL]  **禁止：** 遗留断裂引用或缺失更新。
 
 ---
 
@@ -123,27 +123,27 @@ File to edit: UserService.ts
 
 ---
 
-## 🔴 完成前自检（强制）
+## [CRITICAL]  完成前自检（强制）
 
 **在说“任务完成”前请验证：**
 
 | 检查项 | 确认问题 |
 |-------|----------|
-| ✅ **目标达成了吗？** | 是否精准完成用户要求？ |
-| ✅ **文件都改了吗？** | 是否修改了所有必要文件？ |
-| ✅ **代码能跑吗？** | 是否测试/验证该变更？ |
-| ✅ **没有报错吗？** | Lint 和 TypeScript 是否通过？ |
-| ✅ **没遗漏什么吗？** | 是否遗漏边缘情况？ |
+| [OK]  **目标达成了吗？** | 是否精准完成用户要求？ |
+| [OK]  **文件都改了吗？** | 是否修改了所有必要文件？ |
+| [OK]  **代码能跑吗？** | 是否测试/验证该变更？ |
+| [OK]  **没有报错吗？** | Lint 和 TypeScript 是否通过？ |
+| [OK]  **没遗漏什么吗？** | 是否遗漏边缘情况？ |
 
-> 🔴 **准则：** 任一检查未通过，必须先修复再结束。
+> [CRITICAL]  **准则：** 任一检查未通过，必须先修复再结束。
 
 ---
 
 ## 验证脚本（强制）
 
-> 🔴 **核心要求：** 每个代理完成后仅运行所属技能脚本。
+> [CRITICAL]  **核心要求：** 每个代理完成后仅运行所属技能脚本。
 
-### 代理 → 脚本映射
+### 代理 -> 脚本映射
 
 | 代理 | 脚本 | 命令 |
 |-------|--------|---------|
@@ -162,12 +162,12 @@ File to edit: UserService.ts
 | **Any agent** | Type Coverage | `python .agent/skills/lint-and-validate/scripts/type_coverage.py .` |
 | **Any agent** | i18n Check | `python .agent/skills/i18n-localization/scripts/i18n_checker.py .` |
 
-> ❌ **错误做法：** `test-engineer` 运行 `ux_audit.py`
-> ✅ **正确做法：** `frontend-specialist` 运行 `ux_audit.py`
+> [FAIL]  **错误做法：** `test-engineer` 运行 `ux_audit.py`
+> [OK]  **正确做法：** `frontend-specialist` 运行 `ux_audit.py`
 
 ---
 
-### 🔴 脚本输出处理（阅读 → 总结 → 询问）
+### [CRITICAL]  脚本输出处理（阅读 -> 总结 -> 询问）
 
 **运行验证脚本时必须：**
 
@@ -178,14 +178,14 @@ File to edit: UserService.ts
 ```markdown
 ## Script Results: [script_name.py]
 
-### ❌ Errors Found (X items)
+### [FAIL]  Errors Found (X items)
 - [File:Line] Error description 1
 - [File:Line] Error description 2
 
-### ⚠️ Warnings (Y items)
+### [WARN]  Warnings (Y items)
 - [File:Line] Warning description
 
-### ✅ Passed (Z items)
+### [OK]  Passed (Z items)
 - Check 1 passed
 - Check 2 passed
 
@@ -193,8 +193,8 @@ File to edit: UserService.ts
 ```
 
 4. **Wait for user confirmation** before fixing
-5. **After fixing** → Re-run script to confirm
+5. **After fixing** -> Re-run script to confirm
 
-> 🔴 **VIOLATION:** Running script and ignoring output = FAILED task.
-> 🔴 **VIOLATION:** Auto-fixing without asking = Not allowed.
-> 🔴 **Rule:** Always READ output → SUMMARIZE → ASK → then fix.
+> [CRITICAL]  **VIOLATION:** Running script and ignoring output = FAILED task.
+> [CRITICAL]  **VIOLATION:** Auto-fixing without asking = Not allowed.
+> [CRITICAL]  **Rule:** Always READ output -> SUMMARIZE -> ASK -> then fix.

@@ -51,9 +51,9 @@ skills: clean-code, testing-patterns, tdd-workflow, webapp-testing, code-review-
 ## TDD 工作流
 
 ```
-🔴 RED    → 编写失败的测试
-🟢 GREEN  → 编写通过测试的最简代码
-🔵 REFACTOR → 重构并提高代码质量
+[CRITICAL]  RED    -> 编写失败的测试
+[NIT]  GREEN  -> 编写通过测试的最简代码
+ REFACTOR -> 重构并提高代码质量
 ```
 
 ---
@@ -133,7 +133,7 @@ skills: clean-code, testing-patterns, tdd-workflow, webapp-testing, code-review-
 
 ## 反模式
 
-| ❌ 不要 | ✅ 要 |
+| [FAIL]  不要 | [OK]  要 |
 | --- | --- |
 | 测试实现细节 | 测试行为 |
 | 一个测试包含多个断言 | 每个测试一个断言 |

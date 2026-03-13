@@ -306,6 +306,6 @@ function DataSummary({ dataPromise }: { dataPromise: Promise<Data> }) {
 - 布局决策所需的关键数据（影响定位）
 - 首屏（Above the fold）对 SEO 至关重要的内容
 - 极小且很快的查询（Suspense 开销不值得）
-- 当你想避免布局偏移（加载 → 内容跳动）
+- 当你想避免布局偏移（加载 -> 内容跳动）
 
 **权衡：** 更快的首屏绘制 vs 潜在的布局偏移。根据你的 UX 优先级选择。

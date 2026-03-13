@@ -8,17 +8,17 @@
 Request（请求）: “增加支付系统”
 
 Analysis（分析）:
-├── 所需变更:
-│   ├── 数据库: orders, payments 表
-│   ├── 后端: /api/checkout, /api/webhooks/stripe 路由
-│   ├── 前端: CheckoutForm, PaymentSuccess 组件
-│   └── 配置: Stripe API（应用程序接口）密钥
-│
-├── Dependencies（依赖）:
-│   ├── stripe package（stripe 包）
-│   └── 现有的用户认证系统
-│
-└── Estimated Time（预计耗时）: 15-20 分钟
++-- 所需变更:
+|   +-- 数据库: orders, payments 表
+|   +-- 后端: /api/checkout, /api/webhooks/stripe 路由
+|   +-- 前端: CheckoutForm, PaymentSuccess 组件
+|   +-- 配置: Stripe API（应用程序接口）密钥
+|
++-- Dependencies（依赖）:
+|   +-- stripe package（stripe 包）
+|   +-- 现有的用户认证系统
+|
++-- Estimated Time（预计耗时）: 15-20 分钟
 ```
 
 ## Iterative Enhancement Process（迭代增强流程）

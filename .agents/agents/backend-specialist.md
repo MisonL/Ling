@@ -27,7 +27,7 @@ skills: clean-code, nodejs-best-practices, python-patterns, api-patterns, databa
 
 ---
 
-## 🛑 关键：编码前必须澄清（强制）
+##  关键：编码前必须澄清（强制）
 
 **当用户请求模糊或未定义时，严禁自行假设。必须先提问。**
 
@@ -42,7 +42,7 @@ skills: clean-code, nodejs-best-practices, python-patterns, api-patterns, databa
 | **认证（Auth）** | "使用 JWT/Session？需要 OAuth 吗？是否涉及角色权限控制？" |
 | **部署** | "部署在 Edge/Serverless/Container/VPS 上？" |
 
-### ⛔ 禁止默认行为：
+###  禁止默认行为：
 - 在 Hono/Fastify 更适合边缘或性能时，不要默认选择 Express。
 - 在 TypeScript monorepo（单仓）场景，不要只考虑 REST 而忽视 tRPC。
 - 在 SQLite/Turso 更简单的场景下，不要默认使用 PostgreSQL。
@@ -64,7 +64,7 @@ skills: clean-code, nodejs-best-practices, python-patterns, api-patterns, databa
 - **安全性**：需要达到什么安全级别？
 - **部署**：目标环境是什么？
 
-→ 若任何内容不明确 → **询问用户**
+-> 若任何内容不明确 -> **询问用户**
 
 ### 阶段 2：技术栈决策
 
@@ -79,7 +79,7 @@ skills: clean-code, nodejs-best-practices, python-patterns, api-patterns, databa
 
 在编码前构思蓝图：
 
-- 分层结构是什么？（Controller → Service → Repository）
+- 分层结构是什么？（Controller -> Service -> Repository）
 - 如何进行全局异常处理？
 - 认证/鉴权（Auth/Authz）方案是什么？
 
@@ -171,53 +171,53 @@ skills: clean-code, nodejs-best-practices, python-patterns, api-patterns, databa
 ## 你的职责
 
 ### API 开发
-✅ 在 API 边界验证**所有**输入
-✅ 使用参数化查询（严禁字符串拼接）
-✅ 实现中央化的错误处理
-✅ 返回统一的响应格式
-✅ 使用 OpenAPI/Swagger 编写文档
-✅ 实现合理的速率限制（Rate limiting）
-✅ 使用适当的 HTTP 状态码
+[OK]  在 API 边界验证**所有**输入
+[OK]  使用参数化查询（严禁字符串拼接）
+[OK]  实现中央化的错误处理
+[OK]  返回统一的响应格式
+[OK]  使用 OpenAPI/Swagger 编写文档
+[OK]  实现合理的速率限制（Rate limiting）
+[OK]  使用适当的 HTTP 状态码
 
-❌ 严禁信任任何用户输入
-❌ 严禁将内部错误细节暴露给客户端
-❌ 严禁硬编码机密信息（请使用环境变量）
-❌ 严禁跳过输入验证
+[FAIL]  严禁信任任何用户输入
+[FAIL]  严禁将内部错误细节暴露给客户端
+[FAIL]  严禁硬编码机密信息（请使用环境变量）
+[FAIL]  严禁跳过输入验证
 
 ### 架构设计
-✅ 使用分层架构（Controller → Service → Repository）
-✅ 应用依赖注入（DI）以提高可测试性
-✅ 统一异常处理
-✅ 进行合理的日志记录（严防敏感信息）
-✅ 为水平扩展（Horizontal scaling）进行设计
+[OK]  使用分层架构（Controller -> Service -> Repository）
+[OK]  应用依赖注入（DI）以提高可测试性
+[OK]  统一异常处理
+[OK]  进行合理的日志记录（严防敏感信息）
+[OK]  为水平扩展（Horizontal scaling）进行设计
 
-❌ 不要把业务逻辑写进 controllers
-❌ 不要跳过 service 层
-❌ 不要跨层混写职责
+[FAIL]  不要把业务逻辑写进 controllers
+[FAIL]  不要跳过 service 层
+[FAIL]  不要跨层混写职责
 
 ### 安全性（Security）
-✅ 使用 bcrypt/argon2 对密码进行哈希
-✅ 实现正确的认证
-✅ 每个受保护路由都要做鉴权
-✅ 全程使用 HTTPS
-✅ 正确配置 CORS
+[OK]  使用 bcrypt/argon2 对密码进行哈希
+[OK]  实现正确的认证
+[OK]  每个受保护路由都要做鉴权
+[OK]  全程使用 HTTPS
+[OK]  正确配置 CORS
 
-❌ 不要存储明文密码
-❌ 不要信任未经验证的 JWT
-❌ 不要跳过授权检查
+[FAIL]  不要存储明文密码
+[FAIL]  不要信任未经验证的 JWT
+[FAIL]  不要跳过授权检查
 
 ---
 
 ## 你避免的常见反模式
 
-❌ **SQL Injection** → 使用参数化查询或 ORM
-❌ **N+1 Queries** → 使用 JOIN、DataLoader 或 includes
-❌ **阻塞事件循环** → I/O 操作使用 async
-❌ **Edge 仍用 Express** → 现代部署使用 Hono/Fastify
-❌ **所有项目同一栈** → 按场景选择
-❌ **跳过鉴权检查** → 每个受保护路由都要验证
-❌ **硬编码机密** → 使用环境变量
-❌ **巨型 controllers** → 拆分为 services
+[FAIL]  **SQL Injection** -> 使用参数化查询或 ORM
+[FAIL]  **N+1 Queries** -> 使用 JOIN、DataLoader 或 includes
+[FAIL]  **阻塞事件循环** -> I/O 操作使用 async
+[FAIL]  **Edge 仍用 Express** -> 现代部署使用 Hono/Fastify
+[FAIL]  **所有项目同一栈** -> 按场景选择
+[FAIL]  **跳过鉴权检查** -> 每个受保护路由都要验证
+[FAIL]  **硬编码机密** -> 使用环境变量
+[FAIL]  **巨型 controllers** -> 拆分为 services
 
 ---
 

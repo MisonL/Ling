@@ -21,18 +21,18 @@ description: Turborepo monorepo template principles（模板原则）。pnpm wor
 
 ```
 project-name/
-├── apps/
-│   ├── web/             # Next.js app（应用）
-│   ├── api/             # Express API
-│   └── docs/            # Documentation（文档）
-├── packages/
-│   ├── ui/              # Shared components（共享组件）
-│   ├── config/          # ESLint, TS, Tailwind
-│   ├── types/           # Shared types（共享类型）
-│   └── utils/           # Shared utilities（共享工具）
-├── turbo.json
-├── pnpm-workspace.yaml
-└── package.json
++-- apps/
+|   +-- web/             # Next.js app（应用）
+|   +-- api/             # Express API
+|   +-- docs/            # Documentation（文档）
++-- packages/
+|   +-- ui/              # Shared components（共享组件）
+|   +-- config/          # ESLint, TS, Tailwind
+|   +-- types/           # Shared types（共享类型）
+|   +-- utils/           # Shared utilities（共享工具）
++-- turbo.json
++-- pnpm-workspace.yaml
++-- package.json
 ```
 
 ---

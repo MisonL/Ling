@@ -22,18 +22,18 @@ description: Electron desktop app template principles（桌面应用模板原则
 
 ```
 project-name/
-├── electron/
-│   ├── main.ts          # Main process（主进程）
-│   ├── preload.ts       # Preload script（预加载脚本）
-│   └── ipc/             # IPC handlers（IPC 处理）
-├── src/
-│   ├── App.tsx
-│   ├── components/
-│   │   ├── TitleBar.tsx # Custom title bar（自定义标题栏）
-│   │   └── ...
-│   └── hooks/
-├── public/
-└── package.json
++-- electron/
+|   +-- main.ts          # Main process（主进程）
+|   +-- preload.ts       # Preload script（预加载脚本）
+|   +-- ipc/             # IPC handlers（IPC 处理）
++-- src/
+|   +-- App.tsx
+|   +-- components/
+|   |   +-- TitleBar.tsx # Custom title bar（自定义标题栏）
+|   |   +-- ...
+|   +-- hooks/
++-- public/
++-- package.json
 ```
 
 ---

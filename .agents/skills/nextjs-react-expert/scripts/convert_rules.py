@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Conversion Script: React Best Practices → .agent Format
+Conversion Script: React Best Practices -> .agent Format
 Merges 59 individual rules into 8 grouped section files
 """
 

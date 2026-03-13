@@ -11,15 +11,15 @@ $ARGUMENTS
 
 ---
 
-## 🔴 关键：最少 Agent 数量要求
+## [CRITICAL]  关键：最少 Agent 数量要求
 
-> ⚠️ **ORCHESTRATION（编排）= 至少 3 个不同 Agent（智能体）**
+> [WARN]  **ORCHESTRATION（编排）= 至少 3 个不同 Agent（智能体）**
 >
 > 如果使用少于 3 个 Agent，你就不是在编排，而是在委派。
 >
 > **完成前校验：**
 > - 统计已调用 Agent 数
-> - 若 `agent_count < 3` → 停止并继续调用 Agent
+> - 若 `agent_count < 3` -> 停止并继续调用 Agent
 > - 单 Agent = 编排失败
 
 ### Agent 选择矩阵
@@ -40,14 +40,14 @@ $ARGUMENTS
 
 | 当前模式 | 任务类型 | 动作 |
 | --- | --- | --- |
-| **plan** | 任意 | ✅ 继续遵循“先规划”流程 |
-| **edit** | 简单执行 | ✅ 直接执行 |
-| **edit** | 复杂/多文件 | ⚠️ 询问：“该任务需要先规划，是否切换到 plan mode（计划模式）？” |
-| **ask** | 任意 | ⚠️ 询问：“已准备编排，是否切换到 edit 或 plan mode（计划模式）？” |
+| **plan** | 任意 | [OK]  继续遵循“先规划”流程 |
+| **edit** | 简单执行 | [OK]  直接执行 |
+| **edit** | 复杂/多文件 | [WARN]  询问：“该任务需要先规划，是否切换到 plan mode（计划模式）？” |
+| **ask** | 任意 | [WARN]  询问：“已准备编排，是否切换到 edit 或 plan mode（计划模式）？” |
 
 ---
 
-## 🔴 严格两阶段编排
+## [CRITICAL]  严格两阶段编排
 
 ### PHASE 1：PLANNING（规划）（串行，禁止并行 Agent）
 
@@ -56,21 +56,21 @@ $ARGUMENTS
 | 1 | `project-planner` | 创建 docs/PLAN.md |
 | 2 | （可选）`explorer-agent` | 如有需要先做代码库探查 |
 
-> 🔴 **规划阶段禁止其他 Agent！** 仅允许 project-planner 与 explorer-agent。
+> [CRITICAL]  **规划阶段禁止其他 Agent！** 仅允许 project-planner 与 explorer-agent。
 
-### ⏸️ 检查点：用户批准
+### ⏸ 检查点：用户批准
 
 ```
 PLAN.md 完成后，必须询问：
 
-"✅ 已生成计划：docs/PLAN.md
+"[OK]  已生成计划：docs/PLAN.md
 
 是否批准？(Y/N)
 - Y: 开始实现
 - N: 我会先修订计划"
 ```
 
-> 🔴 **未获得用户明确批准，不得进入 Phase 2（第二阶段）。**
+> [CRITICAL]  **未获得用户明确批准，不得进入 Phase 2（第二阶段）。**
 
 ### PHASE 2：IMPLEMENTATION（实现）（批准后可并行）
 
@@ -80,7 +80,7 @@ PLAN.md 完成后，必须询问：
 | Core（核心） | `backend-specialist`, `frontend-specialist` |
 | Polish（收尾） | `test-engineer`, `devops-engineer` |
 
-> ✅ 用户批准后，可并行调用多个 Agent。
+> [OK]  用户批准后，可并行调用多个 Agent。
 
 ## 可用 Agent（共 17 个）
 
@@ -112,32 +112,32 @@ PLAN.md 完成后，必须询问：
 识别该任务涉及的全部领域：
 
 ```
-□ Security（安全）     → security-auditor, penetration-tester
-□ Backend/API（后端/API）  → backend-specialist
-□ Frontend/UI（前端/UI）  → frontend-specialist
-□ Database（数据库）     → database-architect
-□ Testing（测试）        → test-engineer
-□ DevOps（运维）         → devops-engineer
-□ Mobile（移动端）       → mobile-developer
-□ Performance（性能）    → performance-optimizer
-□ SEO                   → seo-specialist
-□ Planning（规划）       → project-planner
+□ Security（安全）     -> security-auditor, penetration-tester
+□ Backend/API（后端/API）  -> backend-specialist
+□ Frontend/UI（前端/UI）  -> frontend-specialist
+□ Database（数据库）     -> database-architect
+□ Testing（测试）        -> test-engineer
+□ DevOps（运维）         -> devops-engineer
+□ Mobile（移动端）       -> mobile-developer
+□ Performance（性能）    -> performance-optimizer
+□ SEO                   -> seo-specialist
+□ Planning（规划）       -> project-planner
 ```
 
 ### Step 2：识别阶段
 
 | 计划是否存在 | 动作 |
 | --- | --- |
-| 否 `docs/PLAN.md` | → 进入 PHASE 1（仅规划） |
-| 是 `docs/PLAN.md` + 已获用户批准 | → 进入 PHASE 2（实现） |
+| 否 `docs/PLAN.md` | -> 进入 PHASE 1（仅规划） |
+| 是 `docs/PLAN.md` + 已获用户批准 | -> 进入 PHASE 2（实现） |
 
 ### Step 3：按阶段执行
 
 **PHASE 1（规划）：**
 ```
 使用 project-planner Agent 创建 PLAN.md
-→ 计划完成后立即停止
-→ 请求用户批准
+-> 计划完成后立即停止
+-> 请求用户批准
 ```
 
 **PHASE 2（实现，批准后）：**
@@ -148,7 +148,7 @@ PLAN.md 完成后，必须询问：
 使用 test-engineer Agent 处理 [task]
 ```
 
-**🔴 关键：上下文传递（强制）**
+**[CRITICAL]  关键：上下文传递（强制）**
 
 调用任何子 Agent 时，必须携带：
 
@@ -171,7 +171,7 @@ PLAN.md 完成后，必须询问：
 **任务：** 基于以上决策生成详细 PLAN.md。不要根据文件夹名称推断。
 ```
 
-> ⚠️ **违规：** 调用子 Agent 不带完整上下文，将导致错误假设。
+> [WARN]  **违规：** 调用子 Agent 不带完整上下文，将导致错误假设。
 
 ### Step 4：验证（强制）
 
@@ -191,7 +191,7 @@ python .agent/skills/lint-and-validate/scripts/lint_runner.py .
 ## 输出格式
 
 ```markdown
-## 🎼 Orchestration Report（编排报告）
+##  Orchestration Report（编排报告）
 
 ### 任务
 [原始任务摘要]
@@ -202,13 +202,13 @@ python .agent/skills/lint-and-validate/scripts/lint_runner.py .
 ### 已调用 Agent（最少 3 个）
 | # | Agent | 关注领域 | 状态 |
 |---|-------|----------|------|
-| 1 | project-planner | 任务拆解 | ✅ |
-| 2 | frontend-specialist | UI 实现 | ✅ |
-| 3 | test-engineer | 验证脚本 | ✅ |
+| 1 | project-planner | 任务拆解 | [OK]  |
+| 2 | frontend-specialist | UI 实现 | [OK]  |
+| 3 | test-engineer | 验证脚本 | [OK]  |
 
 ### 已执行的验证脚本
-- [x] security_scan.py → 通过/失败
-- [x] lint_runner.py → 通过/失败
+- [x] security_scan.py -> 通过/失败
+- [x] lint_runner.py -> 通过/失败
 
 ### 关键发现
 1. **[Agent 1]**: 发现
@@ -227,15 +227,15 @@ python .agent/skills/lint-and-validate/scripts/lint_runner.py .
 
 ---
 
-## 🔴 退出门槛
+## [CRITICAL]  退出门槛
 
 在完成编排之前，确认：
 
-1. ✅ **Agent 数量：** `invoked_agents >= 3`
-2. ✅ **脚本已执行：** 至少运行 `security_scan.py`
-3. ✅ **报告已生成：** Orchestration Report（编排报告）中列出全部 Agent
+1. [OK]  **Agent 数量：** `invoked_agents >= 3`
+2. [OK]  **脚本已执行：** 至少运行 `security_scan.py`
+3. [OK]  **报告已生成：** Orchestration Report（编排报告）中列出全部 Agent
 
-> **如果任一检查失败 → 不得标记编排完成。继续调用 Agent 或运行脚本。**
+> **如果任一检查失败 -> 不得标记编排完成。继续调用 Agent 或运行脚本。**
 
 ---
 

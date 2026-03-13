@@ -139,10 +139,10 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 
 ```
 tests/
-├── e2e/           # 全链路用户流程
-├── integration/   # API、数据流
-├── component/     # UI 单元
-└── fixtures/      # 共享数据
++-- e2e/           # 全链路用户流程
++-- integration/   # API、数据流
++-- component/     # UI 单元
++-- fixtures/      # 共享数据
 ```
 
 ### 命名约定（Naming Convention）
@@ -175,7 +175,7 @@ tests/
 
 ## 9. 反模式（Anti-Patterns）
 
-| ❌ 避免（Don't） | ✅ 建议（Do） |
+| [FAIL]  避免（Don't） | [OK]  建议（Do） |
 |----------------|-------------|
 | 测实现细节 | 测用户行为 |
 | 硬编码等待时间 | 使用自动等待 |

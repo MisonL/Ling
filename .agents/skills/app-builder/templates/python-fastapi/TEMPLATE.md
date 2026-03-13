@@ -22,20 +22,20 @@ description: FastAPI REST API template principles（API 模板原则）。SQLAlc
 
 ```
 project-name/
-├── alembic/             # Migrations（迁移）
-├── app/
-│   ├── main.py          # FastAPI app（应用）
-│   ├── config.py        # Settings（配置）
-│   ├── database.py      # DB connection（数据库连接）
-│   ├── models/          # SQLAlchemy models（模型）
-│   ├── schemas/         # Pydantic schemas（模式）
-│   ├── routers/         # API routes（路由）
-│   ├── services/        # Business logic（业务逻辑）
-│   ├── dependencies/    # Dependency Injection（依赖注入）
-│   └── utils/
-├── tests/
-├── .env.example
-└── requirements.txt
++-- alembic/             # Migrations（迁移）
++-- app/
+|   +-- main.py          # FastAPI app（应用）
+|   +-- config.py        # Settings（配置）
+|   +-- database.py      # DB connection（数据库连接）
+|   +-- models/          # SQLAlchemy models（模型）
+|   +-- schemas/         # Pydantic schemas（模式）
+|   +-- routers/         # API routes（路由）
+|   +-- services/        # Business logic（业务逻辑）
+|   +-- dependencies/    # Dependency Injection（依赖注入）
+|   +-- utils/
++-- tests/
++-- .env.example
++-- requirements.txt
 ```
 
 ---

@@ -160,11 +160,11 @@ users={[{id:1},{id:2}]} sorted={users.toSorted()} // sends 2 arrays + 2 unique o
 **更多示例：**
 
 ```tsx
-// ❌ Bad
+// [FAIL]  Bad
 <C users={users} active={users.filter(u => u.active)} />
 <C product={product} productName={product.name} />
 
-// ✅ Good
+// [OK]  Good
 <C users={users} />
 <C product={product} />
 // Do filtering/destructuring in client

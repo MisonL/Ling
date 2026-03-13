@@ -349,12 +349,12 @@ function TodoList() {
   // 回调必须依赖 items，items 每次变化都会重建
   const addItems = useCallback((newItems: Item[]) => {
     setItems([...items, ...newItems])
-  }, [items])  // ❌ 依赖 items 会导致频繁重建
+  }, [items])  // [FAIL]  依赖 items 会导致频繁重建
   
   // 若漏掉依赖会有过期闭包风险
   const removeItem = useCallback((id: string) => {
     setItems(items.filter(item => item.id !== id))
-  }, [])  // ❌ 缺少 items 依赖，会读取过期 items
+  }, [])  // [FAIL]  缺少 items 依赖，会读取过期 items
   
   return <ItemsEditor items={items} onAdd={addItems} onRemove={removeItem} />
 }
@@ -371,12 +371,12 @@ function TodoList() {
   // 稳定回调，不会被重建
   const addItems = useCallback((newItems: Item[]) => {
     setItems(curr => [...curr, ...newItems])
-  }, [])  // ✅ 无需依赖
+  }, [])  // [OK]  无需依赖
   
   // 总能读取最新状态，无过期闭包风险
   const removeItem = useCallback((id: string) => {
     setItems(curr => curr.filter(item => item.id !== id))
-  }, [])  // ✅ 安全且稳定
+  }, [])  // [OK]  安全且稳定
   
   return <ItemsEditor items={items} onAdd={addItems} onRemove={removeItem} />
 }

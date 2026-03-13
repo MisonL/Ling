@@ -16,20 +16,20 @@ allowed-tools: Read, Write, Edit, Glob, Grep
 
 ```
 你在构建什么？
-│
-├── 2D 游戏
-│   ├── 开源很重要？ → Godot
-│   └── 大型团队/资产？ → Unity
-│
-├── 3D 游戏
-│   ├── AAA 视觉质量？ → Unreal
-│   ├── 跨平台优先？ → Unity
-│   └── 独立/开源？ → Godot 4
-│
-└── 特定需求
-    ├── DOTS 性能？ → Unity
-    ├── Nanite/Lumen？ → Unreal
-    └── 轻量级？ → Godot
+|
++-- 2D 游戏
+|   +-- 开源很重要？ -> Godot
+|   +-- 大型团队/资产？ -> Unity
+|
++-- 3D 游戏
+|   +-- AAA 视觉质量？ -> Unreal
+|   +-- 跨平台优先？ -> Unity
+|   +-- 独立/开源？ -> Godot 4
+|
++-- 特定需求
+    +-- DOTS 性能？ -> Unity
+    +-- Nanite/Lumen？ -> Unreal
+    +-- 轻量级？ -> Godot
 ```
 
 ### 比较
@@ -72,8 +72,8 @@ allowed-tools: Read, Write, Edit, Glob, Grep
 
 ```
 映射 ACTIONS，而不是按钮：
-- "confirm" → A（Xbox）、Cross（PS）、B（Nintendo）
-- "cancel" → B（Xbox）、Circle（PS）、A（Nintendo）
+- "confirm" -> A（Xbox）、Cross（PS）、B（Nintendo）
+- "cancel" -> B（Xbox）、Circle（PS）、A（Nintendo）
 ```
 
 ### 触觉反馈
@@ -93,7 +93,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep
 | 引擎 | 工具 |
 | --- | --- |
 | Unity | Profiler Window |
-| Godot | Debugger → Profiler |
+| Godot | Debugger -> Profiler |
 | Unreal | Unreal Insights |
 
 ### 常见瓶颈
@@ -132,7 +132,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep
 
 ## 6. 反模式
 
-| ❌ 禁止 | ✅ 推荐 |
+| [FAIL]  禁止 | [OK]  推荐 |
 | --- | --- |
 | 凭炒作选择引擎 | 按项目需求选择 |
 | 忽略平台指南 | 研究认证要求 |

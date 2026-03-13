@@ -11,7 +11,7 @@ allowed-tools: Read, Glob, Grep, Bash
 
 ---
 
-## ⚠️ 如何使用此技能
+## [WARN]  如何使用此技能
 
 此技能传授的是**部署原则**，不是可盲目复制的脚本。
 
@@ -27,19 +27,19 @@ allowed-tools: Read, Glob, Grep, Bash
 
 ```
 What are you deploying?
-│
-├── Static site / JAMstack
-│   └── Vercel, Netlify, Cloudflare Pages
-│
-├── Simple web app
-│   ├── Managed → Railway, Render, Fly.io
-│   └── Control → VPS + PM2/Docker
-│
-├── Microservices
-│   └── Container orchestration
-│
-└── Serverless
-    └── Edge functions, Lambda
+|
++-- Static site / JAMstack
+|   +-- Vercel, Netlify, Cloudflare Pages
+|
++-- Simple web app
+|   +-- Managed -> Railway, Render, Fly.io
+|   +-- Control -> VPS + PM2/Docker
+|
++-- Microservices
+|   +-- Container orchestration
+|
++-- Serverless
+    +-- Edge functions, Lambda
 ```
 
 ### 不同平台有不同规程
@@ -84,19 +84,19 @@ What are you deploying?
 
 ```
 1. PREPARE
-   └── Verify code, build, env vars
+   +-- Verify code, build, env vars
 
 2. BACKUP
-   └── Save current state before changing
+   +-- Save current state before changing
 
 3. DEPLOY
-   └── Execute with monitoring open
+   +-- Execute with monitoring open
 
 4. VERIFY
-   └── Health check, logs, key flows
+   +-- Health check, logs, key flows
 
 5. CONFIRM or ROLLBACK
-   └── All good? Confirm. Issues? Rollback.
+   +-- All good? Confirm. Issues? Rollback.
 ```
 
 ### 阶段原则
@@ -203,7 +203,7 @@ What are you deploying?
 
 ## 8. 反模式
 
-| ❌ 禁止 | ✅ 推荐 |
+| [FAIL]  禁止 | [OK]  推荐 |
 | -------------- | ------------ |
 | 周五部署 | 周初部署 |
 | 仓促部署 | 遵循流程 |

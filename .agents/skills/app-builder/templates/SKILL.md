@@ -10,7 +10,7 @@ allowed-tools: Read, Glob, Grep
 
 ---
 
-## 🎯 Selective Reading Rule（选择性阅读规则）
+##  Selective Reading Rule（选择性阅读规则）
 
 **仅阅读与用户项目类型匹配的模板！**
 

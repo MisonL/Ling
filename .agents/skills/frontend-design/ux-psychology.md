@@ -23,11 +23,11 @@ Where n = number of choices
 
 **Example（示例）**：
 ```
-❌ Bad：一个导航里放 15 个菜单项
-✅ Good：5 个主分类 + "More"
+[FAIL]  Bad：一个导航里放 15 个菜单项
+[OK]  Good：5 个主分类 + "More"
 
-❌ Bad：一次性展示 20 个表单字段
-✅ Good：3 步向导，每步 5-7 个字段
+[FAIL]  Bad：一次性展示 20 个表单字段
+[OK]  Good：3 步向导，每步 5-7 个字段
 ```
 
 ---
@@ -74,11 +74,11 @@ Where D = distance, W = width
 
 **Chunking Example（分块示例）**：
 ```
-❌ 5551234567
-✅ 555-123-4567
+[FAIL]  5551234567
+[OK]  555-123-4567
 
-❌ 一大段无断点长文
-✅ 短段落
+[FAIL]  一大段无断点长文
+[OK]  短段落
    + 列表
    + 小标题
 ```
@@ -147,11 +147,11 @@ Navigation: Home | [key items] | Contact
 
 **Example（示例）**：
 ```
-❌ Bad：点击 Logo 进入 About Us
-✅ Good：点击 Logo 返回首页
+[FAIL]  Bad：点击 Logo 进入 About Us
+[OK]  Good：点击 Logo 返回首页
 
-❌ Bad：用星标表示 Delete
-✅ Good：用垃圾桶表示 Delete
+[FAIL]  Bad：用星标表示 Delete
+[OK]  Good：用垃圾桶表示 Delete
 ```
 
 ---
@@ -170,11 +170,11 @@ Navigation: Home | [key items] | Contact
 
 **Example（示例）**：
 ```
-❌ Bad：每个价格字段都让用户手输 "USD $"
-✅ Good：按用户地区自动补全 "$"
+[FAIL]  Bad：每个价格字段都让用户手输 "USD $"
+[OK]  Good：按用户地区自动补全 "$"
 
-❌ Bad：让用户手选卡类型（Visa/Mastercard）
-✅ Good：根据卡号前几位自动识别
+[FAIL]  Bad：让用户手选卡类型（Visa/Mastercard）
+[OK]  Good：根据卡号前几位自动识别
 ```
 
 ---
@@ -193,11 +193,11 @@ Navigation: Home | [key items] | Contact
 
 **Example（示例）**：
 ```
-❌ Bad：10 页注册流程，离开页面就丢数据
-✅ Good：一键登录（Google/Apple）
+[FAIL]  Bad：10 页注册流程，离开页面就丢数据
+[OK]  Good：一键登录（Google/Apple）
 
-❌ Bad：写简介没有时间与结构约束
-✅ Good：提供 Suggested Bios 快速完成
+[FAIL]  Bad：写简介没有时间与结构约束
+[OK]  Good：提供 Suggested Bios 快速完成
 ```
 
 ---
@@ -216,11 +216,11 @@ Navigation: Home | [key items] | Contact
 
 **Example（示例）**：
 ```
-❌ Bad：按钮点击后 2 秒毫无反应
-✅ Good：立刻变色并出现 Loading 状态
+[FAIL]  Bad：按钮点击后 2 秒毫无反应
+[OK]  Good：立刻变色并出现 Loading 状态
 
-❌ Bad：数据加载时白屏
-✅ Good：Skeleton 显示内容骨架
+[FAIL]  Bad：数据加载时白屏
+[OK]  Good：Skeleton 显示内容骨架
 ```
 
 ---
@@ -234,16 +234,16 @@ Navigation: Home | [key items] | Contact
 - **Formatting**：日期允许多种格式。
 - **Inputs**：自动去首尾空白。
 - **Fallbacks**：无头像时自动回退默认头像。
-- **Search**：支持拼写容错并提示“你是不是想搜…”。
+- **Search**：支持拼写容错并提示“你是不是想搜...”。
 - **Accessibility**：保证跨浏览器/设备可用。
 
 **Example（示例）**：
 ```
-❌ Bad：手机号有空格就拒绝
-✅ Good：接受并自动清洗空格
+[FAIL]  Bad：手机号有空格就拒绝
+[OK]  Good：接受并自动清洗空格
 
-❌ Bad：日期必须输入完整 January
-✅ Good：支持 January / Jan / 01
+[FAIL]  Bad：日期必须输入完整 January
+[OK]  Good：支持 January / Jan / 01
 ```
 
 ---
@@ -262,11 +262,11 @@ Navigation: Home | [key items] | Contact
 
 **Example（示例）**：
 ```
-❌ Bad：登录流程分新页 -> 邮箱 -> 密码
-✅ Good：一个 Modal 完成邮箱+密码
+[FAIL]  Bad：登录流程分新页 -> 邮箱 -> 密码
+[OK]  Good：一个 Modal 完成邮箱+密码
 
-❌ Bad：单卡片用 5 个字号 + 4 种颜色
-✅ Good：2 个字号 + 1 个强调色
+[FAIL]  Bad：单卡片用 5 个字号 + 4 种颜色
+[OK]  Good：2 个字号 + 1 个强调色
 ```
 
 ---
@@ -287,11 +287,11 @@ Navigation: Home | [key items] | Contact
 
 **Example（示例）**：
 ```
-❌ Bad：表单每行间距都一样大
-✅ Good：标签和输入框间距紧凑，字段组之间间距更大
+[FAIL]  Bad：表单每行间距都一样大
+[OK]  Good：标签和输入框间距紧凑，字段组之间间距更大
 
-❌ Bad：提交按钮漂在页面中间
-✅ Good：提交按钮紧跟最后一个字段
+[FAIL]  Bad：提交按钮漂在页面中间
+[OK]  Good：提交按钮紧跟最后一个字段
 ```
 
 ---
@@ -310,11 +310,11 @@ Navigation: Home | [key items] | Contact
 
 **Example（示例）**：
 ```
-❌ Bad：链接有蓝有绿有黑粗体
-✅ Good：所有可点击文本统一蓝色
+[FAIL]  Bad：链接有蓝有绿有黑粗体
+[OK]  Good：所有可点击文本统一蓝色
 
-❌ Bad：Submit 和 Cancel 同样式同颜色
-✅ Good：Submit 实心，Cancel 轮廓（Ghost）
+[FAIL]  Bad：Submit 和 Cancel 同样式同颜色
+[OK]  Good：Submit 实心，Cancel 轮廓（Ghost）
 ```
 
 ---
@@ -333,11 +333,11 @@ Navigation: Home | [key items] | Contact
 
 **Example（示例）**：
 ```
-❌ Bad：新闻列表图文互相穿插难分
-✅ Good：每条新闻独立卡片承载
+[FAIL]  Bad：新闻列表图文互相穿插难分
+[OK]  Good：每条新闻独立卡片承载
 
-❌ Bad：页脚背景与正文无差异
-✅ Good：页脚深色，明确与正文分离
+[FAIL]  Bad：页脚背景与正文无差异
+[OK]  Good：页脚深色，明确与正文分离
 ```
 
 ---
@@ -356,11 +356,11 @@ Navigation: Home | [key items] | Contact
 
 **Example（示例）**：
 ```
-❌ Bad：步骤 1/2/3 分散摆放
-✅ Good：水平连线体现顺序
+[FAIL]  Bad：步骤 1/2/3 分散摆放
+[OK]  Good：水平连线体现顺序
 
-❌ Bad：下拉菜单与触发按钮分离漂浮
-✅ Good：菜单视觉上“挂接”在按钮下方
+[FAIL]  Bad：下拉菜单与触发按钮分离漂浮
+[OK]  Good：菜单视觉上“挂接”在按钮下方
 ```
 
 ---
@@ -379,11 +379,11 @@ Navigation: Home | [key items] | Contact
 
 **Example（示例）**：
 ```
-❌ Bad：Files 图标做成超写实 3D 文件夹
-✅ Good：简洁 2D 轮廓图标
+[FAIL]  Bad：Files 图标做成超写实 3D 文件夹
+[OK]  Good：简洁 2D 轮廓图标
 
-❌ Bad：复杂多色 Logo 拿来当 loading
-✅ Good：单色圆环式 loading
+[FAIL]  Bad：复杂多色 Logo 拿来当 loading
+[OK]  Good：单色圆环式 loading
 ```
 
 ---
@@ -402,11 +402,11 @@ Navigation: Home | [key items] | Contact
 
 **Example（示例）**：
 ```
-❌ Bad：弹窗无边界无阴影，融入背景
-✅ Good：弹窗 + 阴影 + 背景变暗
+[FAIL]  Bad：弹窗无边界无阴影，融入背景
+[OK]  Good：弹窗 + 阴影 + 背景变暗
 
-❌ Bad：白字直接压在复杂彩色图上
-✅ Good：白字置于半透明深色遮罩之上
+[FAIL]  Bad：白字直接压在复杂彩色图上
+[OK]  Good：白字置于半透明深色遮罩之上
 ```
 
 ---
@@ -425,11 +425,11 @@ Navigation: Home | [key items] | Contact
 
 **Example（示例）**：
 ```
-❌ Bad：首页 5 个同色同尺寸按钮
-✅ Good：1 个主按钮明显更大更亮
+[FAIL]  Bad：首页 5 个同色同尺寸按钮
+[OK]  Good：1 个主按钮明显更大更亮
 
-❌ Bad：Total Revenue 与 System Version 同等级
-✅ Good：Total Revenue 用大号粗体置顶
+[FAIL]  Bad：Total Revenue 与 System Version 同等级
+[OK]  Good：Total Revenue 用大号粗体置顶
 ```
 
 ---
@@ -450,11 +450,11 @@ Navigation: Home | [key items] | Contact
 
 **Example（示例）**：
 ```
-❌ Bad：引导过程无剩余步骤提示
-✅ Good：清单显示“已完成 3/5”
+[FAIL]  Bad：引导过程无剩余步骤提示
+[OK]  Good：清单显示“已完成 3/5”
 
-❌ Bad：课程视频看一半也打勾完成
-✅ Good：进度环保持半满直到看完
+[FAIL]  Bad：课程视频看一半也打勾完成
+[OK]  Good：进度环保持半满直到看完
 ```
 
 ### Goal Gradient Effect（目标梯度效应）
@@ -471,11 +471,11 @@ Navigation: Home | [key items] | Contact
 
 **Example（示例）**：
 ```
-❌ Bad：进度条从 0% 起步，心理负担大
-✅ Good：打开应用即从 20% 起步
+[FAIL]  Bad：进度条从 0% 起步，心理负担大
+[OK]  Good：打开应用即从 20% 起步
 
-❌ Bad：结账流程突然冒出“第 5 步”
-✅ Good：明确步骤：Shipping > Payment > Almost Done
+[FAIL]  Bad：结账流程突然冒出“第 5 步”
+[OK]  Good：明确步骤：Shipping > Payment > Almost Done
 ```
 
 ### Peak-End Rule（峰终定律）
@@ -492,11 +492,11 @@ Navigation: Home | [key items] | Contact
 
 **Example（示例）**：
 ```
-❌ Bad：报税 20 分钟后只显示 "Submitted"
-✅ Good：显示 "Congratulations" + 退款摘要
+[FAIL]  Bad：报税 20 分钟后只显示 "Submitted"
+[OK]  Good：显示 "Congratulations" + 退款摘要
 
-❌ Bad：游戏结束仅 "Game Over"
-✅ Good：展示高分总结 + 庆祝反馈
+[FAIL]  Bad：游戏结束仅 "Game Over"
+[OK]  Good：展示高分总结 + 庆祝反馈
 ```
 
 ### Aesthetic-Usability Effect（美即易用效应）
@@ -513,11 +513,11 @@ Navigation: Home | [key items] | Contact
 
 **Example（示例）**：
 ```
-❌ Bad：银行 App 文本错位、配色冲突
-✅ Good：现代、干净、动画顺滑
+[FAIL]  Bad：银行 App 文本错位、配色冲突
+[OK]  Good：现代、干净、动画顺滑
 
-❌ Bad：低清像素化图库图
-✅ Good：高质量品牌插图/图片
+[FAIL]  Bad：低清像素化图库图
+[OK]  Good：高质量品牌插图/图片
 ```
 
 ### Anchoring Bias（锚定偏差）
@@ -534,11 +534,11 @@ Navigation: Home | [key items] | Contact
 
 **Example（示例）**：
 ```
-❌ Bad：只显示 "$49"
-✅ Good："~~$99~~ $49 (50% Off)"
+[FAIL]  Bad：只显示 "$49"
+[OK]  Good："~~$99~~ $49 (50% Off)"
 
-❌ Bad：笔记本按最低价到最高价排序
-✅ Good：先展示高端 Pro 款，让其他选项更显性价比
+[FAIL]  Bad：笔记本按最低价到最高价排序
+[OK]  Good：先展示高端 Pro 款，让其他选项更显性价比
 ```
 
 ### Social Proof（社会认同）
@@ -555,11 +555,11 @@ Navigation: Home | [key items] | Contact
 
 **Example（示例）**：
 ```
-❌ Bad：注册页只有表单
-✅ Good：注册页展示 "Join 2 million designers"
+[FAIL]  Bad：注册页只有表单
+[OK]  Good：注册页展示 "Join 2 million designers"
 
-❌ Bad：匿名无头像评价
-✅ Good：带头像+姓名+Verified Buyer 标识
+[FAIL]  Bad：匿名无头像评价
+[OK]  Good：带头像+姓名+Verified Buyer 标识
 ```
 
 ### Scarcity Principle（稀缺性原则）
@@ -576,11 +576,11 @@ Navigation: Home | [key items] | Contact
 
 **Example（示例）**：
 ```
-❌ Bad：永不结束的“促销”且无倒计时
-✅ Good：Deal of the Day + 实时倒计时
+[FAIL]  Bad：永不结束的“促销”且无倒计时
+[OK]  Good：Deal of the Day + 实时倒计时
 
-❌ Bad：商品可售但无库存信息
-✅ Good："当前价格仅剩 3 件"
+[FAIL]  Bad：商品可售但无库存信息
+[OK]  Good："当前价格仅剩 3 件"
 ```
 
 ### Authority Bias（权威偏差）
@@ -597,11 +597,11 @@ Navigation: Home | [key items] | Contact
 
 **Example（示例）**：
 ```
-❌ Bad：健康文章作者写 "Admin"
-✅ Good："Reviewed by Dr. Jane Smith"
+[FAIL]  Bad：健康文章作者写 "Admin"
+[OK]  Good："Reviewed by Dr. Jane Smith"
 
-❌ Bad：安全产品无任何认证信息
-✅ Good：展示 ISO 27001 + Norton Secured
+[FAIL]  Bad：安全产品无任何认证信息
+[OK]  Good：展示 ISO 27001 + Norton Secured
 ```
 
 ### Loss Aversion（损失厌恶）
@@ -618,11 +618,11 @@ Navigation: Home | [key items] | Contact
 
 **Example（示例）**：
 ```
-❌ Bad："点击领取 10 美元券"
-✅ Good："你有 10 美元额度今晚到期"
+[FAIL]  Bad："点击领取 10 美元券"
+[OK]  Good："你有 10 美元额度今晚到期"
 
-❌ Bad："Cancel your subscription"
-✅ Good："取消后将失去 50 个已保存项目访问权"
+[FAIL]  Bad："Cancel your subscription"
+[OK]  Good："取消后将失去 50 个已保存项目访问权"
 ```
 
 ### False-Consensus Effect（虚假共识效应）
@@ -639,11 +639,11 @@ Navigation: Home | [key items] | Contact
 
 **Example（示例）**：
 ```
-❌ Bad：设计师主观判断“这很直觉”就上线
-✅ Good：先做 A/B test 再决策
+[FAIL]  Bad：设计师主观判断“这很直觉”就上线
+[OK]  Good：先做 A/B test 再决策
 
-❌ Bad：假设“所有人都懂英文”，不做本地化
-✅ Good：根据用户地域数据做 localization
+[FAIL]  Bad：假设“所有人都懂英文”，不做本地化
+[OK]  Good：根据用户地域数据做 localization
 ```
 
 ### Curse of Knowledge（知识诅咒）
@@ -660,11 +660,11 @@ Navigation: Home | [key items] | Contact
 
 **Example（示例）**：
 ```
-❌ Bad：报错 "Exception: Null Pointer at 0x0045"
-✅ Good："出现异常，请刷新后重试"
+[FAIL]  Bad：报错 "Exception: Null Pointer at 0x0045"
+[OK]  Good："出现异常，请刷新后重试"
 
-❌ Bad：云产品导航直接使用 "S3 Bucket Instances"
-✅ Good：使用 "File Storage" 等易懂术语
+[FAIL]  Bad：云产品导航直接使用 "S3 Bucket Instances"
+[OK]  Good：使用 "File Storage" 等易懂术语
 ```
 
 ### Stepping Stone Effect（登门槛效应 / Foot-in-the-Door）
@@ -681,11 +681,11 @@ Navigation: Home | [key items] | Contact
 
 **Example（示例）**：
 ```
-❌ Bad：点击试用立刻要求信用卡
-✅ Good：先邮箱+密码，后续再引导绑定
+[FAIL]  Bad：点击试用立刻要求信用卡
+[OK]  Good：先邮箱+密码，后续再引导绑定
 
-❌ Bad：问卷一页展示 50 题
-✅ Good：从 1 个简单 Yes/No 开始
+[FAIL]  Bad：问卷一页展示 50 题
+[OK]  Good：从 1 个简单 Yes/No 开始
 ```
 
 ---
@@ -695,28 +695,28 @@ Navigation: Home | [key items] | Contact
 ### 三层处理模型（Three Levels of Processing）
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│  VISCERAL（本能层）                                          │
-│  ─────────────────────                                      │
-│  • 即时、自动反应                                             │
-│  • 首次印象（前 50ms）                                        │
-│  • 由颜色、形状、图像触发                                     │
-│  • "Wow, this looks beautiful!"                            │
-├─────────────────────────────────────────────────────────────┤
-│  BEHAVIORAL（行为层）                                         │
-│  ─────────────────────────────                              │
-│  • 可用性与功能完成感                                         │
-│  • 使用过程中的愉悦                                            │
-│  • 性能、可靠、易用                                            │
-│  • "This works exactly how I expected!"                    │
-├─────────────────────────────────────────────────────────────┤
-│  REFLECTIVE（反思层）                                         │
-│  ─────────────────────────────                              │
-│  • 价值认同与意义建构                                          │
-│  • 个人身份与品牌关系                                          │
-│  • 长期记忆与忠诚                                              │
-│  • "This brand represents who I am"                        │
-└─────────────────────────────────────────────────────────────┘
++-------------------------------------------------------------+
+|  VISCERAL（本能层）                                          |
+|  ---------------------                                      |
+|  - 即时、自动反应                                             |
+|  - 首次印象（前 50ms）                                        |
+|  - 由颜色、形状、图像触发                                     |
+|  - "Wow, this looks beautiful!"                            |
++-------------------------------------------------------------+
+|  BEHAVIORAL（行为层）                                         |
+|  -----------------------------                              |
+|  - 可用性与功能完成感                                         |
+|  - 使用过程中的愉悦                                            |
+|  - 性能、可靠、易用                                            |
+|  - "This works exactly how I expected!"                    |
++-------------------------------------------------------------+
+|  REFLECTIVE（反思层）                                         |
+|  -----------------------------                              |
+|  - 价值认同与意义建构                                          |
+|  - 个人身份与品牌关系                                          |
+|  - 长期记忆与忠诚                                              |
+|  - "This brand represents who I am"                        |
++-------------------------------------------------------------+
 ```
 
 ### 面向三层进行设计（Designing for Each Level）
@@ -780,18 +780,18 @@ button.onclick = () => {
 ### 信任信号放置（Trust Signal Placement）
 
 ```
-┌────────────────────────────────────────────────────┐
-│  HEADER：信任条（"Free shipping | 30-day returns | │
-│          Secure checkout"）                       │
-├────────────────────────────────────────────────────┤
-│  HERO：社会认同（"Trusted by 10,000+"）            │
-├────────────────────────────────────────────────────┤
-│  PRODUCT：评价可见 + 安全徽章                      │
-├────────────────────────────────────────────────────┤
-│  CHECKOUT：支付图标 + SSL + 保障承诺                │
-├────────────────────────────────────────────────────┤
-│  FOOTER：联系方式 + 政策 + 认证                     │
-└────────────────────────────────────────────────────┘
++----------------------------------------------------+
+|  HEADER：信任条（"Free shipping | 30-day returns | |
+|          Secure checkout"）                       |
++----------------------------------------------------+
+|  HERO：社会认同（"Trusted by 10,000+"）            |
++----------------------------------------------------+
+|  PRODUCT：评价可见 + 安全徽章                      |
++----------------------------------------------------+
+|  CHECKOUT：支付图标 + SSL + 保障承诺                |
++----------------------------------------------------+
+|  FOOTER：联系方式 + 政策 + 认证                     |
++----------------------------------------------------+
 ```
 
 ### 信任样式 CSS 模式（Trust-Building CSS Patterns）
@@ -811,7 +811,7 @@ button.onclick = () => {
 
 /* 安全表单提示 */
 .secure-form::before {
-  content: '🔒 Secure form';
+  content: ' Secure form';
   display: block;
   font-size: 12px;
   color: #166534;
@@ -851,7 +851,7 @@ button.onclick = () => {
 
 **1. Simplify（简化，降低 Extraneous）**
 ```css
-/* 视觉噪声高 → 视觉简洁 */
+/* 视觉噪声高 -> 视觉简洁 */
 .card-busy {
   border: 2px solid red;
   background: linear-gradient(...);
@@ -895,7 +895,7 @@ button.onclick = () => {
     <!-- 高频筛选可见 -->
   </div>
   <button onclick="toggleAdvanced()">
-    Advanced Options ▼
+    Advanced Options v
   </button>
   <div class="filters-advanced" hidden>
     <!-- 高级筛选默认隐藏 -->
@@ -905,10 +905,10 @@ button.onclick = () => {
 
 **4. Use Familiar Patterns（使用熟悉模式）**
 ```
-✅ 标准导航位置
-✅ 常见图标语义（🔍 = search）
-✅ 常规表单布局
-✅ 常见手势模式（swipe、pinch）
+[OK]  标准导航位置
+[OK]  常见图标语义（ = search）
+[OK]  常规表单布局
+[OK]  常见手势模式（swipe、pinch）
 ```
 
 **5. Offload Information（把记忆负担交给系统）**
@@ -966,7 +966,7 @@ button.onclick = () => {
 ```html
 <!-- 实时活动 -->
 <div class="activity">
-  <span class="avatar">👤</span>
+  <span class="avatar"></span>
   <span>Sarah from NYC just purchased</span>
 </div>
 
@@ -997,12 +997,12 @@ CHARACTERISTICS（特征）：
 - 偏视觉学习
 
 DESIGN APPROACH（设计策略）：
-├── Colors：高饱和、强对比、大胆渐变
-├── Typography：大字号、可变、实验性
-├── Layout：纵向滚动、移动端原生
-├── Interactions：快节奏、游戏化、手势化
-├── Content：短视频、meme、story 形态
-└── Trust：同伴评价 > 权威背书
++-- Colors：高饱和、强对比、大胆渐变
++-- Typography：大字号、可变、实验性
++-- Layout：纵向滚动、移动端原生
++-- Interactions：快节奏、游戏化、手势化
++-- Content：短视频、meme、story 形态
++-- Trust：同伴评价 > 权威背书
 ```
 
 ### Millennials（1981-1996）
@@ -1015,12 +1015,12 @@ CHARACTERISTICS（特征）：
 - 价格敏感且重品质
 
 DESIGN APPROACH（设计策略）：
-├── Colors：低饱和粉彩、自然土色
-├── Typography：清晰易读 Sans-serif
-├── Layout：响应式、卡片化
-├── Interactions：平滑且有目的动效
-├── Content：价值导向、透明表达
-└── Trust：评价、可持续、价值观一致
++-- Colors：低饱和粉彩、自然土色
++-- Typography：清晰易读 Sans-serif
++-- Layout：响应式、卡片化
++-- Interactions：平滑且有目的动效
++-- Content：价值导向、透明表达
++-- Trust：评价、可持续、价值观一致
 ```
 
 ### Gen X（1965-1980）
@@ -1033,12 +1033,12 @@ CHARACTERISTICS（特征）：
 - 科技接受度平衡
 
 DESIGN APPROACH（设计策略）：
-├── Colors：专业、可信
-├── Typography：熟悉、保守
-├── Layout：清晰层级、传统结构
-├── Interactions：功能优先，不炫技
-├── Content：直接、事实导向
-└── Trust：专业能力、过往记录
++-- Colors：专业、可信
++-- Typography：熟悉、保守
++-- Layout：清晰层级、传统结构
++-- Interactions：功能优先，不炫技
++-- Content：直接、事实导向
++-- Trust：专业能力、过往记录
 ```
 
 ### Baby Boomers（1946-1964）
@@ -1051,12 +1051,12 @@ CHARACTERISTICS（特征）：
 - 科技自信度相对较低
 
 DESIGN APPROACH（设计策略）：
-├── Colors：高对比、简色板
-├── Typography：大字号（18px+）、高对比
-├── Layout：线性、简单、留白充分
-├── Interactions：最小化且反馈明确
-├── Content：完整、细致
-└── Trust：电话、地址、真人信息
++-- Colors：高对比、简色板
++-- Typography：大字号（18px+）、高对比
++-- Layout：线性、简单、留白充分
++-- Interactions：最小化且反馈明确
++-- Content：完整、细致
++-- Trust：电话、地址、真人信息
 ```
 
 ---
@@ -1064,20 +1064,20 @@ DESIGN APPROACH（设计策略）：
 ## 9. 情绪与颜色映射（Emotion Color Mapping）
 
 ```
-┌────────────────────────────────────────────────────┐
-│  EMOTION          │  COLORS           │  USE       │
-├───────────────────┼───────────────────┼────────────┤
-│  Trust            │  Blue, Green      │  Finance   │
-│  Excitement       │  Red, Orange      │  Sales     │
-│  Calm             │  Blue, Soft green │  Wellness  │
-│  Luxury           │  Black, Gold      │  Premium   │
-│  Creativity       │  Teal, Pink       │  Art       │
-│  Energy           │  Yellow, Orange   │  Sports    │
-│  Nature           │  Green, Brown     │  Eco       │
-│  Happiness        │  Yellow, Orange   │  Kids      │
-│  Sophistication   │  Gray, Navy       │  Corporate │
-│  Urgency          │  Red              │  Errors    │
-└───────────────────┴───────────────────┴────────────┘
++----------------------------------------------------+
+|  EMOTION          |  COLORS           |  USE       |
++-------------------+-------------------+------------+
+|  Trust            |  Blue, Green      |  Finance   |
+|  Excitement       |  Red, Orange      |  Sales     |
+|  Calm             |  Blue, Soft green |  Wellness  |
+|  Luxury           |  Black, Gold      |  Premium   |
+|  Creativity       |  Teal, Pink       |  Art       |
+|  Energy           |  Yellow, Orange   |  Sports    |
+|  Nature           |  Green, Brown     |  Eco       |
+|  Happiness        |  Yellow, Orange   |  Kids      |
+|  Sophistication   |  Gray, Navy       |  Corporate |
+|  Urgency          |  Red              |  Errors    |
++-------------------+-------------------+------------+
 ```
 
 ---

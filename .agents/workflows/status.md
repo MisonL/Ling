@@ -40,41 +40,41 @@ $ARGUMENTS
 ```
 === 项目状态 ===
 
-📁 项目：my-ecommerce
-📂 路径：C:/projects/my-ecommerce
-🏷️ 类型：nextjs-ecommerce
-📊 状态：active
+ 项目：my-ecommerce
+ 路径：C:/projects/my-ecommerce
+ 类型：nextjs-ecommerce
+ 状态：active
 
-🔧 技术栈：
+ 技术栈：
    框架：next.js
    数据库：postgresql
    认证：clerk
    支付：stripe
 
-✅ 已实现功能（5）：
-   • product-listing
-   • cart
-   • checkout
-   • user-auth
-   • order-history
+[OK]  已实现功能（5）：
+   - product-listing
+   - cart
+   - checkout
+   - user-auth
+   - order-history
 
 ⏳ 待处理项（2）：
-   • admin-panel
-   • email-notifications
+   - admin-panel
+   - email-notifications
 
-📄 文件统计：已新建 73 个文件，已修改 12 个文件
+ 文件统计：已新建 73 个文件，已修改 12 个文件
 
 === Agent 状态 ===
 
-✅ database-architect → 已完成
-✅ backend-specialist → 已完成
-🔄 frontend-specialist → 仪表盘组件（60%）
-⏳ test-engineer → 等待中
+[OK]  database-architect -> 已完成
+[OK]  backend-specialist -> 已完成
+[RUN]  frontend-specialist -> 仪表盘组件（60%）
+⏳ test-engineer -> 等待中
 
 === 预览 ===
 
-🌐 URL：http://localhost:3000
-💚 健康状态：OK
+ URL：http://localhost:3000
+ 健康状态：OK
 ```
 
 ---

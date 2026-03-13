@@ -21,17 +21,17 @@ description: Astro static site template principles（静态站点模板原则）
 
 ```
 project-name/
-├── src/
-│   ├── components/      # .astro components（.astro 组件）
-│   ├── content/         # MDX content（MDX 内容）
-│   │   ├── blog/
-│   │   └── config.ts    # Collection schemas（内容集合 Schema）
-│   ├── layouts/         # Page layouts（页面布局）
-│   ├── pages/           # File-based routing（基于文件的路由）
-│   └── styles/
-├── public/              # Static assets（静态资源）
-├── astro.config.mjs
-└── package.json
++-- src/
+|   +-- components/      # .astro components（.astro 组件）
+|   +-- content/         # MDX content（MDX 内容）
+|   |   +-- blog/
+|   |   +-- config.ts    # Collection schemas（内容集合 Schema）
+|   +-- layouts/         # Page layouts（页面布局）
+|   +-- pages/           # File-based routing（基于文件的路由）
+|   +-- styles/
++-- public/              # Static assets（静态资源）
++-- astro.config.mjs
++-- package.json
 ```
 
 ---

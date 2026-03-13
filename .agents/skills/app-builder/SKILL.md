@@ -8,7 +8,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash, Agent
 
 > 分析用户请求，确定技术栈，规划结构，并协调智能体执行。
 
-## 🎯 选择性阅读规则
+##  选择性阅读规则
 
 **只阅读与当前请求相关的文件！** 先查看内容地图，再读取所需文档。
 
@@ -23,7 +23,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash, Agent
 
 ---
 
-## 📦 模板（13）
+##  模板（13）
 
 用于新项目快速脚手架搭建。**只读取匹配模板！**
 
@@ -44,7 +44,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash, Agent
 
 ---
 
-## 🔗 相关智能体
+##  相关智能体
 
 | Agent（智能体） | 角色 |
 | --- | --- |
@@ -65,10 +65,10 @@ App Builder（应用构建编排器）过程：
 1. 项目类型：Social Media App（社交媒体应用）
 2. 技术栈：Next.js + Prisma + Cloudinary + Clerk
 3. 创建计划：
-   ├─ Database schema（数据库结构）：users, posts, likes, follows
-   ├─ API routes（API 路由）：12 个 endpoints（端点）
-   ├─ Pages（页面）：feed, profile, upload
-   └─ Components（组件）：PostCard, Feed, LikeButton
+   +- Database schema（数据库结构）：users, posts, likes, follows
+   +- API routes（API 路由）：12 个 endpoints（端点）
+   +- Pages（页面）：feed, profile, upload
+   +- Components（组件）：PostCard, Feed, LikeButton
 4. 协调智能体
 5. 汇报进度
 6. 启动预览

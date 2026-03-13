@@ -25,11 +25,11 @@ allowed-tools: Read, Glob, Grep
 
 | 项目类型 | 是否需要 i18n？ |
 | --- | --- |
-| 公共 Web 应用 | ✅ 是 |
-| SaaS 产品 | ✅ 是 |
-| 内部工具 | ⚠️ 视情况而定 |
-| 单一地区应用 | ⚠️ 考虑未来扩展 |
-| 个人项目 | ❌ 可选 |
+| 公共 Web 应用 | [OK]  是 |
+| SaaS 产品 | [OK]  是 |
+| 内部工具 | [WARN]  视情况而定 |
+| 单一地区应用 | [WARN]  考虑未来扩展 |
+| 个人项目 | [FAIL]  可选 |
 
 ---
 
@@ -71,23 +71,23 @@ print(_("Welcome to our app"))
 
 ```
 locales/
-├── en/
-│   ├── common.json
-│   ├── auth.json
-│   └── errors.json
-├── tr/
-│   ├── common.json
-│   ├── auth.json
-│   └── errors.json
-└── ar/          # RTL
-    └── ...
++-- en/
+|   +-- common.json
+|   +-- auth.json
+|   +-- errors.json
++-- tr/
+|   +-- common.json
+|   +-- auth.json
+|   +-- errors.json
++-- ar/          # RTL
+    +-- ...
 ```
 
 ---
 
 ## 5. 最佳实践
 
-### 推荐 ✅
+### 推荐 [OK] 
 
 - 使用翻译键值，而非原始文本
 - 按功能模块对翻译进行命名空间划分
@@ -96,7 +96,7 @@ locales/
 - 从项目开始就规划 RTL 支持
 - 对复杂字符串使用 ICU 消息格式
 
-### 避免 ❌
+### 避免 [FAIL] 
 
 - 在组件中硬编码字符串
 - 将多个翻译片段手动拼接

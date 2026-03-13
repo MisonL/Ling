@@ -11,22 +11,22 @@
 
 ```
 CLARITY（清晰）：
-├── 文本在任何字号都清晰可读
-├── 图标精确且清楚
-├── 装饰克制且恰当
-└── 功能性驱动设计
++-- 文本在任何字号都清晰可读
++-- 图标精确且清楚
++-- 装饰克制且恰当
++-- 功能性驱动设计
 
 DEFERENCE（克制）：
-├── UI 帮助用户理解与操作
-├── 内容占据屏幕主体
-├── UI 不与内容争夺注意力
-└── 半透明暗示更多内容
++-- UI 帮助用户理解与操作
++-- 内容占据屏幕主体
++-- UI 不与内容争夺注意力
++-- 半透明暗示更多内容
 
 DEPTH（层次）：
-├── 清晰视觉层级表达结构
-├── 过渡强调深度感
-├── 触控揭示功能
-└── 内容高于 UI
++-- 清晰视觉层级表达结构
++-- 过渡强调深度感
++-- 触控揭示功能
++-- 内容高于 UI
 ```
 
 ### iOS 设计价值（iOS Design Values）
@@ -48,11 +48,11 @@ DEPTH（层次）：
 
 ```
 iOS 系统字体：
-├── SF Pro Text：正文（< 20pt）
-├── SF Pro Display：大标题（≥ 20pt）
-├── SF Pro Rounded：更友好场景
-├── SF Mono：代码/等宽数据
-└── SF Compact：Apple Watch/小屏
++-- SF Pro Text：正文（< 20pt）
++-- SF Pro Display：大标题（≥ 20pt）
++-- SF Pro Rounded：更友好场景
++-- SF Mono：代码/等宽数据
++-- SF Compact：Apple Watch/小屏
 ```
 
 ### iOS 字号体系（Dynamic Type）
@@ -74,16 +74,16 @@ iOS 系统字体：
 ### Dynamic Type 支持（必须）
 
 ```swift
-// ❌ 错误：固定字号
+// [FAIL]  错误：固定字号
 Text("Hello")
     .font(.system(size: 17))
 
-// ✅ 正确：Dynamic Type
+// [OK]  正确：Dynamic Type
 Text("Hello")
     .font(.body) // 随用户设置缩放
 
 // React Native 对应
-<Text style={{ fontSize: 17 }}> // ❌ 固定
+<Text style={{ fontSize: 17 }}> // [FAIL]  固定
 <Text style={styles.body}> // 使用动态字号系统
 ```
 
@@ -107,21 +107,21 @@ Text("Hello")
 使用语义色以自动适配暗色模式：
 
 Primary：
-├── .label → 主文本
-├── .secondaryLabel → 次级文本
-├── .tertiaryLabel → 第三级文本
-├── .quaternaryLabel → 水印
++-- .label -> 主文本
++-- .secondaryLabel -> 次级文本
++-- .tertiaryLabel -> 第三级文本
++-- .quaternaryLabel -> 水印
 
 Backgrounds：
-├── .systemBackground → 主背景
-├── .secondarySystemBackground → 分组内容
-├── .tertiarySystemBackground → 浮层内容
++-- .systemBackground -> 主背景
++-- .secondarySystemBackground -> 分组内容
++-- .tertiarySystemBackground -> 浮层内容
 
 Fills：
-├── .systemFill → 大块形状
-├── .secondarySystemFill → 中块形状
-├── .tertiarySystemFill → 小块形状
-├── .quaternarySystemFill → 极轻形状
++-- .systemFill -> 大块形状
++-- .secondarySystemFill -> 中块形状
++-- .tertiarySystemFill -> 小块形状
++-- .quaternarySystemFill -> 极轻形状
 ```
 
 ### 系统强调色（System Accent Colors）
@@ -143,10 +143,10 @@ Fills：
 iOS 暗色模式不是简单反色：
 
 LIGHT MODE：              DARK MODE：
-├── 白色背景               ├── 纯黑或近黑背景
-├── 高饱和色               ├── 低饱和色
-├── 黑色文本               ├── 浅色文本
-└── 阴影                   └── 光晕或无阴影
++-- 白色背景               +-- 纯黑或近黑背景
++-- 高饱和色               +-- 低饱和色
++-- 黑色文本               +-- 浅色文本
++-- 阴影                   +-- 光晕或无阴影
 
 规则：始终使用语义色自动适配。
 ```
@@ -158,17 +158,17 @@ LIGHT MODE：              DARK MODE：
 ### 安全区（Safe Areas）
 
 ```
-┌─────────────────────────────────────┐
-│░░░░░░░░░░░ Status Bar ░░░░░░░░░░░░░│ ← 顶部安全区
-├─────────────────────────────────────┤
-│                                     │
-│                                     │
-│         Safe Content Area           │
-│                                     │
-│                                     │
-├─────────────────────────────────────┤
-│░░░░░░░░░ Home Indicator ░░░░░░░░░░░│ ← 底部安全区
-└─────────────────────────────────────┘
++-------------------------------------+
+|░░░░░░░░░░░ Status Bar ░░░░░░░░░░░░░| <- 顶部安全区
++-------------------------------------+
+|                                     |
+|                                     |
+|         Safe Content Area           |
+|                                     |
+|                                     |
++-------------------------------------+
+|░░░░░░░░░ Home Indicator ░░░░░░░░░░░| <- 底部安全区
++-------------------------------------+
 
 规则：不要把可交互内容放到 unsafe 区域。
 ```
@@ -177,7 +177,7 @@ LIGHT MODE：              DARK MODE：
 
 | 元素 | Margin | 说明 |
 |------|--------|------|
-| 屏幕边缘 → 内容 | 16pt | 标准左右边距 |
+| 屏幕边缘 -> 内容 | 16pt | 标准左右边距 |
 | 分组表格区块 | 上下 16pt | 留呼吸感 |
 | 列表项 padding | 水平 16pt | 标准 cell padding |
 | 卡片内边距 | 16pt | 卡片内容 |
@@ -187,17 +187,17 @@ LIGHT MODE：              DARK MODE：
 
 ```
 iPhone Grid（Standard）：
-├── 左右边距 16pt
-├── 最小间距 8pt
-├── 内容按 8pt 倍数排列
++-- 左右边距 16pt
++-- 最小间距 8pt
++-- 内容按 8pt 倍数排列
 
 iPhone Grid（Compact）：
-├── 左右边距 8pt（必要时）
-├── 最小间距 4pt
++-- 左右边距 8pt（必要时）
++-- 最小间距 4pt
 
 iPad Grid：
-├── 左右边距 20pt（或更多）
-├── 建议多栏布局
++-- 左右边距 20pt（或更多）
++-- 建议多栏布局
 ```
 
 ---
@@ -216,40 +216,40 @@ iPad Grid：
 ### Tab Bar 指南
 
 ```
-┌─────────────────────────────────────┐
-│                                     │
-│         Content Area                │
-│                                     │
-├─────────────────────────────────────┤
-│  🏠     🔍     ➕     ❤️     👤    │ ← Tab bar (49pt height)
-│ Home   Search  New   Saved  Profile │
-└─────────────────────────────────────┘
++-------------------------------------+
+|                                     |
+|         Content Area                |
+|                                     |
++-------------------------------------+
+|                          | <- Tab bar (49pt height)
+| Home   Search  New   Saved  Profile |
++-------------------------------------+
 
 规则：
-├── 最多 3-5 项
-├── 图标：SF Symbols 或自定义（25×25pt）
-├── 文本：必须显示（无障碍）
-├── 激活态：填充图标 + tint 色
-└── Tab bar 始终可见（不要随滚动隐藏）
++-- 最多 3-5 项
++-- 图标：SF Symbols 或自定义（25×25pt）
++-- 文本：必须显示（无障碍）
++-- 激活态：填充图标 + tint 色
++-- Tab bar 始终可见（不要随滚动隐藏）
 ```
 
 ### Navigation Bar 指南
 
 ```
-┌─────────────────────────────────────┐
-│ < Back     Page Title      Edit    │ ← Navigation bar (44pt)
-├─────────────────────────────────────┤
-│                                     │
-│         Content Area                │
-│                                     │
-└─────────────────────────────────────┘
++-------------------------------------+
+| < Back     Page Title      Edit    | <- Navigation bar (44pt)
++-------------------------------------+
+|                                     |
+|         Content Area                |
+|                                     |
++-------------------------------------+
 
 规则：
-├── 返回按钮：系统 chevron + 上一页标题（或 “Back”）
-├── 标题：居中 + 动态字号
-├── 右侧操作：最多 2 个
-├── 大标题：可随滚动折叠
-└── 优先文字按钮而非纯图标
++-- 返回按钮：系统 chevron + 上一页标题（或 “Back”）
++-- 标题：居中 + 动态字号
++-- 右侧操作：最多 2 个
++-- 大标题：可随滚动折叠
++-- 优先文字按钮而非纯图标
 ```
 
 ### Modal 展示方式
@@ -281,19 +281,19 @@ iPad Grid：
 ```
 按钮样式（UIKit/SwiftUI）：
 
-┌──────────────────────────────┐
-│         Tinted               │ ← 主操作（填充）
-├──────────────────────────────┤
-│         Bordered             │ ← 次操作（描边）
-├──────────────────────────────┤
-│         Plain                │ ← 三级操作（文字）
-└──────────────────────────────┘
++------------------------------+
+|         Tinted               | <- 主操作（填充）
++------------------------------+
+|         Bordered             | <- 次操作（描边）
++------------------------------+
+|         Plain                | <- 三级操作（文字）
++------------------------------+
 
 尺寸：
-├── Mini：狭小空间
-├── Small：紧凑 UI
-├── Medium：行内操作
-├── Large：主 CTA（高度 ≥ 44pt）
++-- Mini：狭小空间
++-- Small：紧凑 UI
++-- Medium：行内操作
++-- Large：主 CTA（高度 ≥ 44pt）
 ```
 
 ### Lists & Tables
@@ -301,17 +301,17 @@ iPad Grid：
 ```
 列表样式：
 
-.plain         → 无分隔线，边到边
-.insetGrouped  → 圆角卡片（iOS 14+ 默认）
-.grouped       → 全宽分组
-.sidebar       → iPad 侧栏导航
+.plain         -> 无分隔线，边到边
+.insetGrouped  -> 圆角卡片（iOS 14+ 默认）
+.grouped       -> 全宽分组
+.sidebar       -> iPad 侧栏导航
 
 Cell Accessories：
-├── Disclosure indicator (>) → 进入详情
-├── Detail button (i) → 信息页不跳转
-├── Checkmark (✓) → 选择
-├── Reorder (≡) → 拖拽排序
-└── Delete (-) → 侧滑/编辑删除
++-- Disclosure indicator (>) -> 进入详情
++-- Detail button (i) -> 信息页不跳转
++-- Checkmark (OK) -> 选择
++-- Reorder (≡) -> 拖拽排序
++-- Delete (-) -> 侧滑/编辑删除
 ```
 
 ### Text Fields
@@ -319,10 +319,10 @@ Cell Accessories：
 ```
 iOS Text Field Anatomy：
 
-┌─────────────────────────────────────┐
-│ 🔍 Search...                    ✕  │
-└─────────────────────────────────────┘
-  ↑                               ↑
++-------------------------------------+
+|  Search...                      |
++-------------------------------------+
+  ^                               ^
   Leading icon                   Clear button
 
 边框：圆角矩形
@@ -335,19 +335,19 @@ Clear button：有文本时显示
 
 ```
 使用场景：
-├── 2-5 个相关选项
-├── 内容筛选
-├── 视图切换
++-- 2-5 个相关选项
++-- 内容筛选
++-- 视图切换
 
-┌───────┬───────┬───────┐
-│  All  │ Active│ Done  │
-└───────┴───────┴───────┘
++-------+-------+-------+
+|  All  | Active| Done  |
++-------+-------+-------+
 
 规则：
-├── 等宽分段
-├── 仅文本或仅图标（不要混用）
-├── 最多 5 段
-└── 更复杂时考虑 Tabs
++-- 等宽分段
++-- 仅文本或仅图标（不要混用）
++-- 最多 5 段
++-- 更复杂时考虑 Tabs
 ```
 
 ---
@@ -358,10 +358,10 @@ Clear button：有文本时显示
 
 ```
 原生 UIRefreshControl：
-├── 下拉到阈值 → 显示 spinner
-├── 松手 → 触发刷新
-├── 加载中 → spinner 旋转
-├── 完成 → spinner 消失
++-- 下拉到阈值 -> 显示 spinner
++-- 松手 -> 触发刷新
++-- 加载中 -> spinner 旋转
++-- 完成 -> spinner 消失
 
 规则：使用原生 UIRefreshControl，不要自造。
 ```
@@ -371,10 +371,10 @@ Clear button：有文本时显示
 ```
 iOS 侧滑操作：
 
-← Swipe Left（破坏性）        Swipe Right（建设性） →
-┌─────────────────────────────────────────────────────────────┐
-│                    List Item Content                        │
-└─────────────────────────────────────────────────────────────┘
+<- Swipe Left（破坏性）        Swipe Right（建设性） ->
++-------------------------------------------------------------+
+|                    List Item Content                        |
++-------------------------------------------------------------+
 
 左滑：Archive/Delete/Flag
 右滑：Pin/Star/Mark as Read
@@ -385,23 +385,23 @@ Full swipe：触发首个动作
 ### Context Menus
 
 ```
-长按 → 弹出上下文菜单
+长按 -> 弹出上下文菜单
 
-┌─────────────────────────────┐
-│       Preview Card          │
-├─────────────────────────────┤
-│  📋 Copy                    │
-│  📤 Share                   │
-│  ➕ Add to...               │
-├─────────────────────────────┤
-│  🗑️ Delete          (Red)   │
-└─────────────────────────────┘
++-----------------------------+
+|       Preview Card          |
++-----------------------------+
+|   Copy                    |
+|   Share                   |
+|   Add to...               |
++-----------------------------+
+|   Delete          (Red)   |
++-----------------------------+
 
 规则：
-├── Preview：显示放大内容
-├── Actions：与内容相关
-├── Destructive：放最后且标红
-└── 最多约 8 项（更多可滚动）
++-- Preview：显示放大内容
++-- Actions：与内容相关
++-- Destructive：放最后且标红
++-- 最多约 8 项（更多可滚动）
 ```
 
 ### Sheets & Half-Sheets
@@ -409,22 +409,22 @@ Full swipe：触发首个动作
 ```
 iOS 15+ Sheets：
 
-┌─────────────────────────────────────┐
-│                                     │
-│        Parent View (dimmed)          │
-│                                     │
-├─────────────────────────────────────┤
-│  ═══  (Grabber)                     │ ← 拖动调整高度
-│                                     │
-│        Sheet Content                │
-│                                     │
-│                                     │
-└─────────────────────────────────────┘
++-------------------------------------+
+|                                     |
+|        Parent View (dimmed)          |
+|                                     |
++-------------------------------------+
+|  ===  (Grabber)                     | <- 拖动调整高度
+|                                     |
+|        Sheet Content                |
+|                                     |
+|                                     |
++-------------------------------------+
 
 Detents：
-├── .medium → 半屏
-├── .large → 全屏（含 safe area）
-├── Custom → 指定高度
++-- .medium -> 半屏
++-- .large -> 全屏（含 safe area）
++-- Custom -> 指定高度
 ```
 
 ---
@@ -437,14 +437,14 @@ Detents：
 SF Symbols：苹果官方图标库（5000+）
 
 Weights：应匹配文本字重
-├── Ultralight / Thin / Light
-├── Regular / Medium / Semibold
-├── Bold / Heavy / Black
++-- Ultralight / Thin / Light
++-- Regular / Medium / Semibold
++-- Bold / Heavy / Black
 
 Scales：
-├── .small → 小文本内联
-├── .medium → 标准 UI
-├── .large → 强调/独立图标
++-- .small -> 小文本内联
++-- .medium -> 标准 UI
++-- .large -> 强调/独立图标
 ```
 
 ### Symbol 配置（Symbol Configurations）
@@ -481,10 +481,10 @@ Image(systemName: "checkmark.circle")
 
 ```
 每个交互元素必须：
-├── Accessibility label（是什么）
-├── Accessibility hint（做什么，可选）
-├── Accessibility traits（button/link 等）
-└── Accessibility value（当前状态）
++-- Accessibility label（是什么）
++-- Accessibility hint（做什么，可选）
++-- Accessibility traits（button/link 等）
++-- Accessibility value（当前状态）
 
 SwiftUI：
 .accessibilityLabel("Play")
@@ -502,14 +502,14 @@ accessibilityRole="button"
 必须支持 Dynamic Type
 
 用户可设置：
-├── xSmall → 14pt body
-├── Small → 15pt body
-├── Medium → 16pt body
-├── Large（默认） → 17pt body
-├── xLarge → 19pt body
-├── xxLarge → 21pt body
-├── xxxLarge → 23pt body
-├── Accessibility sizes → 最高 53pt
++-- xSmall -> 14pt body
++-- Small -> 15pt body
++-- Medium -> 16pt body
++-- Large（默认） -> 17pt body
++-- xLarge -> 19pt body
++-- xxLarge -> 21pt body
++-- xxxLarge -> 23pt body
++-- Accessibility sizes -> 最高 53pt
 
 你的 App 必须在所有字号下正常排版。
 ```

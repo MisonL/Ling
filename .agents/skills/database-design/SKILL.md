@@ -8,7 +8,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep
 
 > **学习如何思考（THINK）**，而非机械复制 SQL 模式。
 
-## 🎯 选择性阅读规则
+##  选择性阅读规则
 
 **仅阅读与请求相关的文档！** 查阅内容地图，找到所需信息。
 
@@ -23,7 +23,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep
 
 ---
 
-## ⚠️ 核心原则
+## [WARN]  核心原则
 
 - 需求不明确时，主动询问数据库偏好。
 - 根据实际上下文选择数据库与 ORM。
@@ -45,10 +45,10 @@ allowed-tools: Read, Write, Edit, Glob, Grep
 
 ## 反模式
 
-❌ 为简单应用默认使用 PostgreSQL（SQLite 可能已足够）  
-❌ 忽略索引设计  
-❌ 在生产环境中使用 `SELECT *`  
-❌ 在结构化数据更优时强行存储 JSON  
-❌ 忽略 N+1 查询问题
+[FAIL]  为简单应用默认使用 PostgreSQL（SQLite 可能已足够）  
+[FAIL]  忽略索引设计  
+[FAIL]  在生产环境中使用 `SELECT *`  
+[FAIL]  在结构化数据更优时强行存储 JSON  
+[FAIL]  忽略 N+1 查询问题
 
 ---
