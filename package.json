@@ -50,7 +50,7 @@
     "docs/TECH.md"
   ],
   "bin": {
-    "ling": "./bin/ling.js",
-    "ag-kit": "./bin/ag-kit.js"
+    "ling": "bin/ling.js",
+    "ag-kit": "bin/ag-kit.js"
   }
 }
