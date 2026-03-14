@@ -7,6 +7,24 @@
 
 ## [Unreleased]
 
+## [ling-1.2.0] - 2026-03-14
+
+### 新增
+
+- `antigravity` 作为独立目标进入 CLI 主链路：`init/update/update-all/status/doctor/global sync/spec enable|disable` 均可直接指定，不再由 `gemini` 隐式代管。
+- 共享 `.agent/` 工作区新增本地安装状态文件 `.ling/install-state.json`，用于准确记录 `gemini` / `antigravity` 的逻辑注册身份，即使工作区未写入全局索引也能正确识别。
+
+### 变更
+
+- 全局同步默认目标调整为 `codex + gemini + antigravity`；`--target gemini` 仅写入 `~/.gemini/skills/`，`--target antigravity` 仅写入 `~/.gemini/antigravity/skills/`。
+- README、TECH、PLAN 与测试基线同步对齐新的三目标语义，并补充共享 `.agent/` 的状态识别说明。
+- 健康检查与维护链路统一收口到 `npm`，Web 子项目不再保留 `bun.lock`。
+
+### 维护
+
+- `reference/` 清理重复官方资料：删除 `reference/official-docs/` 镜像，仅保留 `reference/official/` 单份受管参考。
+- 根目录与 `reference/.gitignore` 调整为白名单模式，仅跟踪 `reference/official/`、`reference/docs-archive/` 等保留资料。
+
 ## [ling-1.1.1] - 2026-03-14
 
 ### 新增
@@ -80,7 +98,8 @@
 
 本项目在 Ling 重启前的 2.x/3.x 版本记录已冻结，不再维护。
 
-[Unreleased]: https://github.com/MisonL/Ling/compare/ling-1.1.1...HEAD
+[Unreleased]: https://github.com/MisonL/Ling/compare/ling-1.2.0...HEAD
+[ling-1.2.0]: https://github.com/MisonL/Ling/releases/tag/ling-1.2.0
 [ling-1.1.1]: https://github.com/MisonL/Ling/releases/tag/ling-1.1.1
 [ling-1.1.0]: https://github.com/MisonL/Ling/releases/tag/ling-1.1.0
 [ling-1.0.2]: https://github.com/MisonL/Ling/releases/tag/ling-1.0.2
