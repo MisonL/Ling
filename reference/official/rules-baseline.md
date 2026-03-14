@@ -1,6 +1,6 @@
 # 官方规则基线（2026-03-04）
 
-> 本文只记录官方约定，不引入本仓库私有机制。证据见 `docs/official/sources-index.md`。
+> 本文只记录官方约定，不引入本仓库私有机制。证据见 `reference/official/sources-index.md`。
 
 ## Antigravity
 

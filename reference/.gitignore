@@ -1,3 +1,7 @@
-# Keep this file only; ignore imported upstream snapshots.
+# Keep curated references only; ignore everything else in this tree.
 *
 !.gitignore
+!docs-archive/
+!docs-archive/**
+!official/
+!official/**

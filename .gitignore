@@ -10,3 +10,7 @@ __pycache__/
 *.tgz
 reference/*
 !reference/.gitignore
+!reference/docs-archive/
+!reference/docs-archive/**
+!reference/official/
+!reference/official/**

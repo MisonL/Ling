@@ -165,6 +165,16 @@ describe('Standards Compliance', () => {
         assert.ok(!tech.includes('gemini 会同时写入 gemini-cli 与 antigravity'), 'TECH should not describe gemini as bundled antigravity target');
     });
 
+    test('gitignore should whitelist curated reference materials only', () => {
+        const rootIgnore = fs.readFileSync(path.resolve('.gitignore'), 'utf8');
+        const referenceIgnore = fs.readFileSync(path.resolve('reference/.gitignore'), 'utf8');
+
+        assert.ok(rootIgnore.includes('!reference/official/**'), 'root .gitignore should keep reference/official tracked');
+        assert.ok(rootIgnore.includes('!reference/docs-archive/**'), 'root .gitignore should keep reference/docs-archive tracked');
+        assert.ok(referenceIgnore.includes('!official/**'), 'reference/.gitignore should keep official subtree tracked');
+        assert.ok(referenceIgnore.includes('!docs-archive/**'), 'reference/.gitignore should keep docs-archive subtree tracked');
+    });
+
     test('.agents script files should stay identical to reference snapshot', { skip: !HAS_REF_SCRIPTS_ROOT }, () => {
         const refScriptsRoot = REF_SCRIPTS_ROOT;
         const mismatches = [];
