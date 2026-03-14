@@ -644,6 +644,95 @@ function writeWorkspaceIndex(indexPath, index) {
     fs.writeFileSync(indexPath, `${JSON.stringify(payload, null, 2)}\n`, "utf8");
 }
 
+function getWorkspaceInstallStatePath(workspaceRoot) {
+    return path.join(normalizeAbsolutePath(workspaceRoot), ".ling", "install-state.json");
+}
+
+function createEmptyWorkspaceInstallState() {
+    return {
+        version: 1,
+        updatedAt: "",
+        targets: {},
+    };
+}
+
+function readWorkspaceInstallState(workspaceRoot) {
+    const statePath = getWorkspaceInstallStatePath(workspaceRoot);
+    if (!fs.existsSync(statePath)) {
+        return { statePath, state: createEmptyWorkspaceInstallState() };
+    }
+
+    const raw = fs.readFileSync(statePath, "utf8").trim();
+    if (!raw) {
+        return { statePath, state: createEmptyWorkspaceInstallState() };
+    }
+
+    let parsed;
+    try {
+        parsed = JSON.parse(raw);
+    } catch (_err) {
+        return { statePath, state: createEmptyWorkspaceInstallState() };
+    }
+
+    const state = createEmptyWorkspaceInstallState();
+    state.updatedAt = typeof parsed.updatedAt === "string" ? parsed.updatedAt : "";
+    if (parsed && parsed.targets && typeof parsed.targets === "object") {
+        for (const [targetName, targetState] of Object.entries(parsed.targets)) {
+            const normalizedTargetName = normalizeIndexTargetName(targetName);
+            const normalizedTargetState = normalizeTargetState(targetState);
+            if (normalizedTargetName && normalizedTargetState) {
+                state.targets[normalizedTargetName] = normalizedTargetState;
+            }
+        }
+    }
+
+    return { statePath, state };
+}
+
+function writeWorkspaceInstallState(statePath, state) {
+    const payload = {
+        version: 1,
+        updatedAt: state.updatedAt || nowISO(),
+        targets: state.targets || {},
+    };
+    fs.mkdirSync(path.dirname(statePath), { recursive: true });
+    fs.writeFileSync(statePath, `${JSON.stringify(payload, null, 2)}\n`, "utf8");
+}
+
+function recordWorkspaceInstallTargets(workspaceRoot, targetNames, options) {
+    const logicalTargets = normalizeTargets(targetNames).filter((targetName) => SHARED_AGENT_TARGETS.includes(targetName));
+    if (logicalTargets.length === 0) {
+        return;
+    }
+
+    if (options.dryRun) {
+        log(options, `[dry-run] 将写入工作区安装状态: ${getWorkspaceInstallStatePath(workspaceRoot)} [${logicalTargets.join(", ")}]`);
+        return;
+    }
+
+    const { statePath, state } = readWorkspaceInstallState(workspaceRoot);
+    const timestamp = nowISO();
+    for (const targetName of logicalTargets) {
+        const prev = normalizeTargetState(state.targets[targetName]) || {
+            version: "",
+            installedAt: "",
+            updatedAt: "",
+        };
+        state.targets[targetName] = {
+            version: pkg.version,
+            installedAt: prev.installedAt || timestamp,
+            updatedAt: timestamp,
+        };
+    }
+    state.updatedAt = timestamp;
+    writeWorkspaceInstallState(statePath, state);
+}
+
+function resolveWorkspaceInstallStateTargets(workspaceRoot) {
+    const { state } = readWorkspaceInstallState(workspaceRoot);
+    return normalizeTargets(Object.keys(state.targets || {}));
+}
+
 function sleepSync(ms) {
     const buffer = new SharedArrayBuffer(4);
     const view = new Int32Array(buffer);
@@ -938,9 +1027,12 @@ function resolveIndexedWorkspaceTargets(workspaceRoot) {
 
 function detectInstalledTargets(workspaceRoot) {
     const targets = [];
+    const localTargets = resolveWorkspaceInstallStateTargets(workspaceRoot);
     const indexedTargets = resolveIndexedWorkspaceTargets(workspaceRoot);
     if (fs.existsSync(path.join(workspaceRoot, ".agent"))) {
-        const sharedTargets = indexedTargets.filter((target) => SHARED_AGENT_TARGETS.includes(target));
+        const sharedTargets = localTargets
+            .filter((target) => SHARED_AGENT_TARGETS.includes(target))
+            .concat(indexedTargets.filter((target) => SHARED_AGENT_TARGETS.includes(target)));
         if (sharedTargets.length > 0) {
             targets.push(...sharedTargets);
         } else {
@@ -2540,6 +2632,7 @@ async function initTargets(workspaceRoot, targets, options, prompter) {
         const adapter = createAdapter(group.adapterTarget, workspaceRoot, runOptions);
         log(options, `[sync] 正在初始化目标 [${group.logicalTargets.join(", ")}] ...`);
         adapter.install(BUNDLED_AGENT_DIR);
+        recordWorkspaceInstallTargets(workspaceRoot, group.logicalTargets, runOptions);
         for (const target of group.logicalTargets) {
             registerWorkspaceTarget(workspaceRoot, target, runOptions);
         }
@@ -2689,6 +2782,7 @@ async function commandUpdate(options) {
             const adapter = createAdapter(group.adapterTarget, workspaceRoot, runOptions);
             log(options, `[sync] 更新 [${group.logicalTargets.join(", ")}] ...`);
             adapter.update(BUNDLED_AGENT_DIR);
+            recordWorkspaceInstallTargets(workspaceRoot, group.logicalTargets, runOptions);
             for (const target of group.logicalTargets) {
                 registerWorkspaceTarget(workspaceRoot, target, runOptions);
             }
@@ -2864,6 +2958,7 @@ async function commandUpdateAll(options) {
 
                 const adapter = createAdapter(group.adapterTarget, workspacePath, runOptions);
                 adapter.update(BUNDLED_AGENT_DIR);
+                recordWorkspaceInstallTargets(workspacePath, group.logicalTargets, runOptions);
                 updatedTargets.push(...group.logicalTargets);
             } catch (err) {
                 failed += 1;

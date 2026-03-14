@@ -46,7 +46,7 @@ ling global sync --target antigravity
 
 | 你要做什么 | 命令 | 结果 |
 | --- | --- | --- |
-| 给当前项目安装完整资产 | `ling init` | 项目内生成 `.agent/` 或 `.agents/` |
+| 给当前项目安装完整资产 | `ling init` | 项目内生成 `.agent/` / `.agents/`；共享 `.agent/` 时会维护 `.ling/install-state.json` |
 | 给电脑全局同步可复用 Skills | `ling global sync` | 写入 `~/.codex/skills/`、`~/.gemini/skills/` 等 |
 | 给项目启用 Spec 工作流 | `ling spec init` | 项目内生成 `issues.csv` 等 Spec 资产 |
 
@@ -63,6 +63,7 @@ ling global sync --target antigravity
 - `gemini` 写入项目内 `.agent/`
 - `antigravity` 写入项目内 `.agent/`（与 Gemini 复用目录，命令与状态独立）
 - `codex` 写入项目内 `.agents/`
+- Ling 会在项目内写入 `.ling/install-state.json`，用于记录共享 `.agent/` 上到底注册了 `gemini`、`antigravity` 还是两者
 - Codex 额外注入工作区 `AGENTS.md` 和 `ling.rules`
 
 ```bash

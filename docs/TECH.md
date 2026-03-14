@@ -21,6 +21,7 @@ cd web && npm install && npm run lint
 - `gemini`：项目根目录 `.agent/`
 - `antigravity`：项目根目录 `.agent/`（与 Gemini 复用目录，但索引与状态独立）
 - `codex`：项目根目录 `.agents/`（受管）+ `.agents-backup/`（漂移覆盖备份）
+- 工作区安装状态：共享 `.agent/` 目标时写入项目根目录 `.ling/install-state.json`（记录逻辑目标注册信息）
 - 项目级预备份（覆盖前快照）：
   - Gemini：`<project>/.agent-backup/<timestamp>/preflight/.agent/`
   - Codex：`<project>/.agents-backup/<timestamp>/preflight/.agents/` 或 `<project>/.agents-backup/<timestamp>/preflight/.codex/`
@@ -36,6 +37,7 @@ cd web && npm install && npm run lint
 ### 项目安装 / 更新
 - `init`：选择目标 -> 适配器 `install()` -> 落盘目标目录（Gemini/Antigravity: `.agent/`；Codex: `.agents/`）->（Codex）注入托管区块到工作区 `AGENTS.md` 与 `ling.rules`
 - `update`：自动检测已安装目标（或通过 `--target/--targets` 指定）->（冲突时交互确认或默认预备份）-> 适配器 `update()` ->（Codex）漂移检测与备份 -> 原子替换
+- 共享 `.agent/` 的 `gemini` / `antigravity` 身份优先从 `.ling/install-state.json` 读取；若缺失则回退到工作区索引，再回退为历史默认 `gemini`
 - `doctor`：检查完整性；`--fix` 尝试修复（Codex 支持迁移 `.codex/` 与重写托管区块）
 
 ### 已有资产冲突处理（项目级）

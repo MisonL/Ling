@@ -48,6 +48,7 @@
 
 ## 兼容策略
 - Gemini/Antigravity：项目级继续输出 `.agent/`，保持与官方工作区机制一致；命令、状态、索引按独立目标处理。
+- 为避免共享 `.agent/` 丢失逻辑目标身份，工作区额外维护 `.ling/install-state.json`。
 - Codex：受管目录为 `.agents/`，并使用 `manifest.json` 做完整性与漂移检测；识别并迁移遗留 `.codex/`。
 - 全局同步遵循真实消费端目录，而不是仓库模板源目录；仓库内仍以 `.agents/` 作为唯一 Canonical。
 

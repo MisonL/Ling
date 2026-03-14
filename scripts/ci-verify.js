@@ -51,12 +51,15 @@ function main() {
         LING_GLOBAL_ROOT: globalRoot,
     };
 
-    runCli(["init", "--targets", "gemini,codex", "--path", workspaceDir, "--quiet"], { env });
+    runCli(["init", "--targets", "gemini,antigravity,codex", "--path", workspaceDir, "--quiet"], { env });
 
     const status = runCli(["status", "--path", workspaceDir, "--quiet"], { env }).trim();
     if (status !== "installed") {
         throw new Error(`status 结果异常: ${status}`);
     }
+
+    const installStatePath = path.join(workspaceDir, ".ling", "install-state.json");
+    ensureExists(installStatePath, "工作区安装状态文件");
 
     runCli(["doctor", "--path", workspaceDir, "--quiet"], { env });
     runCli(["update", "--path", workspaceDir, "--quiet"], { env });

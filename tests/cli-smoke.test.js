@@ -380,6 +380,36 @@ describe("CLI Smoke", () => {
         }
     });
 
+    test("antigravity status should remain correct without index via local install-state", () => {
+        const localWorkspace = fs.mkdtempSync(path.join(REPO_ROOT, ".tmp-ling-antigravity-no-index-"));
+        try {
+            const initResult = runCli(
+                ["init", "--target", "antigravity", "--path", localWorkspace, "--no-index", "--quiet"],
+                { env: { LING_INDEX_PATH: indexPath } },
+            );
+            assert.strictEqual(initResult.status, 0, initResult.stderr || initResult.stdout);
+
+            const installStatePath = path.join(localWorkspace, ".ling", "install-state.json");
+            assert.ok(fs.existsSync(installStatePath), "local install-state should be created");
+
+            const result = runCli(
+                ["status", "--path", localWorkspace],
+                { env: { LING_INDEX_PATH: indexPath } },
+            );
+            assert.strictEqual(result.status, 0, result.stderr || result.stdout);
+            assert.match(result.stdout || "", /Targets: antigravity/);
+            assert.match(result.stdout || "", /\[antigravity\]/);
+
+            if (fs.existsSync(indexPath)) {
+                const indexData = JSON.parse(fs.readFileSync(indexPath, "utf8"));
+                const hasWorkspace = (indexData.workspaces || []).some((item) => item.path === localWorkspace);
+                assert.ok(!hasWorkspace, "workspace should still be absent from global index");
+            }
+        } finally {
+            fs.rmSync(localWorkspace, { recursive: true, force: true });
+        }
+    });
+
     test("update should create preflight backup for codex when unknown files exist in managed dir", () => {
         const initResult = runCli(
             ["init", "--target", "codex", "--path", workspaceDir, "--quiet"],
