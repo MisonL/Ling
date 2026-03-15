@@ -97,12 +97,13 @@ function main() {
     }
 
     const codexSkill = path.join(globalRoot, ".agents", "skills", "workflow-plan", "SKILL.md");
-    const geminiCliSkill = path.join(globalRoot, ".gemini", "skills", "clean-code", "SKILL.md");
     const antigravitySkill = path.join(globalRoot, ".gemini", "antigravity", "skills", "clean-code", "SKILL.md");
     const specCodexSkill = path.join(globalRoot, ".agents", "skills", "harness-engineering");
     ensureExists(codexSkill, "全局 Codex workflow-plan Skill");
-    ensureExists(geminiCliSkill, "全局 Gemini CLI clean-code Skill");
     ensureExists(antigravitySkill, "全局 Antigravity clean-code Skill");
+    if (fs.existsSync(path.join(globalRoot, ".gemini", "skills"))) {
+        throw new Error("默认全局同步后不应保留重复的 Gemini CLI skills 根目录");
+    }
     if (fs.existsSync(specCodexSkill)) {
         throw new Error(`spec disable 后仍残留 Spec Skill: ${specCodexSkill}`);
     }

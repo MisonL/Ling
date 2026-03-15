@@ -114,13 +114,15 @@ function main() {
 
         const globalChecks = [
             path.join(globalRoot, ".agents", "skills", "workflow-plan", "SKILL.md"),
-            path.join(globalRoot, ".gemini", "skills", "clean-code", "SKILL.md"),
             path.join(globalRoot, ".gemini", "antigravity", "skills", "clean-code", "SKILL.md"),
         ];
         for (const targetPath of globalChecks) {
             if (!fs.existsSync(targetPath)) {
                 throw new Error(`global sync 未生成预期文件: ${targetPath}`);
             }
+        }
+        if (fs.existsSync(path.join(globalRoot, ".gemini", "skills"))) {
+            throw new Error("默认全局同步后不应保留重复的 Gemini CLI skills 根目录");
         }
     } finally {
         fs.rmSync(tempRoot, { recursive: true, force: true });

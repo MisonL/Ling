@@ -142,6 +142,47 @@ describe("Spec Profile", () => {
         assert.ok(!fs.existsSync(antigravitySkill), "gemini spec enable should not install antigravity skill");
     });
 
+    test("spec enable should prune redundant gemini skills when codex universal skills already exist", () => {
+        const env = { LING_GLOBAL_ROOT: tempRoot };
+
+        const globalResult = runCli(["global", "sync", "--target", "codex", "--quiet"], { env });
+        assert.strictEqual(globalResult.status, 0, globalResult.stderr || globalResult.stdout);
+
+        const enableResult = runCli(["spec", "enable", "--quiet"], { env });
+        assert.strictEqual(enableResult.status, 0, enableResult.stderr || enableResult.stdout);
+
+        const geminiSkillRoot = path.join(tempRoot, ".gemini", "skills");
+        const antigravitySkill = path.join(tempRoot, ".gemini", "antigravity", "skills", "harness-engineering", "SKILL.md");
+        const codexSkill = path.join(tempRoot, ".agents", "skills", "harness-engineering", "SKILL.md");
+        assert.ok(!fs.existsSync(geminiSkillRoot), "redundant gemini spec skills should be pruned after enable");
+        assert.ok(fs.existsSync(antigravitySkill), "antigravity spec skill should still be installed");
+        assert.ok(fs.existsSync(codexSkill), "codex spec skill should still be installed");
+
+        const backupRoot = path.join(tempRoot, ".ling", "backups", "global");
+        const timestamps = fs
+            .readdirSync(backupRoot, { withFileTypes: true })
+            .filter((entry) => entry.isDirectory())
+            .map((entry) => entry.name);
+        assert.ok(timestamps.length > 0, "backup timestamp directory missing");
+
+        const redundantBackup = path.join(backupRoot, timestamps[timestamps.length - 1], "gemini-cli-redundant", "harness-engineering", "SKILL.md");
+        assert.ok(fs.existsSync(redundantBackup), "backup for redundant gemini spec skill missing");
+    });
+
+    test("spec enable should keep gemini-only skill when content differs from codex universal root", () => {
+        const env = { LING_GLOBAL_ROOT: tempRoot };
+        const codexSkillDir = path.join(tempRoot, ".agents", "skills", "harness-engineering");
+        fs.mkdirSync(codexSkillDir, { recursive: true });
+        fs.writeFileSync(path.join(codexSkillDir, "SKILL.md"), "codex-only variant", "utf8");
+
+        const enableResult = runCli(["spec", "enable", "--target", "gemini", "--quiet"], { env });
+        assert.strictEqual(enableResult.status, 0, enableResult.stderr || enableResult.stdout);
+
+        const geminiSkill = path.join(tempRoot, ".gemini", "skills", "harness-engineering", "SKILL.md");
+        assert.ok(fs.existsSync(geminiSkill), "gemini-only skill should be kept when content differs");
+        assert.strictEqual(fs.readFileSync(geminiSkill, "utf8"), fs.readFileSync(path.join(REPO_ROOT, ".spec", "skills", "harness-engineering", "SKILL.md"), "utf8"));
+    });
+
     test("spec enable should migrate legacy codex global skill path to ~/.agents/skills", () => {
         const env = { LING_GLOBAL_ROOT: tempRoot };
         const stateDir = path.join(tempRoot, ".ling", "spec");

@@ -61,6 +61,8 @@ const VERSION_TAG_PREFIX = "ling-";
 const SPEC_TEMPLATE_REQUIRED_FILES = ["issues.template.csv", "driver-prompt.md", "review-report.md", "phase-acceptance.md", "handoff.md"];
 const SPEC_REFERENCE_REQUIRED_FILES = ["README.md", "harness-engineering-digest.md", "gda-framework.md", "cse-quickstart.md"];
 const SPEC_PROFILE_REQUIRED_FILES = ["codex/AGENTS.spec.md", "codex/ling.spec.rules.md", "gemini/GEMINI.spec.md"];
+const LEGACY_CODEX_GLOBAL_SKILLS_BACKUP_TARGET = "codex-legacy";
+const REDUNDANT_GEMINI_GLOBAL_SKILLS_BACKUP_TARGET = "gemini-cli-redundant";
 
 function nowISO() {
     return new Date().toISOString();
@@ -1287,6 +1289,127 @@ function backupSkillDirectory(targetName, skillName, sourceDir, timestamp, optio
     log(options, `[backup] 已备份 ${targetName} 全局 Skill: ${skillName} -> ${backupDir}`);
 }
 
+function migrateLegacyCodexGlobalSkills(timestamp, options) {
+    const globalRoot = resolveGlobalRootDir();
+    const legacyRoot = path.join(globalRoot, ".codex", "skills");
+    if (!fs.existsSync(legacyRoot)) {
+        return { migrated: 0, removed: 0, backedUp: 0, conflicts: 0, remaining: 0 };
+    }
+
+    const destRoot = path.join(globalRoot, ".agents", "skills");
+    const legacyDirEntries = fs.readdirSync(legacyRoot, { withFileTypes: true });
+    const legacyEntries = legacyDirEntries.filter((entry) => entry.isDirectory()).map((entry) => entry.name);
+    if (legacyEntries.length === 0) {
+        if (legacyDirEntries.length === 0) {
+            removeDirIfExists(legacyRoot, options, "遗留 Codex skills 根目录");
+        } else {
+            log(options, `[warn] 遗留 Codex skills 根目录包含非目录条目，已跳过迁移清理: ${legacyRoot}`);
+        }
+        return { migrated: 0, removed: 0, backedUp: 0, conflicts: 0, remaining: legacyDirEntries.length };
+    }
+
+    let migrated = 0;
+    let removed = 0;
+    let backedUp = 0;
+    let conflicts = 0;
+
+    for (const entryName of legacyEntries) {
+        const legacyDir = path.join(legacyRoot, entryName);
+        const destDir = path.join(destRoot, entryName);
+        const destExists = fs.existsSync(destDir);
+
+        if (!destExists) {
+            if (options.dryRun) {
+                log(options, `[dry-run] 将迁移遗留 Codex Skill 目录: ${legacyDir} -> ${destDir}`);
+            } else {
+                const logger = options.quiet ? (() => {}) : log.bind(null, options);
+                AtomicWriter.atomicCopyDir(legacyDir, destDir, { logger });
+                log(options, `[ok] 已迁移遗留 Codex Skill 目录: ${legacyDir} -> ${destDir}`);
+            }
+            migrated += 1;
+        } else if (!areDirectoriesEqual(legacyDir, destDir)) {
+            conflicts += 1;
+            if (options.dryRun) {
+                log(options, `[dry-run] 将备份并移除遗留 Codex Skill（与现有目录冲突）: ${legacyDir}`);
+            } else {
+                backupSkillDirectory(LEGACY_CODEX_GLOBAL_SKILLS_BACKUP_TARGET, entryName, legacyDir, timestamp, options);
+                backedUp += 1;
+            }
+        }
+
+        if (options.dryRun) {
+            log(options, `[dry-run] 将删除遗留 Codex Skill 目录: ${legacyDir}`);
+            continue;
+        }
+
+        fs.rmSync(legacyDir, { recursive: true, force: true });
+        log(options, `[clean] 已删除遗留 Codex Skill 目录: ${legacyDir}`);
+        removed += 1;
+    }
+
+    const remaining = fs.existsSync(legacyRoot) ? fs.readdirSync(legacyRoot).length : 0;
+    if (remaining === 0) {
+        removeDirIfExists(legacyRoot, options, "遗留 Codex skills 根目录");
+    } else {
+        log(options, `[warn] 遗留 Codex skills 根目录仍有残留条目(${remaining})，已保留: ${legacyRoot}`);
+    }
+
+    return { migrated, removed, backedUp, conflicts, remaining };
+}
+
+function reconcileGeminiGlobalSkillsAgainstUniversalRoot(timestamp, options) {
+    const [codexDestination] = getGlobalDestinations("codex");
+    const [geminiDestination] = getGlobalDestinations("gemini");
+    const universalRoot = codexDestination.skillsRoot;
+    const geminiRoot = geminiDestination.skillsRoot;
+
+    if (!fs.existsSync(universalRoot) || !fs.existsSync(geminiRoot)) {
+        return { removed: 0, backedUp: 0, skippedConflicts: 0 };
+    }
+
+    let removed = 0;
+    let backedUp = 0;
+    let skippedConflicts = 0;
+    for (const skillName of listSkillDirectories(geminiRoot)) {
+        const geminiSkillDir = path.join(geminiRoot, skillName);
+        const universalSkillDir = path.join(universalRoot, skillName);
+        if (!fs.existsSync(universalSkillDir)) {
+            continue;
+        }
+
+        if (!areDirectoriesEqual(geminiSkillDir, universalSkillDir)) {
+            log(options, `[warn] Gemini CLI Skill 与 universal 根目录同名但内容不同，已保留: ${geminiSkillDir}`);
+            skippedConflicts += 1;
+            continue;
+        }
+
+        if (options.dryRun) {
+            log(options, `[dry-run] 将移除 Gemini CLI 重复 Skill（由 universal 根目录提供）: ${geminiSkillDir}`);
+            removed += 1;
+            continue;
+        }
+
+        backupSkillDirectory(
+            REDUNDANT_GEMINI_GLOBAL_SKILLS_BACKUP_TARGET,
+            skillName,
+            geminiSkillDir,
+            timestamp,
+            options,
+        );
+        backedUp += 1;
+        fs.rmSync(geminiSkillDir, { recursive: true, force: true });
+        log(options, `[clean] 已移除 Gemini CLI 重复 Skill: ${geminiSkillDir}`);
+        removed += 1;
+    }
+
+    if (!options.dryRun && fs.existsSync(geminiRoot) && fs.readdirSync(geminiRoot).length === 0) {
+        fs.rmSync(geminiRoot, { recursive: true, force: true });
+        log(options, `[clean] 已删除空的 Gemini CLI skills 根目录: ${geminiRoot}`);
+    }
+
+    return { removed, backedUp, skippedConflicts };
+}
+
 function syncSkillDirectory(destination, srcDir, destDir, timestamp, options) {
     const exists = fs.existsSync(destDir);
     if (exists) {
@@ -1552,6 +1675,14 @@ async function commandGlobalSync(options) {
                     for (const item of summary.destinations) {
                         log(options, `   - ${item.targetName}: ${item.destRoot}（每目标 ${item.total} 个 Skills）`);
                     }
+                }
+
+                if (target === "codex") {
+                    migrateLegacyCodexGlobalSkills(timestamp, options);
+                    reconcileGeminiGlobalSkillsAgainstUniversalRoot(timestamp, options);
+                }
+                if (target === "gemini") {
+                    reconcileGeminiGlobalSkillsAgainstUniversalRoot(timestamp, options);
                 }
             } finally {
                 if (plan.cleanup) plan.cleanup();
@@ -2623,6 +2754,13 @@ async function commandSpecEnable(options) {
     state.updatedAt = nowISO();
     if (!options.dryRun) {
         writeSpecState(statePath, state);
+    }
+
+    if (targets.includes("codex")) {
+        migrateLegacyCodexGlobalSkills(timestamp, options);
+    }
+    if (targets.includes("codex") || targets.includes("gemini")) {
+        reconcileGeminiGlobalSkillsAgainstUniversalRoot(timestamp, options);
     }
 
     log(options, `[ok] Spec Profile 已启用 (Targets: ${targets.join(", ")})`);
