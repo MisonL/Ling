@@ -7,6 +7,22 @@
 
 ## [Unreleased]
 
+### 修复
+
+- 修复 `ling spec enable` 在全局 `codex` Skills 已存在时重新写回 Gemini CLI 重复 Skill 的问题，并避免将仅同名但内容不同的 Gemini 专用 Skill 误判为重复副本。
+
+## [ling-1.2.3] - 2026-03-15
+
+### 修复
+
+- 修复 Gemini CLI 全局 Skill 冲突：当 `~/.agents/skills/` 已提供同名 universal Skill 时，`ling global sync --target gemini` 与默认全局同步会自动备份并清理 `~/.gemini/skills/` 中的重复副本，避免 Gemini 启动时出现 `Skill conflict detected`。
+
+## [ling-1.2.2] - 2026-03-14
+
+### 修复
+
+- 修复全局 Skills 重复：当检测到旧版 `~/.codex/skills/` 时，同步 `codex` 会迁移到 `~/.agents/skills/` 并清理遗留目录；若与现有目录冲突则备份到 `~/.ling/backups/global/<timestamp>/codex-legacy/...`。
+
 ## [ling-1.2.1] - 2026-03-14
 
 ### 修复

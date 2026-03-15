@@ -21,9 +21,10 @@
 - 默认行为：`ling global sync` 未指定 `--target/--targets` 时，同步 `codex + gemini + antigravity`
 - 目标路径：
   - `codex` -> `$HOME/.agents/skills/`
-  - `gemini` -> `$HOME/.gemini/skills/`
+  - `gemini` -> `$HOME/.gemini/skills/`（若与 `$HOME/.agents/skills/` 重叠则清理重复副本）
   - `antigravity` -> `$HOME/.gemini/antigravity/skills/`
 - 安全边界：全局只同步 Skills，不写入全局 Rules/Agents/Workflows。
+- 旧版迁移：若存在遗留 `~/.codex/skills/`，同步 codex 时会迁移到 `$HOME/.agents/skills/` 并清理遗留根目录，避免 Skills 重复（冲突内容会备份到 `$HOME/.ling/backups/global/<timestamp>/codex-legacy/...`）。
 
 ## 覆盖与回滚（全局同步）
 - 覆盖单位：每个 Skill 目录。
@@ -40,6 +41,7 @@
     - References：`$HOME/.ling/spec/references/`
     - Profiles：`$HOME/.ling/spec/profiles/`
   - 回退原则：启用前先备份同名资源；停用时优先恢复原资源
+  - 与全局 Skills 的关系：若机器上已存在 `$HOME/.agents/skills/`，启用包含 `gemini` 的 Spec 目标时会自动清理 `$HOME/.gemini/skills/` 中与 universal 根目录完全相同的重复副本；同名但内容不同的 Gemini 专用 Skill 会保留
 - 项目层（工作区级）命令：`ling spec init` / `ling spec doctor`
   - 默认作用于当前目录；`--spec-workspace` 才会使用 `$HOME/.ling/spec-workspace`
   - 完整模式：写入 `.ling/spec/`、`issues.csv`、`docs/reviews/`、`docs/handoff/`

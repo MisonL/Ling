@@ -28,7 +28,7 @@ cd web && npm install && npm run lint
 
 ### 全局级（仅同步 Skills）
 - `codex`：`$HOME/.agents/skills/`
-- `gemini-cli`：`$HOME/.gemini/skills/`
+- `gemini-cli`：`$HOME/.gemini/skills/`（若存在与 `$HOME/.agents/skills/` 重叠的同名 Skill，灵轨会在同步后清理重复副本）
 - `antigravity`：`$HOME/.gemini/antigravity/skills/`
 
 > 说明：仓库内 Skills 源路径为 `.agents/skills/`，全局同步会将其投影到真实工具读取的全局目录；仓库 Canonical 仍是 `.agents/`。
@@ -64,6 +64,8 @@ cd web && npm install && npm run lint
 - 原子替换：按 Skill 目录原子替换，避免半写状态
 - 覆盖前备份：覆盖同名 Skill 前备份到 `$HOME/.ling/backups/global/<timestamp>/<consumer>/<skill>/...`
   - `consumer` 可能是 `codex`、`gemini-cli`、`antigravity`
+- 遗留迁移：若检测到旧版 `~/.codex/skills/`，同步 codex 时会迁移到 `~/.agents/skills/` 并清理，避免 Skills 重复（冲突内容会备份到 `.../codex-legacy/<skill>/...`）
+- Gemini 去重：若 `~/.agents/skills/` 已存在，同步 gemini 后会移除 `~/.gemini/skills/` 内内容完全相同的同名重复目录，并备份到 `.../gemini-cli-redundant/<skill>/...`；若只是同名但内容不同，则记录警告并保留 Gemini 专用版本
 
 ### 测试隔离
 - `LING_GLOBAL_ROOT`：替代 `$HOME`（用于测试与 CI，避免污染真实用户目录）
@@ -87,6 +89,7 @@ cd web && npm install && npm run lint
     - 会校验 `issues.csv` 表头与状态枚举
     - 当项目缺少 `.ling/spec/` 但已启用全局 Spec 时，会使用全局 Spec 资产作为后备
 - Spec 源目录：`.spec/`
+- 若 `spec enable` 包含 `gemini` 或 `codex`，启用后还会执行一次 Gemini CLI 重复 Skill 清理，避免全局 universal Skill 与 Gemini CLI 同时暴露同名副本
 
 ### 心智模型
 - `ling spec enable`：给这台电脑安装 Spec 工具箱
@@ -170,8 +173,8 @@ Windows PowerShell 示例：
 ```powershell
 $ts = "2026-03-12T12-00-00-000Z"
 $skill = "clean-code"
-Remove-Item "$HOME\\.codex\\skills\\$skill" -Recurse -Force -ErrorAction SilentlyContinue
-Copy-Item "$HOME\\.ling\\backups\\global\\$ts\\codex\\$skill" "$HOME\\.codex\\skills\\$skill" -Recurse -Force
+Remove-Item "$HOME\\.agents\\skills\\$skill" -Recurse -Force -ErrorAction SilentlyContinue
+Copy-Item "$HOME\\.ling\\backups\\global\\$ts\\codex\\$skill" "$HOME\\.agents\\skills\\$skill" -Recurse -Force
 ```
 
 Gemini CLI 回滚示例：

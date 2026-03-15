@@ -47,7 +47,7 @@ ling global sync --target antigravity
 | 你要做什么 | 命令 | 结果 |
 | --- | --- | --- |
 | 给当前项目安装完整资产 | `ling init` | 项目内生成 `.agent/` / `.agents/`；共享 `.agent/` 时会维护 `.ling/install-state.json` |
-| 给电脑全局同步可复用 Skills | `ling global sync` | 写入 `~/.agents/skills/`、`~/.gemini/skills/` 等 |
+| 给电脑全局同步可复用 Skills | `ling global sync` | 写入 `~/.agents/skills/`、`~/.gemini/skills/`、`~/.gemini/antigravity/skills/`；若与 universal 根目录重复，会自动清理 Gemini CLI 副本 |
 | 给项目启用 Spec 工作流 | `ling spec init` | 项目内生成 `issues.csv` 等 Spec 资产 |
 
 一句话区分：
@@ -90,8 +90,10 @@ ling global status
 ```
 
 - `codex` -> `~/.agents/skills/`
-- `gemini` -> `~/.gemini/skills/`
+- `gemini` -> `~/.gemini/skills/`（若已存在 `~/.agents/skills/`，会自动移除重复副本，避免 Gemini CLI 冲突提示）
 - `antigravity` -> `~/.gemini/antigravity/skills/`
+
+若检测到旧版 `~/.codex/skills/`，`ling global sync --target codex` 会将其迁移到 `~/.agents/skills/` 并清理，避免 Skills 重复（冲突内容会先备份到 `~/.ling/backups/global/<timestamp>/codex-legacy/...`）。
 
 全局模式不会写入项目 Rules、Agents、Workflows，也不会改你的全局 `~/.codex/rules`。
 
@@ -125,6 +127,8 @@ ling spec init --csv-only
 - 完整模式：`<project>/.ling/spec/`、`<project>/issues.csv`、`<project>/docs/reviews/`、`<project>/docs/handoff/`
 - `--csv-only`：`<project>/issues.csv`、`<project>/docs/reviews/`、`<project>/docs/handoff/`
 - 全局 Spec 资源：`~/.ling/spec/templates/`、`~/.ling/spec/references/`、`~/.ling/spec/profiles/`
+
+如果这台电脑已经有 `~/.agents/skills/`，`ling spec enable` 在启用 `gemini` 目标时也会自动清理 `~/.gemini/skills/` 里的同名重复副本；若同名 Skill 内容不同，则会保留 Gemini 专用版本，不会误删。
 
 如果你只想要一个本机演练空间，而不是某个真实项目：
 
